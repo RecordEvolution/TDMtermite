@@ -29,5 +29,5 @@ lib/libtdmripper.a :
 clean-lib :
 	rm -f lib/*.o lib/*.a
 	rm -f -r build
-	rm -f tdm_ripper.c tdm_ripper.cpp
+	rm -f pytdm_ripper.cpp
 	rm -f *.so
