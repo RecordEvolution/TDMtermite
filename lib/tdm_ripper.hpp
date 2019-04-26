@@ -48,7 +48,7 @@ public:
 
   void parse_structure();
 
-  void show_channels(int width = 15, int maxshow = 300);
+  void list_channels(std::ostream& gout = std::cout, int width = 15, int maxshow = 300);
 
   void show_structure();
 
@@ -77,15 +77,26 @@ public:
     return num_groups_;
   }
 
-  // convert array of chars to single floating point double
-  double convert_float(std::vector<unsigned char> bych);
+  void list_datatypes();
+
+  // convert array of chars to single integer or floating point double
+  int convert_int(std::vector<unsigned char> bych);
+  double convert_double(std::vector<unsigned char> bych);
 
   // convert entire channel, i.e. expert of .tdx binary file
-  std::vector<double> convert_channel(int byteoffset, int length, int typesize);
+  // std::vector<double> convert_channel(int byteoffset, int length, int typesize);
+  std::vector<double> convert_channel(int byteoffset, int length, std::string type);
 
   std::vector<double> get_channel(int channelid);
 
   void print_channel(int channelid, const char* filename, int width = 15);
+
+  // TODO add elements/methods to build .tdm and write .tdx files for your own data
+  // by constructing xml document tree and write data to binary .tdx
+  // void set_channels(std::vector<std::string> channels);
+  // void set_groups(std::vector<std::string> groups);
+  // void set_assigment(std::vector<int> assignment);
+  // void set_channel(int i, std::vector<double> data);
 
 };
 

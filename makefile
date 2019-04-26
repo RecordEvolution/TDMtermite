@@ -16,6 +16,7 @@ tdm_ripper.o : lib/tdm_ripper.cpp lib/tdm_ripper.hpp
 
 clean :
 	rm -f $(EXE) *.o
+	rm -f *.dat
 
 pylib : setup.py pytdm_ripper.pyx tdm_ripper.pxd tdm_ripper.o
 	python3 setup.py build_ext --inplace
