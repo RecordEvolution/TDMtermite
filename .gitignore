@@ -1,2 +1,6 @@
 tdm_parser
 pytdm_ripper.cpp
+*.so
+build/
+*.o
+*.a
