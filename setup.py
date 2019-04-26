@@ -5,7 +5,7 @@ from Cython.Build import cythonize
 extensions = Extension(
     name="tdm_ripper",
     sources=["pytdm_ripper.pyx"], #,"lib/tdm_ripper.cpp"],
-    # libraries=["tdm_ripper"],
+    # libraries=[""],
     library_dirs=["lib"],
     include_dirs=["lib"],
     language='c++',

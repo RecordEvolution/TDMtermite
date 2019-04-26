@@ -9,6 +9,6 @@ cdef extern from "tdm_ripper.cpp":
 cdef extern from "tdm_ripper.hpp":
     cdef cppclass tdm_ripper:
     #    tdm_ripper() except +
-        tdm_ripper(string, string) except +
+        tdm_ripper(string) except +
         # void setfiles(string, string)
         # void setup()

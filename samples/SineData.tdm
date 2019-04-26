@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<usi:tdm xmlns:usi="http://www.ni.com/Schemas/USI/1_0" version="1.0">
+
+  <usi:documentation>
+    <usi:exporter>National Instruments USI</usi:exporter>
+    <usi:exporterVersion>1.5</usi:exporterVersion>
+  </usi:documentation>
+
+  <usi:model modelName="National Instruments USI generated meta file" modelVersion="1.0">
+    <usi:include nsUri="http://www.ni.com/DataModels/USI/TDM/1_0"/>
+  </usi:model>
+
+  <usi:include>
+    <file byteOrder="littleEndian" url="SineData.tdx">
+      <block byteOffset="0" id="inc0" length="1000" valueType="eFloat64Usi"/>
+      <block byteOffset="8000" id="inc1" length="1000" valueType="eFloat64Usi"/>
+      <block byteOffset="16000" id="inc2" length="1000" valueType="eFloat64Usi"/>
+      <block byteOffset="24000" id="inc3" length="1000" valueType="eFloat64Usi"/>
+      <block byteOffset="32000" id="inc4" length="1000" valueType="eFloat64Usi"/>
+      <block byteOffset="40000" id="inc5" length="1000" valueType="eFloat64Usi"/>
+      <block byteOffset="48000" id="inc6" length="1000" valueType="eFloat64Usi"/>
+      <block byteOffset="56000" id="inc7" length="1000" valueType="eFloat64Usi"/>
+      <block byteOffset="64000" id="inc8" length="1000" valueType="eFloat64Usi"/>
+      <block byteOffset="72000" id="inc9" length="1000" valueType="eFloat64Usi"/>
+    </file>
+  </usi:include>
+
+  <usi:data>
+    <double_sequence id="usi1">
+      <values external="inc0"/>
+    </double_sequence>
+    <double_sequence id="usi2">
+      <values external="inc1"/>
+    </double_sequence>
+    <double_sequence id="usi3">
+      <values external="inc2"/>
+    </double_sequence>
+    <double_sequence id="usi4">
+      <values external="inc3"/>
+    </double_sequence>
+    <double_sequence id="usi5">
+      <values external="inc4"/>
+    </double_sequence>
+    <double_sequence id="usi6">
+      <values external="inc5"/>
+    </double_sequence>
+    <double_sequence id="usi7">
+      <values external="inc6"/>
+    </double_sequence>
+    <double_sequence id="usi8">
+      <values external="inc7"/>
+    </double_sequence>
+    <double_sequence id="usi9">
+      <values external="inc8"/>
+    </double_sequence>
+    <double_sequence id="usi10">
+      <values external="inc9"/>
+    </double_sequence>
+    <tdm_root id="usi11">
+      <name>SineData.TDM</name>
+      <description>Sine signals of various amplitudes and frequencies.</description>
+      <title>SineData</title>
+      <author>National Instruments</author>
+      <datetime>2008-05-06T17:20:12.65074539184570313</datetime>
+      <channelgroups>#xpointer(id("usi12") id("usi13"))</channelgroups>
+    </tdm_root>
+    <tdm_channelgroup id="usi12">
+      <name>Amplitudes</name>
+      <description>Sine Signals of various amplitudes.</description>
+      <root>#xpointer(id("usi11"))</root>
+      <instance_attributes>
+        <double_attribute name="Frequency">1</double_attribute>
+      </instance_attributes>
+      <channels>#xpointer(id("usi14") id("usi15") id("usi16") id("usi17") id("usi18"))</channels>
+      <submatrices>#xpointer(id("usi24") id("usi25") id("usi26") id("usi27") id("usi28"))</submatrices>
+    </tdm_channelgroup>
+    <tdm_channelgroup id="usi13">
+      <name>Frequencies</name>
+      <description>Sine signals of various frequencies.</description>
+      <root>#xpointer(id("usi11"))</root>
+      <instance_attributes>
+        <double_attribute name="Amplitude">1</double_attribute>
+      </instance_attributes>
+      <channels>#xpointer(id("usi19") id("usi20") id("usi21") id("usi22") id("usi23"))</channels>
+      <submatrices>#xpointer(id("usi29") id("usi30") id("usi31") id("usi32") id("usi33"))</submatrices>
+    </tdm_channelgroup>
+    <tdm_channel id="usi14">
+      <name>A = 1</name>
+      <group>#xpointer(id("usi12"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-0.999997146387718</minimum>
+      <maximum>0.999999682931835</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ArrayColumn">0</long_attribute>
+        <long_attribute name="NI_ChannelLength">1000</long_attribute>
+        <long_attribute name="NI_DataType">10</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("usi34"))</local_columns>
+    </tdm_channel>
+    <tdm_channel id="usi15">
+      <name>A = 2</name>
+      <group>#xpointer(id("usi12"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-1.99999429277544</minimum>
+      <maximum>1.99999936586367</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ArrayColumn">1</long_attribute>
+        <long_attribute name="NI_ChannelLength">1000</long_attribute>
+        <long_attribute name="NI_DataType">10</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("usi35"))</local_columns>
+    </tdm_channel>
+    <tdm_channel id="usi16">
+      <name>A = 4</name>
+      <group>#xpointer(id("usi12"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-3.99998858555087</minimum>
+      <maximum>3.99999873172734</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ArrayColumn">2</long_attribute>
+        <long_attribute name="NI_ChannelLength">1000</long_attribute>
+        <long_attribute name="NI_DataType">10</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("usi36"))</local_columns>
+    </tdm_channel>
+    <tdm_channel id="usi17">
+      <name>A = 8</name>
+      <group>#xpointer(id("usi12"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-7.99997717110174</minimum>
+      <maximum>7.99999746345468</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ArrayColumn">3</long_attribute>
+        <long_attribute name="NI_ChannelLength">1000</long_attribute>
+        <long_attribute name="NI_DataType">10</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("usi37"))</local_columns>
+    </tdm_channel>
+    <tdm_channel id="usi18">
+      <name>A = 16</name>
+      <group>#xpointer(id("usi12"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-15.9999543422035</minimum>
+      <maximum>15.9999949269094</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ArrayColumn">4</long_attribute>
+        <long_attribute name="NI_ChannelLength">1000</long_attribute>
+        <long_attribute name="NI_DataType">10</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("usi38"))</local_columns>
+    </tdm_channel>
+    <tdm_channel id="usi19">
+      <name>F = 1</name>
+      <group>#xpointer(id("usi13"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-0.999997146387718</minimum>
+      <maximum>0.999999682931835</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ArrayColumn">0</long_attribute>
+        <long_attribute name="NI_ChannelLength">1000</long_attribute>
+        <long_attribute name="NI_DataType">10</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("usi39"))</local_columns>
+    </tdm_channel>
+    <tdm_channel id="usi20">
+      <name>F = 2</name>
+      <group>#xpointer(id("usi13"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-0.999999230697499</minimum>
+      <maximum>0.999995986891472</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ArrayColumn">1</long_attribute>
+        <long_attribute name="NI_ChannelLength">1000</long_attribute>
+        <long_attribute name="NI_DataType">10</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("usi40"))</local_columns>
+    </tdm_channel>
+    <tdm_channel id="usi21">
+      <name>F = 4</name>
+      <group>#xpointer(id("usi13"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-0.999999230697499</minimum>
+      <maximum>0.99994907791452</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ArrayColumn">2</long_attribute>
+        <long_attribute name="NI_ChannelLength">1000</long_attribute>
+        <long_attribute name="NI_DataType">10</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("usi41"))</local_columns>
+    </tdm_channel>
+    <tdm_channel id="usi22">
+      <name>F = 8</name>
+      <group>#xpointer(id("usi13"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-0.999999230697499</minimum>
+      <maximum>0.999996490345607</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ArrayColumn">3</long_attribute>
+        <long_attribute name="NI_ChannelLength">1000</long_attribute>
+        <long_attribute name="NI_DataType">10</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("usi42"))</local_columns>
+    </tdm_channel>
+    <tdm_channel id="usi23">
+      <name>F = 16</name>
+      <group>#xpointer(id("usi13"))</group>
+      <datatype>DT_DOUBLE</datatype>
+      <minimum>-0.999999230697499</minimum>
+      <maximum>0.999993076284592</maximum>
+      <instance_attributes>
+        <long_attribute name="NI_ArrayColumn">4</long_attribute>
+        <long_attribute name="NI_ChannelLength">1000</long_attribute>
+        <long_attribute name="NI_DataType">10</long_attribute>
+      </instance_attributes>
+      <local_columns>#xpointer(id("usi43"))</local_columns>
+    </tdm_channel>
+    <submatrix id="usi24">
+      <name>Untitled</name>
+      <measurement>#xpointer(id("usi12"))</measurement>
+      <number_of_rows>1000</number_of_rows>
+      <local_columns>#xpointer(id("usi34"))</local_columns>
+    </submatrix>
+    <submatrix id="usi25">
+      <name>Untitled</name>
+      <measurement>#xpointer(id("usi12"))</measurement>
+      <number_of_rows>1000</number_of_rows>
+      <local_columns>#xpointer(id("usi35"))</local_columns>
+    </submatrix>
+    <submatrix id="usi26">
+      <name>Untitled</name>
+      <measurement>#xpointer(id("usi12"))</measurement>
+      <number_of_rows>1000</number_of_rows>
+      <local_columns>#xpointer(id("usi36"))</local_columns>
+    </submatrix>
+    <submatrix id="usi27">
+      <name>Untitled</name>
+      <measurement>#xpointer(id("usi12"))</measurement>
+      <number_of_rows>1000</number_of_rows>
+      <local_columns>#xpointer(id("usi37"))</local_columns>
+    </submatrix>
+    <submatrix id="usi28">
+      <name>Untitled</name>
+      <measurement>#xpointer(id("usi12"))</measurement>
+      <number_of_rows>1000</number_of_rows>
+      <local_columns>#xpointer(id("usi38"))</local_columns>
+    </submatrix>
+    <submatrix id="usi29">
+      <name>Untitled</name>
+      <measurement>#xpointer(id("usi13"))</measurement>
+      <number_of_rows>1000</number_of_rows>
+      <local_columns>#xpointer(id("usi39"))</local_columns>
+    </submatrix>
+    <submatrix id="usi30">
+      <name>Untitled</name>
+      <measurement>#xpointer(id("usi13"))</measurement>
+      <number_of_rows>1000</number_of_rows>
+      <local_columns>#xpointer(id("usi40"))</local_columns>
+    </submatrix>
+    <submatrix id="usi31">
+      <name>Untitled</name>
+      <measurement>#xpointer(id("usi13"))</measurement>
+      <number_of_rows>1000</number_of_rows>
+      <local_columns>#xpointer(id("usi41"))</local_columns>
+    </submatrix>
+    <submatrix id="usi32">
+      <name>Untitled</name>
+      <measurement>#xpointer(id("usi13"))</measurement>
+      <number_of_rows>1000</number_of_rows>
+      <local_columns>#xpointer(id("usi42"))</local_columns>
+    </submatrix>
+    <submatrix id="usi33">
+      <name>Untitled</name>
+      <measurement>#xpointer(id("usi13"))</measurement>
+      <number_of_rows>1000</number_of_rows>
+      <local_columns>#xpointer(id("usi43"))</local_columns>
+    </submatrix>
+    <localcolumn id="usi34">
+      <name>Untitled</name>
+      <measurement_quantity>#xpointer(id("usi14"))</measurement_quantity>
+      <submatrix>#xpointer(id("usi24"))</submatrix>
+      <global_flag>15</global_flag>
+      <independent>0</independent>
+      <sequence_representation>explicit</sequence_representation>
+      <values>#xpointer(id("usi1"))</values>
+    </localcolumn>
+    <localcolumn id="usi35">
+      <name>Untitled</name>
+      <measurement_quantity>#xpointer(id("usi15"))</measurement_quantity>
+      <submatrix>#xpointer(id("usi25"))</submatrix>
+      <global_flag>15</global_flag>
+      <independent>0</independent>
+      <sequence_representation>explicit</sequence_representation>
+      <values>#xpointer(id("usi2"))</values>
+    </localcolumn>
+    <localcolumn id="usi36">
+      <name>Untitled</name>
+      <measurement_quantity>#xpointer(id("usi16"))</measurement_quantity>
+      <submatrix>#xpointer(id("usi26"))</submatrix>
+      <global_flag>15</global_flag>
+      <independent>0</independent>
+      <sequence_representation>explicit</sequence_representation>
+      <values>#xpointer(id("usi3"))</values>
+    </localcolumn>
+    <localcolumn id="usi37">
+      <name>Untitled</name>
+      <measurement_quantity>#xpointer(id("usi17"))</measurement_quantity>
+      <submatrix>#xpointer(id("usi27"))</submatrix>
+      <global_flag>15</global_flag>
+      <independent>0</independent>
+      <sequence_representation>explicit</sequence_representation>
+      <values>#xpointer(id("usi4"))</values>
+    </localcolumn>
+    <localcolumn id="usi38">
+      <name>Untitled</name>
+      <measurement_quantity>#xpointer(id("usi18"))</measurement_quantity>
+      <submatrix>#xpointer(id("usi28"))</submatrix>
+      <global_flag>15</global_flag>
+      <independent>0</independent>
+      <sequence_representation>explicit</sequence_representation>
+      <values>#xpointer(id("usi5"))</values>
+    </localcolumn>
+    <localcolumn id="usi39">
+      <name>Untitled</name>
+      <measurement_quantity>#xpointer(id("usi19"))</measurement_quantity>
+      <submatrix>#xpointer(id("usi29"))</submatrix>
+      <global_flag>15</global_flag>
+      <independent>0</independent>
+      <sequence_representation>explicit</sequence_representation>
+      <values>#xpointer(id("usi6"))</values>
+    </localcolumn>
+    <localcolumn id="usi40">
+      <name>Untitled</name>
+      <measurement_quantity>#xpointer(id("usi20"))</measurement_quantity>
+      <submatrix>#xpointer(id("usi30"))</submatrix>
+      <global_flag>15</global_flag>
+      <independent>0</independent>
+      <sequence_representation>explicit</sequence_representation>
+      <values>#xpointer(id("usi7"))</values>
+    </localcolumn>
+    <localcolumn id="usi41">
+      <name>Untitled</name>
+      <measurement_quantity>#xpointer(id("usi21"))</measurement_quantity>
+      <submatrix>#xpointer(id("usi31"))</submatrix>
+      <global_flag>15</global_flag>
+      <independent>0</independent>
+      <sequence_representation>explicit</sequence_representation>
+      <values>#xpointer(id("usi8"))</values>
+    </localcolumn>
+    <localcolumn id="usi42">
+      <name>Untitled</name>
+      <measurement_quantity>#xpointer(id("usi22"))</measurement_quantity>
+      <submatrix>#xpointer(id("usi32"))</submatrix>
+      <global_flag>15</global_flag>
+      <independent>0</independent>
+      <sequence_representation>explicit</sequence_representation>
+      <values>#xpointer(id("usi9"))</values>
+    </localcolumn>
+    <localcolumn id="usi43">
+      <name>Untitled</name>
+      <measurement_quantity>#xpointer(id("usi23"))</measurement_quantity>
+      <submatrix>#xpointer(id("usi33"))</submatrix>
+      <global_flag>15</global_flag>
+      <independent>0</independent>
+      <sequence_representation>explicit</sequence_representation>
+      <values>#xpointer(id("usi10"))</values>
+    </localcolumn>
+  </usi:data>
+
+</usi:tdm>
