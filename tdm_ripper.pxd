@@ -1,3 +1,6 @@
+# cython: language_level = 3
+# distutils: language = c++
+
 # use some C++ STL libraries
 from libcpp.string cimport string
 from libcpp.vector cimport vector

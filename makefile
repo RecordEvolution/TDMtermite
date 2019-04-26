@@ -17,10 +17,7 @@ tdm_ripper.o : lib/tdm_ripper.cpp lib/tdm_ripper.hpp
 clean :
 	rm -f $(EXE) *.o
 
-newlib :
-	g++ -bundle -undefined dynamic_lookup -L/anaconda3/lib -arch x86_64 -L/anaconda3/lib -arch x86_64 -arch x86_64 build/temp.macosx-10.7-x86_64-3.7/pytdm_ripper.o -Llib -o /Users/mariofink/Desktop/tdm_tdx/tdm_ripper/pytdm_ripper.cpython-37m-darwin.so
-
-pylib : setup.py pytdm_ripper.pyx tdm_ripper.pxd
+pylib : setup.py pytdm_ripper.pyx tdm_ripper.pxd tdm_ripper.o
 	python3 setup.py build_ext --inplace
 
 lib/libtdmripper.a :

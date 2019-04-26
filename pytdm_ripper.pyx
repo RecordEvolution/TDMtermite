@@ -1,5 +1,3 @@
-# cython: language_level = 3
-# distutils: language = c++
 
 from tdm_ripper cimport tdm_ripper
 import numpy as np
