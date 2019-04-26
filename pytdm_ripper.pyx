@@ -5,8 +5,8 @@ from tdm_ripper cimport tdm_ripper
 
 cdef class pytdmripper:
 
-    # use pointer since there's no nullary constructor
-    cdef tdm_ripper*cripp
+    # pointer to C++ instance (since there's no nullary constructor)
+    cdef tdm_ripper *cripp
 
     def __cinit__(self, string tdmfile):
         self.cripp = new tdm_ripper(tdmfile)
@@ -23,5 +23,8 @@ cdef class pytdmripper:
     def num_groups(self):
         return self.cripp.num_groups()
 
-    def print_channel(self,int channelid, const char* filename):
+    def get_channel(self, int channelid):
+        return self.cripp.get_channel(channelid)
+
+    def print_channel(self, int channelid, const char* filename):
         self.cripp.print_channel(channelid,filename)
