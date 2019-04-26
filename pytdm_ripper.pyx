@@ -2,6 +2,7 @@
 # distutils: language = c++
 
 from tdm_ripper cimport tdm_ripper
+import numpy as np
 
 cdef class pytdmripper:
 
@@ -24,7 +25,7 @@ cdef class pytdmripper:
         return self.cripp.num_groups()
 
     def get_channel(self, int channelid):
-        return self.cripp.get_channel(channelid)
+        return np.asarray(self.cripp.get_channel(channelid))
 
     def print_channel(self, int channelid, const char* filename):
         self.cripp.print_channel(channelid,filename)

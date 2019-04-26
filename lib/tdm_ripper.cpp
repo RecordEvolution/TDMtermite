@@ -278,6 +278,8 @@ std::vector<double> tdm_ripper::get_channel(int channelid)
 
 void tdm_ripper::print_channel(int channelid, const char* filename, int width)
 {
+  assert( channelid > 0 && channelid <= num_channels_ && "please provide valid channel id" );
+
   std::ofstream fout(filename);
 
   std::vector<double> channdat = get_channel(channelid);
