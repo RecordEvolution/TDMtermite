@@ -1,8 +1,6 @@
 # cython: language_level = 3
 # distutils: language = c++
 
-## distutils: sources = lib/tdm_ripper.cpp
-
 from tdm_ripper cimport tdm_ripper
 
 cdef class pytdmripper:
@@ -16,5 +14,14 @@ cdef class pytdmripper:
     def __dealloc__(self):
         del self.cripp
 
-    # def setfiles(self, string tdmfile, string tdxfile):
-    #     self.cripp(tdmfile,tdxfile)
+    def show_channels(self):
+        self.cripp.show_channels()
+
+    def num_channels(self):
+        return self.cripp.num_channels()
+
+    def num_groups(self):
+        return self.cripp.num_groups()
+
+    def print_channel(self,int channelid, const char* filename):
+        self.cripp.print_channel(channelid,filename)

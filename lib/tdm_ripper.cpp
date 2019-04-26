@@ -1,38 +1,12 @@
 
 #include "tdm_ripper.hpp"
 
-// tdm_ripper::tdm_ripper():
-//   tdmfile_(""), tdxfile_(""), filesprovided_(false),
-//   num_channels_(0), num_groups_(0),
-//   channel_id_(0), group_id_(0), channel_name_(0), group_name_(0),
-//   num_channels_group_(0), channels_group_(0),
-//   byteoffset_(0), length_(0), type_(0)
-// {
-//
-// }
-
 tdm_ripper::tdm_ripper(std::string tdmfile, std::string tdxfile):
-  tdmfile_(tdmfile), tdxfile_(tdxfile), //filesprovided_(true),
-  num_channels_(0), num_groups_(0),
+  tdmfile_(tdmfile), tdxfile_(tdxfile), num_channels_(0), num_groups_(0),
   channel_id_(0), group_id_(0), channel_name_(0), group_name_(0),
   num_channels_group_(0), channels_group_(0),
   byteoffset_(0), length_(0), type_(0)
 {
-  setup();
-}
-//
-// void tdm_ripper::setfiles(std::string tdmfile, std::string tdxfile)
-// {
-//   tdmfile_ = tdmfile;
-//   tdxfile_ = tdxfile;
-//   filesprovided_ = true;
-//   setup();
-// }
-
-void tdm_ripper::setup()
-{
-  // assert( filesprovided_ );
-
   // TODO directly provide the C datatype to be used!!
   datatypes_ = {
     {"eInt8Usi",8},

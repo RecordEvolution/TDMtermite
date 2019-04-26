@@ -4,3 +4,4 @@ pytdm_ripper.cpp
 build/
 *.o
 *.a
+*.dat
