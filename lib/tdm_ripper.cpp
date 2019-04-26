@@ -1,18 +1,18 @@
 
 #include "tdm_ripper.hpp"
 
-tdm_ripper::tdm_ripper():
-  tdmfile_(""), tdxfile_(""), filesprovided_(false),
-  num_channels_(0), num_groups_(0),
-  channel_id_(0), group_id_(0), channel_name_(0), group_name_(0),
-  num_channels_group_(0), channels_group_(0),
-  byteoffset_(0), length_(0), type_(0)
-{
-
-}
+// tdm_ripper::tdm_ripper():
+//   tdmfile_(""), tdxfile_(""), filesprovided_(false),
+//   num_channels_(0), num_groups_(0),
+//   channel_id_(0), group_id_(0), channel_name_(0), group_name_(0),
+//   num_channels_group_(0), channels_group_(0),
+//   byteoffset_(0), length_(0), type_(0)
+// {
+//
+// }
 
 tdm_ripper::tdm_ripper(std::string tdmfile, std::string tdxfile):
-  tdmfile_(tdmfile), tdxfile_(tdxfile), filesprovided_(true),
+  tdmfile_(tdmfile), tdxfile_(tdxfile), //filesprovided_(true),
   num_channels_(0), num_groups_(0),
   channel_id_(0), group_id_(0), channel_name_(0), group_name_(0),
   num_channels_group_(0), channels_group_(0),
@@ -20,18 +20,18 @@ tdm_ripper::tdm_ripper(std::string tdmfile, std::string tdxfile):
 {
   setup();
 }
-
-void tdm_ripper::setfiles(std::string tdmfile, std::string tdxfile)
-{
-  tdmfile_ = tdmfile;
-  tdxfile_ = tdxfile;
-  filesprovided_ = true;
-  setup();
-}
+//
+// void tdm_ripper::setfiles(std::string tdmfile, std::string tdxfile)
+// {
+//   tdmfile_ = tdmfile;
+//   tdxfile_ = tdxfile;
+//   filesprovided_ = true;
+//   setup();
+// }
 
 void tdm_ripper::setup()
 {
-  assert( filesprovided_ );
+  // assert( filesprovided_ );
 
   // TODO directly provide the C datatype to be used!!
   datatypes_ = {
@@ -146,7 +146,7 @@ void tdm_ripper::parse_structure()
 
   // check consistency of number of channelgroups
   int numgroups = count_occ_string(subtreedata.child("tdm_root").child_value("channelgroups"),"id");
-  assert( numgroups == num_groups_ );
+  if ( 0*numgroups == 0 ) assert( numgroups == num_groups_ );
 
   // check consistency of number of channels
   assert( num_channels_ == (int)channel_id_.size()

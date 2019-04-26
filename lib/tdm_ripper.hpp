@@ -17,7 +17,7 @@ class tdm_ripper
   // .tdm and .tdx filenames
   std::string tdmfile_;
   std::string tdxfile_;
-  bool filesprovided_;
+  // bool filesprovided_;
 
   // endianness (true = little, false = big)
   bool endianness_, machine_endianness_;
@@ -45,10 +45,10 @@ class tdm_ripper
 
 public:
 
-  tdm_ripper();
+  // tdm_ripper();
   tdm_ripper(std::string tdmfile, std::string tdxfile = "");
 
-  void setfiles(std::string tdmfile, std::string tdxfile = "");
+  // void setfiles(std::string tdmfile, std::string tdxfile = "");
   void setup();
 
   void parse_structure();
