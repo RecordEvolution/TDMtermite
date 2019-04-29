@@ -267,6 +267,23 @@ int tdm_ripper::convert_int(std::vector<unsigned char> bych)
   return df;
 }
 
+// disassemble single integer into array of chars
+std::vector<unsigned char> tdm_ripper::convert_int(int df)
+{
+  assert( endianness_ );
+
+  std::vector<unsigned char> bych((int)sizeof(int));
+
+  uint8_t *dfcast = reinterpret_cast<uint8_t*>(&df);
+
+  for ( int i = 0; i < (int)sizeof(int); i++ )
+  {
+    bych[i] = (int)dfcast[i];
+  }
+
+  return bych;
+}
+
 // convert array of chars to floating point double
 double tdm_ripper::convert_double(std::vector<unsigned char> bych)
 {

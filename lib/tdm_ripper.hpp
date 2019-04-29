@@ -77,11 +77,29 @@ public:
     return num_groups_;
   }
 
+  const std::string& channel_name(int channelid)
+  {
+    assert( channelid > 0 && channelid <= num_channels_ );
+
+    return channel_name_[channelid-1];
+  }
+
+  const std::string& group_name(int groupid)
+  {
+    assert( groupid > 0 && groupid <= num_channels_ );
+
+    return group_name_[groupid-1];
+  }
+
   void list_datatypes();
 
   // convert array of chars to single integer or floating point double
   int convert_int(std::vector<unsigned char> bych);
   double convert_double(std::vector<unsigned char> bych);
+
+  // disassemble single integer or double into array of chars
+  std::vector<unsigned char> convert_int(int number);
+  std::vector<unsigned char> convert_double(double number);
 
   // convert entire channel, i.e. expert of .tdx binary file
   // std::vector<double> convert_channel(int byteoffset, int length, int typesize);

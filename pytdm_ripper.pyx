@@ -27,3 +27,13 @@ cdef class pytdmripper:
 
     def print_channel(self, int channelid, const char* filename):
         self.cripp.print_channel(channelid,filename)
+
+    # integrate into CONTI_HBS workflow by adding methods: (29.04.2019)
+    #   tdm_loader.OpenFile(tmp_path + name_prefix + '/Messung.tdm', encoding='utf-8')
+    #   .no_channel_groups()
+    #   .no_channels(i)
+    #   .channel_name(i, j)
+    #   .channel(i, j)
+    #   .close()
+    #
+    # evtl. get time_stamp of .tdm file in the unix format, i.e. #seconds since 01.01.0000 with average year having 365+97/400 = 365.2425 days
