@@ -11,7 +11,7 @@ cdef extern from "tdm_ripper.cpp":
 cdef extern from "tdm_ripper.hpp":
     cdef cppclass tdm_ripper:
         tdm_ripper(string) except +
-        void show_channels()
+        void list_channels()
         int num_channels()
         int num_groups()
         vector[double] get_channel(int)

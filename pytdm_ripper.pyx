@@ -14,7 +14,7 @@ cdef class pytdmripper:
         del self.cripp
 
     def show_channels(self):
-        self.cripp.show_channels()
+        self.cripp.list_channels()
 
     def num_channels(self):
         return self.cripp.num_channels()
