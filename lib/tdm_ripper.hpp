@@ -25,10 +25,12 @@ class tdm_ripper
 
   // number/names/ids of channels, channelgroups and channels's assignment to groups
   int num_channels_, num_groups_;
-  std::vector<std::string> channel_id_, inc_id_, group_id_, channel_name_, group_name_;
+  std::vector<std::string> channel_id_, inc_id_, units_, channel_name_;
+  std::vector<std::string> group_id_, group_name_;
   std::vector<int> num_channels_group_;
   std::vector<int> channels_group_;
   std::vector<int> channel_ext_;
+  // evtl. get group time_stamp of .tdm file in the unix format, i.e. #seconds since 01.01.0000 with average year having 365+97/400 = 365.2425 days
 
   // minimum/maximum value in particular channel (is provided in .tdm file as float)
   std::vector<std::pair<double,double>> minmax_;

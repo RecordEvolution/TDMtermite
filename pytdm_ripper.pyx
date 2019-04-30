@@ -35,5 +35,3 @@ cdef class pytdmripper:
     #   .channel_name(i, j)
     #   .channel(i, j)
     #   .close()
-    #
-    # evtl. get time_stamp of .tdm file in the unix format, i.e. #seconds since 01.01.0000 with average year having 365+97/400 = 365.2425 days

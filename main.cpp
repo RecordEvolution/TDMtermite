@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
   // declare and initialize tdm_ripper
   tdm_ripper ripper(argv[1]);
 
-  ripper.list_datatypes();
+  // ripper.list_datatypes();
 
   // int sn = -76476;
   // std::vector<unsigned char> bych = ripper.convert_int(sn);
