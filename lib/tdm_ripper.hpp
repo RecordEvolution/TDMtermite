@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <map>
+#include <numeric>
+
 #include "../pugixml/pugixml.hpp"
 
 class tdm_ripper
@@ -23,14 +25,19 @@ class tdm_ripper
 
   // number/names/ids of channels, channelgroups and channels's assignment to groups
   int num_channels_, num_groups_;
-  std::vector<std::string> channel_id_, group_id_, channel_name_, group_name_;
+  std::vector<std::string> channel_id_, inc_id_, group_id_, channel_name_, group_name_;
   std::vector<int> num_channels_group_;
   std::vector<int> channels_group_;
+  std::vector<int> channel_ext_;
+
+  // minimum/maximum value in particular channel (is provided in .tdm file as float)
+  std::vector<std::pair<double,double>> minmax_;
 
   // byteoffset, length and datatype of channels
   std::vector<int> byteoffset_;
   std::vector<int> length_;
   std::vector<std::string> type_;
+  std::vector<std::string> external_id_;
 
   // mapping of NI datatype to size (in bytes) of type
   std::map<std::string, int> datatypes_;
@@ -65,6 +72,15 @@ public:
     }
 
     return num_occs;
+  }
+
+  // obtain substring of 'entirestr' in between starting and stopping delimiter
+  std::string get_str_between(std::string entirestr, std::string startlim, std::string stoplim)
+  {
+    std::size_t apos = entirestr.find(startlim);
+    std::size_t bpos = entirestr.find_last_of(stoplim);
+    assert(  apos != std::string::npos && bpos != std::string::npos );
+    return entirestr.substr(apos+startlim.length(),bpos-(apos+startlim.length()));
   }
 
   // provide number of channels and group
@@ -103,7 +119,7 @@ public:
 
   // convert entire channel, i.e. expert of .tdx binary file
   // std::vector<double> convert_channel(int byteoffset, int length, int typesize);
-  std::vector<double> convert_channel(int byteoffset, int length, std::string type);
+  std::vector<double> convert_channel(int channelid);
 
   std::vector<double> get_channel(int channelid);
 

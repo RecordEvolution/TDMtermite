@@ -3,9 +3,9 @@
 
 tdm_ripper::tdm_ripper(std::string tdmfile, std::string tdxfile):
   tdmfile_(tdmfile), tdxfile_(tdxfile), num_channels_(0), num_groups_(0),
-  channel_id_(0), group_id_(0), channel_name_(0), group_name_(0),
-  num_channels_group_(0), channels_group_(0),
-  byteoffset_(0), length_(0), type_(0)
+  channel_id_(0), inc_id_(0), group_id_(0), channel_name_(0), group_name_(0),
+  num_channels_group_(0), channels_group_(0), channel_ext_(0), minmax_(0),
+  byteoffset_(0), length_(0), type_(0), external_id_(0)
 {
   datatypes_ = {
     {"eInt8Usi",8},
@@ -84,6 +84,9 @@ void tdm_ripper::parse_structure()
 
     // find datatype of channel
     type_.push_back(anode.attribute("valueType").value());
+
+    // external id of channel
+    external_id_.push_back(anode.attribute("id").value());
   }
 
   // get node with channels and groups
@@ -114,6 +117,44 @@ void tdm_ripper::parse_structure()
       {
         if ( groupid.find(group_id_[g]) != std::string::npos ) channels_group_.push_back(g+1);
       }
+
+      // obtain minimum/maximum of channel
+      std::pair<double,double> minmaxchan(atof(anode.child_value("minimum")),
+                                          atof(anode.child_value("maximum")));
+      minmax_.push_back(minmaxchan);
+
+      // TODO correct order of channels w.r.t. to list of offset, length and type by
+      // considering the xpointer id's !!!!
+      // follow xpointers to get external id
+      std::string locol = get_str_between(anode.child_value("local_columns"),"\"","\"");
+      std::string locolval;
+      for (pugi::xml_node anode: subtreedata.children())
+      {
+        if ( std::string(anode.name()).compare("localcolumn") == 0
+          && std::string(anode.attribute("id").value()).compare(locol) == 0 )
+          {
+            locolval = get_str_between(anode.child_value("values"),"\"","\"");
+          }
+      }
+      std::string locolvalext;
+      for (pugi::xml_node anode: subtreedata.children())
+      {
+        if ( std::string(anode.name()).compare("double_sequence") == 0
+          && std::string(anode.attribute("id").value()).compare(locolval) == 0 )
+          {
+            locolvalext = anode.child("values").attribute("external").value();
+          }
+      }
+      // std::cout<<locol<<" "<<locolval<<" "<<locolvalext<<"\n";
+
+      // save external id of channel and get corresponding channel index
+      inc_id_.push_back(locolvalext);
+      int extid = 0;
+      for ( int i = 0; i < (int)external_id_.size(); i++ )
+      {
+        if ( external_id_[i].compare(locolvalext) == 0 ) extid = i+1;
+      }
+      channel_ext_.push_back(extid);
     }
   }
 
@@ -131,6 +172,7 @@ void tdm_ripper::list_channels(std::ostream& gout, int width, int maxshow)
 {
   gout<<std::setw(width)<<"index";
   gout<<std::setw(width)<<"id";
+  gout<<std::setw(width)<<"inc_id";
   gout<<std::setw(2*width)<<"name";
   gout<<std::setw(width)<<"offset";
   gout<<std::setw(width)<<"length";
@@ -139,22 +181,27 @@ void tdm_ripper::list_channels(std::ostream& gout, int width, int maxshow)
   gout<<std::setw(width)<<"group id";
   gout<<std::setw(width)<<"group name";
   gout<<std::setw(width)<<"num channels";
+  gout<<std::setw(width)<<"minimum";
+  gout<<std::setw(width)<<"maximum";
   gout<<"\n";
-  gout<<std::setfill('-')<<std::setw(11*width+1)<<"\n";
+  gout<<std::setfill('-')<<std::setw(14*width+1)<<"\n";
   gout<<std::setfill(' ');
 
   for ( int i = 0; i < num_channels_ && i < maxshow; i++ )
   {
     gout<<std::setw(width)<<i+1;
     gout<<std::setw(width)<<channel_id_[i];
+    gout<<std::setw(width)<<inc_id_[i];
     gout<<std::setw(2*width)<<channel_name_[i];
-    gout<<std::setw(width)<<byteoffset_[i];
-    gout<<std::setw(width)<<length_[i];
-    gout<<std::setw(width)<<type_[i];
+    gout<<std::setw(width)<<byteoffset_[channel_ext_[i]-1];
+    gout<<std::setw(width)<<length_[channel_ext_[i]-1];
+    gout<<std::setw(width)<<type_[channel_ext_[i]-1];
     gout<<std::setw(width)<<channels_group_[i];
     gout<<std::setw(width)<<group_id_[channels_group_[i]-1];
     gout<<std::setw(width)<<group_name_[channels_group_[i]-1];
     gout<<std::setw(width)<<num_channels_group_[channels_group_[i]-1];
+    gout<<std::setw(width)<<minmax_[i].first;
+    gout<<std::setw(width)<<minmax_[i].second;
     gout<<"\n";
   }
   gout<<"\n\n";
@@ -165,6 +212,7 @@ void tdm_ripper::list_channels(std::ostream& gout, int width, int maxshow)
     {
       gout<<std::setw(width)<<i+1;
       gout<<std::setw(width)<<channel_id_[i];
+      gout<<std::setw(width)<<inc_id_[i];
       gout<<std::setw(2*width)<<channel_name_[i];
       gout<<std::setw(width)<<byteoffset_[i];
       gout<<std::setw(width)<<length_[i];
@@ -173,6 +221,8 @@ void tdm_ripper::list_channels(std::ostream& gout, int width, int maxshow)
       gout<<std::setw(width)<<group_id_[channels_group_[i]-1];
       gout<<std::setw(width)<<group_name_[channels_group_[i]-1];
       gout<<std::setw(width)<<num_channels_group_[channels_group_[i]-1];
+      gout<<std::setw(width)<<minmax_[i].first;
+      gout<<std::setw(width)<<minmax_[i].second;
       gout<<"\n";
     }
     gout<<"\n\n";
@@ -305,19 +355,27 @@ double tdm_ripper::convert_double(std::vector<unsigned char> bych)
   return df;
 }
 
-std::vector<double> tdm_ripper::convert_channel(int byteoffset, int length, std::string type)
+std::vector<double> tdm_ripper::convert_channel(int channelid)
 {
-  std::vector<double> chann(length);
+  // obtain offset, length of channel and size of datatype
+  int byteoffset = byteoffset_[channelid-1];
+  int length = length_[channelid-1];
+  int typesize = datatypes_[type_[channelid-1]]/CHAR_BIT;
 
-  int typesize = datatypes_[type]/CHAR_BIT;
+  // declare resulting array
+  std::vector<double> chann(length);
 
   for ( int i = 0; i < length; i++ )
   {
     std::vector<unsigned char> cseg(tdxbuf_.begin()+byteoffset+i*typesize,
                                     tdxbuf_.begin()+byteoffset+(i+1)*typesize);
 
-    if ( type.compare("eInt32Usi") == 0 ) chann[i] = convert_int(cseg);
-    if ( type.compare("eFloat64Usi") == 0 ) chann[i] = convert_double(cseg);
+    if ( type_[channelid-1].compare("eInt32Usi") == 0 ) chann[i] = convert_int(cseg);
+    if ( type_[channelid-1].compare("eFloat64Usi") == 0 ) chann[i] = convert_double(cseg);
+
+    // check if converted value is within expected range
+    // if ( chann[i] < minmax_[channelid-1].first || chann[i] > minmax_[channelid-1].second ) std::cout<<chann[i]<<" "<<minmax_[channelid-1].first<<" "<<minmax_[channelid-1].second<<"\n";
+    // assert( chann[i] >= minmax_[channelid-1].first && chann[i] <= minmax_[channelid-1].second );
   }
 
   return chann;
@@ -327,9 +385,7 @@ std::vector<double> tdm_ripper::get_channel(int channelid)
 {
   assert( channelid > 0 && channelid <= num_channels_ && "please provide valid channel id" );
 
-  return convert_channel(byteoffset_[channelid-1],length_[channelid-1],type_[channelid-1]);
-  // return convert_channel(byteoffset_[channelid-1],length_[channelid-1],
-  //                             datatypes_[type_[channelid-1]]/CHAR_BIT);
+  return convert_channel(channel_ext_[channelid-1]);
 }
 
 void tdm_ripper::print_channel(int channelid, const char* filename, int width)
