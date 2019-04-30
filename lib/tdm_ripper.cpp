@@ -105,11 +105,45 @@ void tdm_ripper::parse_structure()
     }
   }
 
-  // extract basic information about available channels
+  // obtain list of xpointers and ids to assign channels
   for (pugi::xml_node anode: subtreedata.children())
   {
     if ( std::string(anode.name()).compare("tdm_channel") == 0 )
     {
+      std::string id(anode.attribute("id").value());
+      std::string val = get_str_between(anode.child_value("local_columns"),"\"","\"");
+      xml_local_columns_.insert(std::pair<std::string,std::string>(id,val));
+    }
+
+    if ( std::string(anode.name()).compare("localcolumn") == 0 )
+    {
+      std::string id(anode.attribute("id").value());
+      std::string val = get_str_between(anode.child_value("values"),"\"","\"");
+      xml_values_.insert(std::pair<std::string,std::string>(id,val));
+    }
+
+    if ( std::string(anode.name()).compare("double_sequence") == 0 )
+    {
+      std::string id(anode.attribute("id").value());
+      std::string val = anode.child("values").attribute("external").value();
+      xml_double_sequence_.insert(std::pair<std::string,std::string>(id,val));
+    }
+  }
+  std::cout<<"number of pairs in\n";
+  std::cout<<std::setw(25)<<std::left<<"xml_local_columns_:"<<xml_local_columns_.size()<<"\n";
+  std::cout<<std::setw(25)<<std::left<<"xml_values_:"<<xml_values_.size()<<"\n";
+  std::cout<<std::setw(25)<<std::left<<"xml_double_sequence_:"<<xml_double_sequence_.size()<<"\n";
+  std::cout<<std::right<<"\n\n";
+
+  // extract basic information about available channels
+  // int prog = 0;
+  for (pugi::xml_node anode: subtreedata.children())
+  {
+    if ( std::string(anode.name()).compare("tdm_channel") == 0 )
+    {
+      // prog++;
+      // std::cout<<"processing channel "<<prog<<"\n";
+
       channel_id_.push_back(anode.attribute("id").value());
       channel_name_.push_back(anode.child_value("name"));
       std::string groupid(anode.child_value("group"));
@@ -128,29 +162,34 @@ void tdm_ripper::parse_structure()
       minmax_.push_back(minmaxchan);
 
       // get correct assignment of channels to byteoffset, length and datatype
-      std::string locol = get_str_between(anode.child_value("local_columns"),"\"","\"");
-      std::string locolval;
-      for (pugi::xml_node anode: subtreedata.children())
-      {
-        if ( std::string(anode.name()).compare("localcolumn") == 0
-          && std::string(anode.attribute("id").value()).compare(locol) == 0 )
-          {
-            locolval = get_str_between(anode.child_value("values"),"\"","\"");
-          }
-      }
+      // std::string locol = get_str_between(anode.child_value("local_columns"),"\"","\"");
+      // std::string locolval;
+      // locolval = local_columns_val_[locol];
+      // for (pugi::xml_node anode: subtreedata.children())
+      // {
+      //   if ( std::string(anode.name()).compare("localcolumn") == 0
+      //     && std::string(anode.attribute("id").value()).compare(locol) == 0 )
+      //     {
+      //       locolval = get_str_between(anode.child_value("values"),"\"","\"");
+      //     }
+      // }
+
       std::string locolvalext;
-      for (pugi::xml_node anode: subtreedata.children())
-      {
-        if ( std::string(anode.name()).compare("double_sequence") == 0
-          && std::string(anode.attribute("id").value()).compare(locolval) == 0 )
-          {
-            locolvalext = anode.child("values").attribute("external").value();
-          }
-      }
+      // locolvalext = double_sequence_id_[locolval];
+      // for (pugi::xml_node anode: subtreedata.children())
+      // {
+      //   if ( std::string(anode.name()).compare("double_sequence") == 0
+      //     && std::string(anode.attribute("id").value()).compare(locolval) == 0 )
+      //     {
+      //       locolvalext = anode.child("values").attribute("external").value();
+      //     }
+      // }
+
+      locolvalext = xml_double_sequence_[xml_values_[xml_local_columns_[anode.attribute("id").value()]]];
 
       // save external id of channel and get corresponding channel index
       inc_id_.push_back(locolvalext);
-      int extid = 0;
+      int extid = 1;
       for ( int i = 0; i < (int)external_id_.size(); i++ )
       {
         if ( external_id_[i].compare(locolvalext) == 0 ) extid = i+1;
@@ -158,6 +197,9 @@ void tdm_ripper::parse_structure()
       channel_ext_.push_back(extid);
     }
   }
+
+  // std::string keyinit("usi23258");
+  // std::cout<<"xml test "<<xml_double_sequence_[xml_values_[xml_local_columns_[keyinit]]]<<"\n\n";
 
   // check consistency of number of channelgroups
   int numgroups = count_occ_string(subtreedata.child("tdm_root").child_value("channelgroups"),"id");
@@ -217,9 +259,9 @@ void tdm_ripper::list_channels(std::ostream& gout, int width, int maxshow)
       gout<<std::setw(width)<<channel_id_[i];
       gout<<std::setw(width)<<inc_id_[i];
       gout<<std::setw(2*width)<<channel_name_[i];
-      gout<<std::setw(width)<<byteoffset_[i];
-      gout<<std::setw(width)<<length_[i];
-      gout<<std::setw(width)<<type_[i];
+      gout<<std::setw(width)<<byteoffset_[channel_ext_[i]-1];
+      gout<<std::setw(width)<<length_[channel_ext_[i]-1];
+      gout<<std::setw(width)<<type_[channel_ext_[i]-1];
       gout<<std::setw(width)<<units_[i];
       gout<<std::setw(width)<<minmax_[i].first;
       gout<<std::setw(width)<<minmax_[i].second;
@@ -227,8 +269,6 @@ void tdm_ripper::list_channels(std::ostream& gout, int width, int maxshow)
       gout<<std::setw(width)<<group_id_[channels_group_[i]-1];
       gout<<std::setw(width)<<group_name_[channels_group_[i]-1];
       gout<<std::setw(width)<<num_channels_group_[channels_group_[i]-1];
-      gout<<std::setw(width)<<minmax_[i].first;
-      gout<<std::setw(width)<<minmax_[i].second;
       gout<<"\n";
     }
     gout<<"\n\n";

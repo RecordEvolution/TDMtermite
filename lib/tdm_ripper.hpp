@@ -35,6 +35,9 @@ class tdm_ripper
   // minimum/maximum value in particular channel (is provided in .tdm file as float)
   std::vector<std::pair<double,double>> minmax_;
 
+  // use xpointers and ids to assign channels to byteoffsets
+  std::map<std::string,std::string> xml_local_columns_, xml_values_, xml_double_sequence_;
+
   // byteoffset, length and datatype of channels
   std::vector<int> byteoffset_;
   std::vector<int> length_;
@@ -57,7 +60,7 @@ public:
 
   void parse_structure();
 
-  void list_channels(std::ostream& gout = std::cout, int width = 15, int maxshow = 300);
+  void list_channels(std::ostream& gout = std::cout, int width = 15, int maxshow = 50);
 
   void show_structure();
 
@@ -83,6 +86,57 @@ public:
     std::size_t bpos = entirestr.find_last_of(stoplim);
     assert(  apos != std::string::npos && bpos != std::string::npos );
     return entirestr.substr(apos+startlim.length(),bpos-(apos+startlim.length()));
+  }
+
+  void print_hash_local(const char* filename, int width = 20)
+  {
+    std::ofstream fout(filename);
+
+    std::map<std::string,std::string>::iterator it;
+    int count = 0;
+    for ( it = xml_local_columns_.begin(); it != xml_local_columns_.end(); it++ )
+    {
+      count++;
+      fout<<std::setw(width)<<count;
+      fout<<std::setw(width)<<it->first;
+      fout<<std::setw(width)<<it->second;
+      fout<<"\n";
+    }
+    fout.close();
+  }
+
+  void print_hash_values(const char* filename, int width = 20)
+  {
+    std::ofstream fout(filename);
+
+    std::map<std::string,std::string>::iterator it;
+    int count = 0;
+    for ( it = xml_values_.begin(); it != xml_values_.end(); it++ )
+    {
+      count++;
+      fout<<std::setw(width)<<count;
+      fout<<std::setw(width)<<it->first;
+      fout<<std::setw(width)<<it->second;
+      fout<<"\n";
+    }
+    fout.close();
+  }
+
+  void print_hash_double(const char* filename, int width = 20)
+  {
+    std::ofstream fout(filename);
+
+    std::map<std::string,std::string>::iterator it;
+    int count = 0;
+    for ( it = xml_double_sequence_.begin(); it != xml_double_sequence_.end(); it++ )
+    {
+      count++;
+      fout<<std::setw(width)<<count;
+      fout<<std::setw(width)<<it->first;
+      fout<<std::setw(width)<<it->second;
+      fout<<"\n";
+    }
+    fout.close();
   }
 
   // provide number of channels and group
