@@ -148,6 +148,12 @@ public:
   {
     return num_groups_;
   }
+  const int& no_channels(int groupid)
+  {
+    assert( groupid > 0 && groupid <= num_channels_ );
+
+    return num_channels_group_[groupid-1];
+  }
 
   const std::string& channel_name(int channelid)
   {

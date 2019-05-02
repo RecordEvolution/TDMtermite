@@ -209,6 +209,10 @@ void tdm_ripper::parse_structure()
   assert( num_channels_ == (int)channel_id_.size()
        && num_channels_ == (int)channel_name_.size()
        && num_channels_ == (int)channels_group_.size() );
+
+  std::cout<<std::setw(25)<<std::left<<"number of channels:"<<std::setw(10)<<num_channels_<<"\n";
+  for ( int i = 0; i < num_groups_; i++ ) std::cout<<std::setw(25)<<std::left<<"group"<<std::setw(10)<<i+1<<std::setw(10)<<no_channels(i+1)<<"\n";
+  std::cout<<std::right<<"\n\n";
 }
 
 void tdm_ripper::list_channels(std::ostream& gout, int width, int maxshow)

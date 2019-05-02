@@ -25,17 +25,22 @@ int main(int argc, char* argv[])
   std::cout<<"number of channels "<<ripper.num_channels()<<"\n\n";
   std::cout<<"number of groups "<<ripper.num_groups()<<"\n\n";
 
+  for ( int i = 0; i < ripper.num_groups(); i++ )
+  {
+    std::cout<<std::setw(10)<<i+1<<std::setw(10)<<ripper.no_channels(i+1)<<"\n";
+  }
+
   // std::vector<double> channA = ripper.get_channel(1);
   // for ( auto el: channA ) std::cout<<el<<"\n";
   // std::cout<<"\n\n";
 
-  for ( int i = 0; i < 30; i++ )
-  // for ( int i = 0; i < ripper.num_channels(); i++ )
-  // for ( int i = 11880; i < ripper.num_channels(); i++ )
-  {
-    ripper.print_channel(i+1,("data/channel_"+std::to_string(i+1)+"_"
-                                        +ripper.channel_name(i+1)+".dat").c_str());
-  }
+  // for ( int i = 0; i < 30; i++ )
+  // // for ( int i = 0; i < ripper.num_channels(); i++ )
+  // // for ( int i = 11880; i < ripper.num_channels(); i++ )
+  // {
+  //   ripper.print_channel(i+1,("data/channel_"+std::to_string(i+1)+"_"
+  //                                       +ripper.channel_name(i+1)+".dat").c_str());
+  // }
 
   return 0;
 }

@@ -19,6 +19,11 @@ cdef class pytdmripper:
     def num_channels(self):
         return self.cripp.num_channels()
 
+    def no_channels(self, int groupid):
+        assert (groupid >= 0 and groupid < self.cripp.num_groups()), "index of group must be in [0,n-1]"
+        groupidinc = groupid+1
+        return self.cripp.no_channels(groupidinc)
+
     def num_groups(self):
         return self.cripp.num_groups()
 

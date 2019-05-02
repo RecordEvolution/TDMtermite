@@ -22,6 +22,9 @@ clean :
 pylib : setup.py pytdm_ripper.pyx tdm_ripper.pxd tdm_ripper.o
 	python3 setup.py build_ext --inplace
 
+install : setup.py pytdm_ripper.pyx tdm_ripper.pxd lib/tdm_ripper.cpp lib/tdm_ripper.hpp
+	python3 setup.py install
+
 lib/libtdmripper.a :
 	make -C lib libtdmripper.a
 

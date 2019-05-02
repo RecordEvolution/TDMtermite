@@ -13,6 +13,7 @@ cdef extern from "tdm_ripper.hpp":
         tdm_ripper(string) except +
         void list_channels()
         int num_channels()
+        int no_channels(int)
         int num_groups()
         vector[double] get_channel(int)
         void print_channel(int,const char*)
