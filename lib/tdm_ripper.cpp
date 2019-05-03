@@ -279,6 +279,40 @@ void tdm_ripper::list_channels(std::ostream& gout, int width, int maxshow)
   }
 }
 
+void tdm_ripper::list_groups(std::ostream& gout, int width, int maxshow)
+{
+  gout<<std::setw(width)<<"group";
+  gout<<std::setw(width)<<"group id";
+  gout<<std::setw(width)<<"group name";
+  gout<<std::setw(width)<<"num channels";
+  gout<<"\n";
+  gout<<std::setfill('-')<<std::setw(4*width+1)<<"\n";
+  gout<<std::setfill(' ');
+
+  for ( int i = 0; i < num_groups_ && i < maxshow; i++ )
+  {
+    gout<<std::setw(width)<<i+1;
+    gout<<std::setw(width)<<group_id_[i];
+    gout<<std::setw(width)<<group_name_[i];
+    gout<<std::setw(width)<<num_channels_group_[i];
+    gout<<"\n";
+  }
+  gout<<"\n\n";
+
+  if ( num_channels_ > maxshow )
+  {
+    for ( int i = num_groups_-maxshow; i < num_channels_; i++ )
+    {
+      gout<<std::setw(width)<<i+1;
+      gout<<std::setw(width)<<group_id_[i];
+      gout<<std::setw(width)<<group_name_[i];
+      gout<<std::setw(width)<<num_channels_group_[i];
+      gout<<"\n";
+    }
+    gout<<"\n\n";
+  }
+}
+
 void tdm_ripper::show_structure()
 {
   int width = 25;
@@ -444,11 +478,13 @@ std::vector<double> tdm_ripper::get_channel(int channelid)
   std::vector<double> chann = convert_channel(channel_ext_[channelid-1]);
 
   // check if converted value is within expected range
-  for ( int i = 0; i < (int)chann.size(); i++ )
-  {
-    assert( chann[i] >= minmax_[channelid-1].first  - 1.0e-10
-         && chann[i] <= minmax_[channelid-1].second + 1.0e-10 );
-  }
+  // for ( int i = 0; i < (int)chann.size(); i++ )
+  // {
+  //   if ( chann[i] < minmax_[channelid-1].first
+  //     || chann[i] > minmax_[channelid-1].second ) std::cout<<std::setw(20)<<chann[i]<<std::setw(20)<<minmax_[channelid-1].first<<std::setw(20)<<minmax_[channelid-1].second<<"\n";
+  //   assert( chann[i] >= minmax_[channelid-1].first  - 1.0e-6
+  //        && chann[i] <= minmax_[channelid-1].second + 1.0e-6 );
+  // }
 
   return chann;
 }

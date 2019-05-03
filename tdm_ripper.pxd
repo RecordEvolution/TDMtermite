@@ -15,5 +15,11 @@ cdef extern from "tdm_ripper.hpp":
         int num_channels()
         int no_channels(int)
         int num_groups()
+        int no_channel_groups()
+        string channel_name(int,int)
+        string channel_unit(int,int)
         vector[double] get_channel(int)
+        vector[double] channel(int,int)
         void print_channel(int,const char*)
+        # dummy method for compatibility
+        void close()

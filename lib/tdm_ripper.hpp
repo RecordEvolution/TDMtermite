@@ -61,6 +61,7 @@ public:
   void parse_structure();
 
   void list_channels(std::ostream& gout = std::cout, int width = 15, int maxshow = 50);
+  void list_groups(std::ostream& gout = std::cout, int width = 15, int maxshow = 50);
 
   void show_structure();
 
@@ -148,9 +149,11 @@ public:
   {
     return num_groups_;
   }
+
+  // get number of channels in specific group
   const int& no_channels(int groupid)
   {
-    assert( groupid > 0 && groupid <= num_channels_ );
+    assert( groupid > 0 && groupid <= num_groups_ );
 
     return num_channels_group_[groupid-1];
   }
@@ -162,11 +165,38 @@ public:
     return channel_name_[channelid-1];
   }
 
+  // obtain overall channel id from combined group and group-specific channel id
+  int obtain_channel_id(int groupid, int channelid)
+  {
+    assert( groupid > 0 && groupid <= num_groups_ );
+    assert( channelid > 0 && channelid <= num_channels_group_[groupid-1] );
+
+    // find cummulative number of channels
+    int numsum = 0;
+    for ( int i = 0; i < groupid-1; i++ )
+    {
+      numsum += num_channels_group_[i];
+    }
+    assert( (numsum + channelid) > 0 && (numsum + channelid) <= num_channels_ );
+
+    return numsum+channelid;
+  }
+
+  const std::string& channel_name(int groupid, int channelid)
+  {
+    return channel_name_[obtain_channel_id(groupid,channelid)-1];
+  }
+
   const std::string& group_name(int groupid)
   {
     assert( groupid > 0 && groupid <= num_channels_ );
 
     return group_name_[groupid-1];
+  }
+
+  const std::string& channel_unit(int groupid, int channelid)
+  {
+    return units_[obtain_channel_id(groupid,channelid)-1];
   }
 
   void list_datatypes();
@@ -183,7 +213,13 @@ public:
   // std::vector<double> convert_channel(int byteoffset, int length, int typesize);
   std::vector<double> convert_channel(int channelid);
 
+  // obtain channel from overall channel id...
   std::vector<double> get_channel(int channelid);
+  // ...or from group id and group-specific channel id
+  std::vector<double> channel(int groupid, int channelid)
+  {
+    return get_channel(obtain_channel_id(groupid,channelid));
+  }
 
   void print_channel(int channelid, const char* filename, int width = 15);
 
