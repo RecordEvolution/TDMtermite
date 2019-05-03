@@ -23,6 +23,10 @@ class tdm_ripper
   // endianness (true = little, false = big)
   bool endianness_, machine_endianness_;
 
+  // evtl. neglect groups with no actual channels
+  bool neglect_empty_groups_;
+  int num_empty_groups_;
+
   // number/names/ids of channels, channelgroups and channels's assignment to groups
   int num_channels_, num_groups_;
   std::vector<std::string> channel_id_, inc_id_, units_, channel_name_;
@@ -56,7 +60,7 @@ class tdm_ripper
 
 public:
 
-  tdm_ripper(std::string tdmfile, std::string tdxfile = "");
+  tdm_ripper(std::string tdmfile, std::string tdxfile = "", bool neglect_empty_groups = true);
 
   void parse_structure();
 

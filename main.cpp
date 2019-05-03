@@ -43,8 +43,8 @@ int main(int argc, char* argv[])
   // for ( auto el: channA ) std::cout<<el<<"\n";
   // std::cout<<"\n\n";
 
-  for ( int i = 3; i < 10; i++ )
-  // for ( int i = 0; i < ripper.num_channels(); i++ )
+  // for ( int i = 3; i < 10; i++ )
+  for ( int i = 0; i < ripper.num_channels(); i++ )
   // for ( int i = 11880; i < ripper.num_channels(); i++ )
   {
     ripper.print_channel(i+1,("data/channel_"+std::to_string(i+1)+"_"

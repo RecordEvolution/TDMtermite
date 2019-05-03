@@ -1,9 +1,11 @@
 
 #include "tdm_ripper.hpp"
 
-tdm_ripper::tdm_ripper(std::string tdmfile, std::string tdxfile):
-  tdmfile_(tdmfile), tdxfile_(tdxfile), num_channels_(0), num_groups_(0),
-  channel_id_(0), inc_id_(0), units_(0), channel_name_(0), group_id_(0), group_name_(0),
+tdm_ripper::tdm_ripper(std::string tdmfile, std::string tdxfile, bool neglect_empty_groups):
+  tdmfile_(tdmfile), tdxfile_(tdxfile),
+  neglect_empty_groups_(neglect_empty_groups), num_empty_groups_(0),
+  num_channels_(0), num_groups_(0), channel_id_(0), inc_id_(0), units_(0),
+  channel_name_(0), group_id_(0), group_name_(0),
   num_channels_group_(0), channels_group_(0), channel_ext_(0), minmax_(0),
   byteoffset_(0), length_(0), type_(0), external_id_(0)
 {
@@ -97,11 +99,15 @@ void tdm_ripper::parse_structure()
   {
     if ( std::string(anode.name()).compare("tdm_channelgroup") == 0 )
     {
-      num_groups_++;
-      group_id_.push_back(anode.attribute("id").value());
-      group_name_.push_back(anode.child_value("name"));
       int numchann = count_occ_string(anode.child_value("channels"),"id");
-      num_channels_group_.push_back(numchann);
+      if ( numchann > 0 || !neglect_empty_groups_ )
+      {
+        num_groups_++;
+        group_id_.push_back(anode.attribute("id").value());
+        group_name_.push_back(anode.child_value("name"));
+        num_channels_group_.push_back(numchann);
+      }
+      if ( numchann == 0 ) num_empty_groups_++;
     }
   }
 
@@ -201,18 +207,15 @@ void tdm_ripper::parse_structure()
   // std::string keyinit("usi23258");
   // std::cout<<"xml test "<<xml_double_sequence_[xml_values_[xml_local_columns_[keyinit]]]<<"\n\n";
 
-  // check consistency of number of channelgroups
+  // check consistency of number of channel-groups
   int numgroups = count_occ_string(subtreedata.child("tdm_root").child_value("channelgroups"),"id");
-  if ( 0*numgroups == 0 ) assert( numgroups == num_groups_ );
+  assert( (neglect_empty_groups_ && numgroups == num_groups_+num_empty_groups_)
+       || (!neglect_empty_groups_ && numgroups == num_groups_) );
 
   // check consistency of number of channels
   assert( num_channels_ == (int)channel_id_.size()
        && num_channels_ == (int)channel_name_.size()
        && num_channels_ == (int)channels_group_.size() );
-
-  std::cout<<std::setw(25)<<std::left<<"number of channels:"<<std::setw(10)<<num_channels_<<"\n";
-  for ( int i = 0; i < num_groups_; i++ ) std::cout<<std::setw(25)<<std::left<<"group"<<std::setw(10)<<i+1<<std::setw(10)<<no_channels(i+1)<<"\n";
-  std::cout<<std::right<<"\n\n";
 }
 
 void tdm_ripper::list_channels(std::ostream& gout, int width, int maxshow)

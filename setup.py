@@ -9,7 +9,7 @@ extensions = Extension(
     library_dirs=["lib"],
     include_dirs=["lib"],
     language='c++',
-    extra_compile_args=['-stdlib=libc++','-std=c++11'],
+    extra_compile_args=['-stdlib=libc++','-std=c++11','-Wno-unused-variable'],
     extra_link_args=['-stdlib=libc++','-std=c++11'],
 )
 
