@@ -16,6 +16,9 @@ cdef class pytdmripper:
     def show_channels(self):
         self.cripp.list_channels()
 
+    def show_groups(self):
+      self.cripp.list_groups()
+
     def num_channels(self):
         return self.cripp.num_channels()
 
@@ -34,6 +37,9 @@ cdef class pytdmripper:
 
     def channel_unit(self,int groupid,int channelid):
         return (self.cripp.channel_unit(groupid+1,channelid+1))
+
+    def channel_exists(self,int groupid, string channelname):
+        return self.cripp.channel_exists(groupid+1,channelname)
 
     def get_channel(self, int channelid):
         return np.asarray(self.cripp.get_channel(channelid))

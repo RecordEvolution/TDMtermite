@@ -203,6 +203,21 @@ public:
     return units_[obtain_channel_id(groupid,channelid)-1];
   }
 
+  int channel_exists(int groupid, std::string channel_name)
+  {
+    assert( groupid > 0 && groupid <= num_channels_ );
+
+    int channelid = 0;
+    for ( int i = 0; i < num_channels_group_[groupid-1]; i++)
+    {
+      if ( channel_name_[obtain_channel_id(groupid,i+1)-1].compare(channel_name) == 0 )
+      {
+        channelid = i+1;
+      }
+    }
+    return channelid;
+  }
+
   void list_datatypes();
 
   // convert array of chars to single integer or floating point double
