@@ -302,7 +302,7 @@ void tdm_ripper::list_groups(std::ostream& gout, int width, int maxshow)
   }
   gout<<"\n\n";
 
-  if ( num_channels_ > maxshow )
+  if ( num_groups_ > maxshow )
   {
     for ( int i = num_groups_-maxshow; i < num_channels_; i++ )
     {
