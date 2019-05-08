@@ -24,7 +24,7 @@ cdef class pytdmripper:
 
     def no_channels(self, int groupid):
         assert (groupid >= 0 and groupid < self.cripp.num_groups()), "index of group must be in [0,n-1]"
-        return self.cripp.no_channels(groupid+1)
+        return self.cripp.no_channels(groupid)
 
     def num_groups(self):
         return self.cripp.num_groups()
@@ -33,19 +33,28 @@ cdef class pytdmripper:
         return self.cripp.num_groups()
 
     def channel_name(self,int groupid,int channelid):
-        return self.cripp.channel_name(groupid+1,channelid+1).decode('utf-8')
+        return self.cripp.channel_name(groupid,channelid).decode('utf-8')
 
     def channel_unit(self,int groupid,int channelid):
-        return (self.cripp.channel_unit(groupid+1,channelid+1))
+        return (self.cripp.channel_unit(groupid,channelid))
 
     def channel_exists(self,int groupid, string channelname):
-        return self.cripp.channel_exists(groupid+1,channelname)
+        return self.cripp.channel_exists(groupid,channelname)
 
     def get_channel(self, int channelid):
         return np.asarray(self.cripp.get_channel(channelid))
 
     def channel(self,int groupid,int channelid):
-        return self.cripp.channel(groupid+1,channelid+1)
+        return self.cripp.channel(groupid,channelid)
+
+    def channel_length(self,int groupid, int channelid):
+        return self.cripp.channel_length(groupid,channelid)
+
+    def get_min(self,int groupid, int channelid):
+        return self.cripp.get_min(groupid,channelid)
+
+    def get_max(self,int groupid, int channelid):
+        return self.cripp.get_max(groupid,channelid)
 
     def print_channel(self, int channelid, const char* filename):
         self.cripp.print_channel(channelid,filename)

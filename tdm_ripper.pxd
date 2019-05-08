@@ -21,6 +21,9 @@ cdef extern from "tdm_ripper.hpp":
         string channel_unit(int,int)
         int channel_exists(int,string)
         vector[double] get_channel(int)
+        int channel_length(int,int)
+        double get_min(int,int)
+        double get_max(int,int)
         vector[double] channel(int,int)
         void print_channel(int,const char*)
         # dummy method for compatibility

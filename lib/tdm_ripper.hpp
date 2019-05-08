@@ -144,6 +144,21 @@ public:
     fout.close();
   }
 
+  void print_extid(const char* filename, int width = 20)
+  {
+    std::ofstream fout(filename);
+
+    int count = 0;
+    for ( auto extid: channel_ext_ )
+    {
+      count++;
+      fout<<std::setw(width)<<count;
+      fout<<std::setw(width)<<extid;
+      fout<<"\n";
+    }
+    fout.close();
+  }
+
   // provide number of channels and group
   const int& num_channels()
   {
@@ -157,27 +172,27 @@ public:
   // get number of channels in specific group
   const int& no_channels(int groupid)
   {
-    assert( groupid > 0 && groupid <= num_groups_ );
+    assert( groupid >= 0 && groupid < num_groups_ );
 
-    return num_channels_group_[groupid-1];
+    return num_channels_group_[groupid];
   }
 
   const std::string& channel_name(int channelid)
   {
-    assert( channelid > 0 && channelid <= num_channels_ );
+    assert( channelid >= 0 && channelid < num_channels_ );
 
-    return channel_name_[channelid-1];
+    return channel_name_[channelid];
   }
 
   // obtain overall channel id from combined group and group-specific channel id
   int obtain_channel_id(int groupid, int channelid)
   {
-    assert( groupid > 0 && groupid <= num_groups_ );
-    assert( channelid > 0 && channelid <= num_channels_group_[groupid-1] );
+    assert( groupid >= 0 && groupid < num_groups_ );
+    assert( channelid >= 0 && channelid < num_channels_group_[groupid] );
 
     // find cummulative number of channels
     int numsum = 0;
-    for ( int i = 0; i < groupid-1; i++ )
+    for ( int i = 0; i < groupid; i++ )
     {
       numsum += num_channels_group_[i];
     }
@@ -188,31 +203,31 @@ public:
 
   const std::string& channel_name(int groupid, int channelid)
   {
-    return channel_name_[obtain_channel_id(groupid,channelid)-1];
+    return channel_name_[obtain_channel_id(groupid,channelid)];
   }
 
   const std::string& group_name(int groupid)
   {
-    assert( groupid > 0 && groupid <= num_channels_ );
+    assert( groupid >= 0 && groupid < num_groups_ );
 
-    return group_name_[groupid-1];
+    return group_name_[groupid];
   }
 
   const std::string& channel_unit(int groupid, int channelid)
   {
-    return units_[obtain_channel_id(groupid,channelid)-1];
+    return units_[obtain_channel_id(groupid,channelid)];
   }
 
   int channel_exists(int groupid, std::string channel_name)
   {
-    assert( groupid > 0 && groupid <= num_channels_ );
+    assert( groupid >= 0 && groupid < num_groups_ );
 
-    int channelid = 0;
-    for ( int i = 0; i < num_channels_group_[groupid-1]; i++)
+    int channelid = -1;
+    for ( int i = 0; i < num_channels_group_[groupid]; i++)
     {
-      if ( channel_name_[obtain_channel_id(groupid,i+1)-1].compare(channel_name) == 0 )
+      if ( channel_name_[obtain_channel_id(groupid,i)].compare(channel_name) == 0 )
       {
-        channelid = i+1;
+        channelid = i;
       }
     }
     return channelid;
@@ -238,6 +253,20 @@ public:
   std::vector<double> channel(int groupid, int channelid)
   {
     return get_channel(obtain_channel_id(groupid,channelid));
+  }
+
+  int channel_length(int groupid, int channelid)
+  {
+    return length_[channel_ext_[obtain_channel_id(groupid,channelid)]];
+  }
+
+  double get_min(int groupid, int channelid)
+  {
+    return minmax_[obtain_channel_id(groupid,channelid)].first;
+  }
+  double get_max(int groupid, int channelid)
+  {
+    return minmax_[obtain_channel_id(groupid,channelid)].second;
   }
 
   void print_channel(int channelid, const char* filename, int width = 15);
