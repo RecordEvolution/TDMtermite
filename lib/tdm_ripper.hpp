@@ -225,12 +225,26 @@ public:
     int channelid = -1;
     for ( int i = 0; i < num_channels_group_[groupid]; i++)
     {
-      if ( channel_name_[obtain_channel_id(groupid,i)].compare(channel_name) == 0 )
+      if ( comparestrings(channel_name_[obtain_channel_id(groupid,i)],channel_name) )
       {
         channelid = i;
       }
     }
     return channelid;
+  }
+
+  bool comparestrings(std::string s1, std::string s2, bool case_sensitive = false)
+  {
+    if ( case_sensitive )
+    {
+      return ( s1.compare(s2) == 0 );
+    }
+    else
+    {
+      std::transform( s1.begin(), s1.end(), s1.begin(), ::tolower);
+      std::transform( s2.begin(), s2.end(), s2.begin(), ::tolower);
+      return ( s1.compare(s2) == 0 );
+    }
   }
 
   void list_datatypes();
