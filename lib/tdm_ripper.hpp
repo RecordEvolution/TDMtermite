@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <map>
 #include <numeric>
+#include <algorithm>
 
 #include "../pugixml/pugixml.hpp"
 
