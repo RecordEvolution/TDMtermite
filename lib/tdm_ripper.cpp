@@ -106,6 +106,27 @@ void tdm_ripper::parse_structure()
         group_id_.push_back(anode.attribute("id").value());
         group_name_.push_back(anode.child_value("name"));
         num_channels_group_.push_back(numchann);
+
+        // get time-stamp
+        pugi::xml_node insatt = anode.child("instance_attributes");
+        std::pair<std::string,std::string> startstop;
+        for ( pugi::xml_node bnode: insatt.children() )
+        {
+          assert( std::string(bnode.name()).compare("double_attribute") == 0 );
+          if ( std::string(bnode.attribute("name").value()).compare("Starttime") == 0 )
+          {
+            startstop.first = bnode.child_value();
+          }
+          else if ( std::string(bnode.attribute("name").value()).compare("Stoptime") == 0 )
+          {
+            startstop.second = bnode.child_value();
+          }
+          else
+          {
+            assert ( false && "unexpected attribute name" );
+          }
+        }
+        group_timestamp_.push_back(startstop);
       }
       if ( numchann == 0 ) num_empty_groups_++;
     }
@@ -289,8 +310,10 @@ void tdm_ripper::list_groups(std::ostream& gout, int width, int maxshow)
   gout<<std::setw(width)<<"group id";
   gout<<std::setw(width)<<"group name";
   gout<<std::setw(width)<<"num channels";
+  gout<<std::setw(2*width)<<"start time";
+  gout<<std::setw(2*width)<<"stop time";
   gout<<"\n";
-  gout<<std::setfill('-')<<std::setw(4*width+1)<<"\n";
+  gout<<std::setfill('-')<<std::setw(8*width+1)<<"\n";
   gout<<std::setfill(' ');
 
   for ( int i = 0; i < num_groups_ && i < maxshow; i++ )
@@ -299,6 +322,8 @@ void tdm_ripper::list_groups(std::ostream& gout, int width, int maxshow)
     gout<<std::setw(width)<<group_id_[i];
     gout<<std::setw(width)<<group_name_[i];
     gout<<std::setw(width)<<num_channels_group_[i];
+    gout<<std::setw(2*width)<<time_stamp(i,true);
+    gout<<std::setw(2*width)<<time_stamp(i,false);
     gout<<"\n";
   }
   gout<<"\n\n";
@@ -311,6 +336,8 @@ void tdm_ripper::list_groups(std::ostream& gout, int width, int maxshow)
       gout<<std::setw(width)<<group_id_[i];
       gout<<std::setw(width)<<group_name_[i];
       gout<<std::setw(width)<<num_channels_group_[i];
+      gout<<std::setw(2*width)<<time_stamp(i,true);
+      gout<<std::setw(2*width)<<time_stamp(i,false);
       gout<<"\n";
     }
     gout<<"\n\n";

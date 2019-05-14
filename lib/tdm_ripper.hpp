@@ -32,10 +32,10 @@ class tdm_ripper
   int num_channels_, num_groups_;
   std::vector<std::string> channel_id_, inc_id_, units_, channel_name_;
   std::vector<std::string> group_id_, group_name_;
+  std::vector<std::pair<std::string,std::string>> group_timestamp_;
   std::vector<int> num_channels_group_;
   std::vector<int> channels_group_;
   std::vector<int> channel_ext_;
-  // evtl. get group time_stamp of .tdm file in the unix format, i.e. #seconds since 01.01.0000 with average year having 365+97/400 = 365.2425 days
 
   // minimum/maximum value in particular channel (is provided in .tdm file as float)
   std::vector<std::pair<double,double>> minmax_;
@@ -246,6 +246,52 @@ public:
       std::transform( s2.begin(), s2.end(), s2.begin(), ::tolower);
       return ( s1.compare(s2) == 0 );
     }
+  }
+
+  // evtl. get group time_stamp of .tdm file given in unix format
+  std::string unix_timestamp(std::string unixts)
+  {
+    // average year of Gregorian calender
+    const double avgdaysofyear = 365 + 1./4 - 1./100 + 1./400;
+
+    // std::tm epochStart = {};
+    // epochStart.tm_sec = 0;
+    // epochStart.tm_min = 0;
+    // epochStart.tm_hour = 0;
+    // epochStart.tm_mday = 1;
+    // epochStart.tm_mon = 0;
+    // epochStart.tm_year = 2040;
+    // epochStart.tm_wday = 0;
+    // epochStart.tm_yday = 0;
+    // epochStart.tm_isdst = -1;
+    // std::time_t epochtst = std::mktime(&epochStart);
+
+    // convert string to long int = number of second since 0000/01/01 00:00
+    long int ts = atol(unixts.c_str());
+
+    // int year = (int)floor((double)ts/(avgdaysofyear*86400));
+    // int month = (int)floor((ts-year*avgdaysofyear*86400)/(30*86400));
+    // int day = (int)floor((ts-year*avgdaysofyear*86400-month*30*86400)/86400);
+    // int daysec = ts-year*avgdaysofyear*86400-month*30*86400-day*86400;
+    // int hour = (int)floor(daysec/3600.);
+    // int mins = (int)floor((daysec-hour*3600)/60.);
+    // int secs = (int)floor((daysec-hour*3600-mins*60));
+
+    // return std::to_string(year)+"-"+std::to_string(month)+"-"+std::to_string(day)
+    //  +"  "+std::to_string(hour)+":"+std::to_string(mins)+":"+std::to_string(secs);
+
+    // use STL to convert timestamp
+    // std::time_t tstime = std::time_t(ts)-epochtst;
+    std::time_t tstime = ts - 1970*avgdaysofyear*86400;
+    return std::ctime(&tstime);
+  }
+
+  std::string time_stamp(int groupid, bool startstop = true)
+  {
+    assert( groupid >= 0 && groupid < num_groups_ );
+
+    return startstop ? unix_timestamp(group_timestamp_[groupid].first)
+                     : unix_timestamp(group_timestamp_[groupid].second);
   }
 
   void list_datatypes();
