@@ -61,6 +61,10 @@ tdm_ripper::tdm_ripper(std::string tdmfile, std::string tdxfile, bool neglect_em
 
   // open .tdx and stream all binary data into vector
   std::ifstream fin(tdxfile_.c_str(),std::ifstream::binary);
+  assert( fin.good() && "failed to open .tdx-file" );
+  if ( !fin.good() ) std::cout<<"failed to open .tdx-file\n\n";
+  // assert( errno == 0 );
+  // std::cout<<"error code "<<strerror(errno)<<"\n\n";
   std::vector<unsigned char> tdxbuf((std::istreambuf_iterator<char>(fin)),
                                     (std::istreambuf_iterator<char>()));
   tdxbuf_ = tdxbuf;
@@ -123,7 +127,8 @@ void tdm_ripper::parse_structure()
           }
           else
           {
-            assert ( false && "unexpected attribute name" );
+            startstop.first = "";
+            startstop.second = "";
           }
         }
         group_timestamp_.push_back(startstop);
@@ -306,14 +311,17 @@ void tdm_ripper::list_channels(std::ostream& gout, int width, int maxshow)
 
 void tdm_ripper::list_groups(std::ostream& gout, int width, int maxshow)
 {
+  // if present, show timestamps
+  bool showts = ( group_timestamp_[0].first.compare("") != 0 );
+
   gout<<std::setw(width)<<"group";
   gout<<std::setw(width)<<"group id";
   gout<<std::setw(width)<<"group name";
   gout<<std::setw(width)<<"num channels";
-  gout<<std::setw(2*width)<<"start time";
-  gout<<std::setw(2*width)<<"stop time";
+  if ( showts ) gout<<std::setw(2*width)<<"start time";
+  if ( showts ) gout<<std::setw(2*width)<<"stop time";
   gout<<"\n";
-  gout<<std::setfill('-')<<std::setw(8*width+1)<<"\n";
+  gout<<std::setfill('-')<<(showts?std::setw(8*width+1):std::setw(4*width+1))<<"\n";
   gout<<std::setfill(' ');
 
   for ( int i = 0; i < num_groups_ && i < maxshow; i++ )
@@ -322,8 +330,8 @@ void tdm_ripper::list_groups(std::ostream& gout, int width, int maxshow)
     gout<<std::setw(width)<<group_id_[i];
     gout<<std::setw(width)<<group_name_[i];
     gout<<std::setw(width)<<num_channels_group_[i];
-    gout<<std::setw(2*width)<<time_stamp(i,true);
-    gout<<std::setw(2*width)<<time_stamp(i,false);
+    if ( showts ) gout<<std::setw(2*width)<<time_stamp(i,true);
+    if ( showts ) gout<<std::setw(2*width)<<time_stamp(i,false);
     gout<<"\n";
   }
   gout<<"\n\n";
@@ -336,8 +344,8 @@ void tdm_ripper::list_groups(std::ostream& gout, int width, int maxshow)
       gout<<std::setw(width)<<group_id_[i];
       gout<<std::setw(width)<<group_name_[i];
       gout<<std::setw(width)<<num_channels_group_[i];
-      gout<<std::setw(2*width)<<time_stamp(i,true);
-      gout<<std::setw(2*width)<<time_stamp(i,false);
+      if ( showts ) gout<<std::setw(2*width)<<time_stamp(i,true);
+      if ( showts ) gout<<std::setw(2*width)<<time_stamp(i,false);
       gout<<"\n";
     }
     gout<<"\n\n";

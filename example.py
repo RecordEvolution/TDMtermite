@@ -6,8 +6,9 @@ tdmpath = b"samples/SineData.tdm"
 tdxpath = b"samples/SineData.tdx"
 
 # create instance of ripper class
-RP = tdm_ripper.pytdmripper(tdmpath)
-RP = tdm_ripper.pytdmripper(b"/Users/mariofink/git/Conti_HBS/data_science/python/features/tdm_tmp_slow/75_1/Messung.tdm")
+# RP = tdm_ripper.pytdmripper(tdmpath)
+RP = tdm_ripper.pytdmripper(tdmpath,tdxpath)
+# RP = tdm_ripper.pytdmripper(b"/Users/mariofink/git/Conti_HBS/data_science/python/features/tdm_tmp_slow/75_1/Messung.tdm")
 
 # provide overview of available channels
 RP.show_channels()
@@ -19,7 +20,7 @@ for i in range(0,RP.num_groups()):
     print(str(i+1).rjust(10)+str(RP.no_channels(i)).rjust(10))
 
 # print particular channel to file
-# RP.print_channel(1,b"SineData_extract.dat")
+RP.print_channel(1,b"SineData_extract.dat")
 
 # extract channel and return it to numpy array
 # channels = RP.get_channel(1)

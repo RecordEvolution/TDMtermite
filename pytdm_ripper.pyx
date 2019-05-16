@@ -7,8 +7,8 @@ cdef class pytdmripper:
     # pointer to C++ instance (since there's no nullary constructor)
     cdef tdm_ripper *cripp
 
-    def __cinit__(self, string tdmfile):
-        self.cripp = new tdm_ripper(tdmfile)
+    def __cinit__(self, string tdmfile, string tdxfile = b""):
+        self.cripp = new tdm_ripper(tdmfile,tdxfile)
 
     def __dealloc__(self):
         del self.cripp

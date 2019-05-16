@@ -28,6 +28,11 @@ int main(int argc, char* argv[])
   ripper.list_channels(fout);
   fout.close();
 
+  // long int nsa = 6.3636349745e10; // expected result: 22.07.2016, 19:49:05
+  // long int nsb = 6.3636350456e10;
+  // std::string ts = std::to_string(nsa);
+  // std::cout<<ripper.unix_timestamp(ts)<<"\n";
+
   std::cout<<"number of channels "<<ripper.num_channels()<<"\n";
   std::cout<<"number of groups "<<ripper.num_groups()<<"\n\n";
 

@@ -249,14 +249,15 @@ public:
   }
 
   // evtl. get group time_stamp of .tdm file given in unix format
-  std::string unix_timestamp(std::string unixts)
+  static std::string unix_timestamp(std::string unixts)
   {
     // average year of Gregorian calender
-    const double avgdaysofyear = 365 + 1./4 - 1./100 + 1./400;
+    const double avgdaysofyear = 365.0 + 1./4 - 1./100 + 1./400
+                                 - 8./24561; // gauge timestamp according to DIADEM result
 
     // convert string to long int = number of second since 0000/01/01 00:00
     long int ts = atol(unixts.c_str());
-    assert( ts > 0 );
+    assert( ts >= 0 );
 
     // use STL to convert timestamp (epoch usually starts from 01.01.1970)
     std::time_t tstime = ts - 1970*avgdaysofyear*86400;
