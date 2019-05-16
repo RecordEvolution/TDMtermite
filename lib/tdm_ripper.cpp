@@ -1,8 +1,9 @@
 
 #include "tdm_ripper.hpp"
 
-tdm_ripper::tdm_ripper(std::string tdmfile, std::string tdxfile, bool neglect_empty_groups):
-  tdmfile_(tdmfile), tdxfile_(tdxfile),
+tdm_ripper::tdm_ripper(std::string tdmfile, std::string tdxfile,
+                       bool suppress_status, bool neglect_empty_groups):
+  tdmfile_(tdmfile), tdxfile_(tdxfile), suppress_status_(suppress_status),
   neglect_empty_groups_(neglect_empty_groups), num_empty_groups_(0),
   num_channels_(0), num_groups_(0), channel_id_(0), inc_id_(0), units_(0),
   channel_name_(0), group_id_(0), group_name_(0),
@@ -31,13 +32,19 @@ tdm_ripper::tdm_ripper(std::string tdmfile, std::string tdxfile, bool neglect_em
 
   // setup of xml-parser
   xml_result_ = xml_doc_.load_file(tdmfile_.c_str());
-  std::cout<<"\nloading and parsing file: "<<xml_result_.description()<<"\n";
-  std::cout<<"\nencoding: "<<(pugi::xml_encoding)xml_result_.encoding<<"\n\n";
+  if ( !suppress_status_ )
+  {
+    std::cout<<"\nloading and parsing file: "<<xml_result_.description()<<"\n";
+    std::cout<<"\nencoding: "<<(pugi::xml_encoding)xml_result_.encoding<<"\n\n";
+  }
 
   pugi::xml_node subtreeincl = xml_doc_.child("usi:tdm").child("usi:include");
 
-  std::cout<<"file modified: "<<xml_doc_.child("usi:tdm").child("usi:data")
-                        .child("tdm_root").child_value("datetime")<<"\n\n";
+  if ( !suppress_status_ )
+  {
+    std::cout<<"file modified: "<<xml_doc_.child("usi:tdm").child("usi:data")
+                          .child("tdm_root").child_value("datetime")<<"\n\n";
+  }
 
   // obtain corresponding .tdx filename given in .tdm file
   if ( tdxfile_.compare("") == 0 )
@@ -55,7 +62,10 @@ tdm_ripper::tdm_ripper(std::string tdmfile, std::string tdxfile, bool neglect_em
   machine_endianness_ = ( *(char*)&num == 1 );
   assert( machine_endianness_ == endianness_ );
 
-  std::cout<<"required .tdx-file is '"<<tdxfile_<<"'\n\n";
+  if ( !suppress_status_ )
+  {
+    std::cout<<"required .tdx-file is '"<<tdxfile_<<"'\n\n";
+  }
 
   parse_structure();
 
@@ -69,7 +79,10 @@ tdm_ripper::tdm_ripper(std::string tdmfile, std::string tdxfile, bool neglect_em
                                     (std::istreambuf_iterator<char>()));
   tdxbuf_ = tdxbuf;
 
-  std::cout<<"number of bytes in binary file: "<<tdxbuf_.size()<<"\n\n";
+  if ( !suppress_status_ )
+  {
+    std::cout<<"number of bytes in binary file: "<<tdxbuf_.size()<<"\n\n";
+  }
 }
 
 void tdm_ripper::parse_structure()
@@ -162,11 +175,15 @@ void tdm_ripper::parse_structure()
       xml_double_sequence_.insert(std::pair<std::string,std::string>(id,val));
     }
   }
-  std::cout<<"number of pairs in\n";
-  std::cout<<std::setw(25)<<std::left<<"xml_local_columns_:"<<xml_local_columns_.size()<<"\n";
-  std::cout<<std::setw(25)<<std::left<<"xml_values_:"<<xml_values_.size()<<"\n";
-  std::cout<<std::setw(25)<<std::left<<"xml_double_sequence_:"<<xml_double_sequence_.size()<<"\n";
-  std::cout<<std::right<<"\n\n";
+
+  if ( !suppress_status_ )
+  {
+    std::cout<<"number of pairs in\n";
+    std::cout<<std::setw(25)<<std::left<<"xml_local_columns_:"<<xml_local_columns_.size()<<"\n";
+    std::cout<<std::setw(25)<<std::left<<"xml_values_:"<<xml_values_.size()<<"\n";
+    std::cout<<std::setw(25)<<std::left<<"xml_double_sequence_:"<<xml_double_sequence_.size()<<"\n";
+    std::cout<<std::right<<"\n\n";
+  }
 
   // extract basic information about available channels
   // int prog = 0;

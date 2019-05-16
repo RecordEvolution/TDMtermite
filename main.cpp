@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
   assert( argc > 1 && "please provide a filename and path" );
 
   // declare and initialize tdm_ripper
-  tdm_ripper ripper(argv[1]);
+  tdm_ripper ripper(argv[1]); //,"samples/SineData.tdx",false);
 
   // ripper.list_datatypes();
   // ripper.show_structure();

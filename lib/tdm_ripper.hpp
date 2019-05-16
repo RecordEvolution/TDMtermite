@@ -20,6 +20,7 @@ class tdm_ripper
   // .tdm and .tdx filenames
   std::string tdmfile_;
   std::string tdxfile_;
+  bool suppress_status_;
 
   // endianness (true = little, false = big)
   bool endianness_, machine_endianness_;
@@ -61,7 +62,8 @@ class tdm_ripper
 
 public:
 
-  tdm_ripper(std::string tdmfile, std::string tdxfile = "", bool neglect_empty_groups = true);
+  tdm_ripper(std::string tdmfile, std::string tdxfile = "",
+             bool suppress_status = true, bool neglect_empty_groups = true);
 
   void parse_structure();
 
