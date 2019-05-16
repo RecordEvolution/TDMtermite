@@ -263,7 +263,7 @@ public:
     std::time_t tstime = ts - 1970*avgdaysofyear*86400;
 
     // get rid of linebreak character and return the result
-    return std::strtok(std::ctime(&tstime),"\n");
+    return strtok(std::ctime(&tstime),"\n");
   }
 
   std::string time_stamp(int groupid, bool startstop = true)
