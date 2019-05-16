@@ -50,6 +50,9 @@ cdef class pytdmripper:
     def channel_length(self,int groupid, int channelid):
         return self.cripp.channel_length(groupid,channelid)
 
+    def time_stamp(self,int groupid, bool startstop):
+        return self.cripp.time_stamp(groupid,startstop)
+
     def get_min(self,int groupid, int channelid):
         return self.cripp.get_min(groupid,channelid)
 

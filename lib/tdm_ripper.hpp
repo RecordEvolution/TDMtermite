@@ -254,36 +254,15 @@ public:
     // average year of Gregorian calender
     const double avgdaysofyear = 365 + 1./4 - 1./100 + 1./400;
 
-    // std::tm epochStart = {};
-    // epochStart.tm_sec = 0;
-    // epochStart.tm_min = 0;
-    // epochStart.tm_hour = 0;
-    // epochStart.tm_mday = 1;
-    // epochStart.tm_mon = 0;
-    // epochStart.tm_year = 2040;
-    // epochStart.tm_wday = 0;
-    // epochStart.tm_yday = 0;
-    // epochStart.tm_isdst = -1;
-    // std::time_t epochtst = std::mktime(&epochStart);
-
     // convert string to long int = number of second since 0000/01/01 00:00
     long int ts = atol(unixts.c_str());
+    assert( ts > 0 );
 
-    // int year = (int)floor((double)ts/(avgdaysofyear*86400));
-    // int month = (int)floor((ts-year*avgdaysofyear*86400)/(30*86400));
-    // int day = (int)floor((ts-year*avgdaysofyear*86400-month*30*86400)/86400);
-    // int daysec = ts-year*avgdaysofyear*86400-month*30*86400-day*86400;
-    // int hour = (int)floor(daysec/3600.);
-    // int mins = (int)floor((daysec-hour*3600)/60.);
-    // int secs = (int)floor((daysec-hour*3600-mins*60));
-
-    // return std::to_string(year)+"-"+std::to_string(month)+"-"+std::to_string(day)
-    //  +"  "+std::to_string(hour)+":"+std::to_string(mins)+":"+std::to_string(secs);
-
-    // use STL to convert timestamp
-    // std::time_t tstime = std::time_t(ts)-epochtst;
+    // use STL to convert timestamp (epoch usually starts from 01.01.1970)
     std::time_t tstime = ts - 1970*avgdaysofyear*86400;
-    return std::ctime(&tstime);
+
+    // get rid of linebreak character and return the result
+    return std::strtok(std::ctime(&tstime),"\n");
   }
 
   std::string time_stamp(int groupid, bool startstop = true)
