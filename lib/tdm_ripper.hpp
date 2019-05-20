@@ -57,6 +57,9 @@ class tdm_ripper
   pugi::xml_document xml_doc_;
   pugi::xml_parse_result xml_result_;
 
+  // .tdm-file eventually contains some meta information about measurement
+  std::map<std::string,std::string> meta_info_;
+
   // binary data container
   std::vector<unsigned char> tdxbuf_;
 
@@ -250,18 +253,18 @@ public:
     }
   }
 
-  // evtl. get group time_stamp of .tdm file given in unix format
+  // get time-stamp of channel-group in .tdm file given in unix format
   static std::string unix_timestamp(std::string unixts)
   {
     // average year of Gregorian calender
     const double avgdaysofyear = 365.0 + 1./4 - 1./100 + 1./400
                                  - 8./24561; // gauge timestamp according to DIADEM result
 
-    // convert string to long int = number of second since 0000/01/01 00:00
+    // convert string to long int = number of seconds since 0000/01/01 00:00
     long int ts = atol(unixts.c_str());
     assert( ts >= 0 );
 
-    // use STL to convert timestamp (epoch usually starts from 01.01.1970)
+    // use STL to convert timestamp (epoch usually starts on 01.01.1970)
     std::time_t tstime = ts - 1970*avgdaysofyear*86400;
 
     // get rid of linebreak character and return the result
@@ -313,6 +316,12 @@ public:
   }
 
   void print_channel(int channelid, const char* filename, int width = 15);
+
+  // obtain any meta information about .tdm-file if available
+  std::string get_meta(std::string attribute_name)
+  {
+    return meta_info_[attribute_name];
+  }
 
   // TODO add elements/methods to build .tdm and write .tdx files for your own data
   // by constructing xml document tree and write data to binary .tdx

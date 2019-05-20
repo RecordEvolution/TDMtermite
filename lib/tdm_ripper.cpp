@@ -112,10 +112,24 @@ void tdm_ripper::parse_structure()
   pugi::xml_node subtreedata = xml_doc_.child("usi:tdm").child("usi:data");
 
   // extract basic information about available groups
+  int groupcount = 0;
   for (pugi::xml_node anode: subtreedata.children())
   {
     if ( std::string(anode.name()).compare("tdm_channelgroup") == 0 )
     {
+      groupcount++;
+
+      // meta-info is pressumably contained in FIRST channel-group xml tree element
+      // (eventually identify by name = TESTINFOS ??? )
+      if ( groupcount == 1 )
+      {
+        for ( pugi::xml_node mnode: anode.child("instance_attributes").children() )
+        {
+          meta_info_.insert(std::pair<std::string,std::string>(mnode.attribute("name").value(),
+                                                               mnode.child_value("s")));
+        }
+      }
+
       int numchann = count_occ_string(anode.child_value("channels"),"id");
       if ( numchann > 0 || !neglect_empty_groups_ )
       {
@@ -183,6 +197,8 @@ void tdm_ripper::parse_structure()
     std::cout<<std::setw(25)<<std::left<<"xml_values_:"<<xml_values_.size()<<"\n";
     std::cout<<std::setw(25)<<std::left<<"xml_double_sequence_:"<<xml_double_sequence_.size()<<"\n";
     std::cout<<std::right<<"\n\n";
+
+    std::cout<<"meta-info snippets "<<meta_info_.size()<<"\n\n";
   }
 
   // extract basic information about available channels
@@ -212,29 +228,7 @@ void tdm_ripper::parse_structure()
       minmax_.push_back(minmaxchan);
 
       // get correct assignment of channels to byteoffset, length and datatype
-      // std::string locol = get_str_between(anode.child_value("local_columns"),"\"","\"");
-      // std::string locolval;
-      // locolval = local_columns_val_[locol];
-      // for (pugi::xml_node anode: subtreedata.children())
-      // {
-      //   if ( std::string(anode.name()).compare("localcolumn") == 0
-      //     && std::string(anode.attribute("id").value()).compare(locol) == 0 )
-      //     {
-      //       locolval = get_str_between(anode.child_value("values"),"\"","\"");
-      //     }
-      // }
-
       std::string locolvalext;
-      // locolvalext = double_sequence_id_[locolval];
-      // for (pugi::xml_node anode: subtreedata.children())
-      // {
-      //   if ( std::string(anode.name()).compare("double_sequence") == 0
-      //     && std::string(anode.attribute("id").value()).compare(locolval) == 0 )
-      //     {
-      //       locolvalext = anode.child("values").attribute("external").value();
-      //     }
-      // }
-
       locolvalext = xml_double_sequence_[xml_values_[xml_local_columns_[anode.attribute("id").value()]]];
 
       // save external id of channel and get corresponding channel index

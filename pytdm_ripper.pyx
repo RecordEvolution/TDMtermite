@@ -62,13 +62,8 @@ cdef class pytdmripper:
     def print_channel(self, int channelid, const char* filename):
         self.cripp.print_channel(channelid,filename)
 
+    def meta_info(self, string attribute_name):
+        return self.cripp.get_meta(attribute_name)
+
     def close(self):
         dummy = ""
-
-    # integrate into CONTI_HBS workflow by adding methods: (29.04.2019)
-    #   tdm_loader.OpenFile(tmp_path + name_prefix + '/Messung.tdm', encoding='utf-8')
-    #   .no_channel_groups()
-    #   .no_channels(i)
-    #   .channel_name(i, j)
-    #   .channel(i, j)
-    #   .close()

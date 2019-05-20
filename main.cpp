@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
   assert( argc > 1 && "please provide a filename and path" );
 
   // declare and initialize tdm_ripper
-  tdm_ripper ripper(argv[1]); //,"samples/SineData.tdx",false);
+  tdm_ripper ripper(argv[1],argv[2],false); //,"samples/SineData.tdx",false);
 
   // ripper.list_datatypes();
   // ripper.show_structure();
@@ -35,6 +35,11 @@ int main(int argc, char* argv[])
 
   std::cout<<"number of channels "<<ripper.num_channels()<<"\n";
   std::cout<<"number of groups "<<ripper.num_groups()<<"\n\n";
+
+  std::cout<<"\n"<<ripper.get_meta("SMP_Name")<<"\n";
+  std::cout<<ripper.get_meta("SMP_Aufbau_Nr")<<"\n";
+  std::cout<<ripper.get_meta("SMP_Type")<<"\n";
+  std::cout<<ripper.get_meta("Location")<<"\n\n";
 
   // for ( int i = 0; i < ripper.num_groups(); i++ )
   // {
