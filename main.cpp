@@ -7,7 +7,11 @@ int main(int argc, char* argv[])
   // path of filename provided ?
   assert( argc > 1 && "please provide a filename and path" );
 
+  std::cout<<"number of CLI-arguments: "<<argc<<"\n";
+  for ( int i = 0; i < argc; i++ ) std::cout<<std::setw(5)<<i<<":   "<<argv[i]<<"\n";
+
   // declare and initialize tdm_ripper
+  assert( argc == 3 );
   tdm_ripper ripper(argv[1],argv[2],false); //,"samples/SineData.tdx",false);
 
   // ripper.list_datatypes();
