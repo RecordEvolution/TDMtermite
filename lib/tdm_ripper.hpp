@@ -57,7 +57,8 @@ class tdm_ripper
   pugi::xml_document xml_doc_;
   pugi::xml_parse_result xml_result_;
 
-  // .tdm-file eventually contains some meta information about measurement
+  // .tdm-file eventually contains some meta information (about measurement)
+  std::map<std::string,std::string> root_info_;
   std::map<std::string,std::string> meta_info_;
 
   // binary data container
@@ -320,7 +321,31 @@ public:
   // obtain any meta information about .tdm-file if available
   std::string get_meta(std::string attribute_name)
   {
-    return meta_info_[attribute_name];
+    // check if key "attribute_name" actually exits
+    std::map<std::string,std::string>::iterator positer = meta_info_.find(attribute_name);
+    bool ispresent = ( positer == meta_info_.end() ) ? false : true;
+
+    return ispresent ? meta_info_[attribute_name] : "key does not exist";
+  }
+
+  // prepare meta information file including all available meta-data
+  void print_meta(const char* filename, std::string sep = ",")
+  {
+    // open file
+    std::ofstream fout(filename);
+
+    for ( const auto& it : root_info_ )
+    {
+      fout<<it.first<<sep<<it.second<<"\n";
+    }
+    fout<<sep<<"\n";
+    for ( const auto& it : meta_info_ )
+    {
+      fout<<it.first<<sep<<it.second<<"\n";
+    }
+
+    // close down file
+    fout.close();
   }
 
   // TODO add elements/methods to build .tdm and write .tdx files for your own data

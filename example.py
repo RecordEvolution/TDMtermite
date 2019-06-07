@@ -31,6 +31,8 @@ print(RP.meta_info(b"SMP_Name").decode('utf-8'))
 print(RP.meta_info(b"Location").decode('utf-8'))
 print('\n')
 
+RP.print_meta(b"meta_information.dat")
+
 # extract channel and return it to numpy array
 # channels = RP.get_channel(1)
 # Nlen = len(channels)

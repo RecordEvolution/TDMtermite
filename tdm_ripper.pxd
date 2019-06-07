@@ -29,5 +29,6 @@ cdef extern from "tdm_ripper.hpp":
         vector[double] channel(int,int)
         void print_channel(int,const char*)
         string get_meta(string attribute_name)
+        void print_meta(const char*)
         # dummy method for compatibility
         void close()

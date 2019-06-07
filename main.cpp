@@ -40,10 +40,14 @@ int main(int argc, char* argv[])
   std::cout<<"number of channels "<<ripper.num_channels()<<"\n";
   std::cout<<"number of groups "<<ripper.num_groups()<<"\n\n";
 
+  // obtain some specific meta information tags
   std::cout<<"\n"<<ripper.get_meta("SMP_Name")<<"\n";
   std::cout<<ripper.get_meta("SMP_Aufbau_Nr")<<"\n";
   std::cout<<ripper.get_meta("SMP_Type")<<"\n";
   std::cout<<ripper.get_meta("Location")<<"\n\n";
+
+  // print all meta information
+  ripper.print_meta("data/meta_info.csv");
 
   // for ( int i = 0; i < ripper.num_groups(); i++ )
   // {

@@ -65,5 +65,8 @@ cdef class pytdmripper:
     def meta_info(self, string attribute_name):
         return self.cripp.get_meta(attribute_name)
 
+    def print_meta(self, const char* filename):
+        self.cripp.print_meta(filename)
+
     def close(self):
         dummy = ""

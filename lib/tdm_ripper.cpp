@@ -115,18 +115,32 @@ void tdm_ripper::parse_structure()
   int groupcount = 0;
   for (pugi::xml_node anode: subtreedata.children())
   {
+    // get meta-info contained in tdm_root element
+    if ( std::string(anode.name()).compare("tdm_root") == 0 )
+    {
+      // preliminiary: extract some hard-coded information tags only
+      root_info_.insert(std::pair<std::string,std::string>("name",anode.child_value("name")));
+      root_info_.insert(std::pair<std::string,std::string>("description",anode.child_value("description")));
+      root_info_.insert(std::pair<std::string,std::string>("title",anode.child_value("title")));
+      root_info_.insert(std::pair<std::string,std::string>("author",anode.child_value("author")));
+    }
+
     if ( std::string(anode.name()).compare("tdm_channelgroup") == 0 )
     {
       groupcount++;
 
-      // meta-info is pressumably contained in FIRST channel-group xml tree element
-      // (eventually identify by name = TESTINFOS ??? )
-      if ( groupcount == 1 )
+      for ( pugi::xml_node mnode: anode.child("instance_attributes").children() )
       {
-        for ( pugi::xml_node mnode: anode.child("instance_attributes").children() )
+        // preliminiary fix for Conti-TDM files since values are one arbitrary tree level above
+        bool pretdmfix = ( std::string(mnode.child_value()).compare("") == 0 ) ? false : true;
+
+        if ( pretdmfix )
         {
-          meta_info_.insert(std::pair<std::string,std::string>(mnode.attribute("name").value(),
-                                                               mnode.child_value("s")));
+          meta_info_.insert(std::pair<std::string,std::string>(mnode.attribute("name").value(),mnode.child_value()));
+        }
+        else
+        {
+          meta_info_.insert(std::pair<std::string,std::string>(mnode.attribute("name").value(),mnode.child_value("s")));
         }
       }
 

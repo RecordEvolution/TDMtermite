@@ -19,6 +19,7 @@ clean :
 	rm -f $(EXE) *.o
 	rm -f *.dat
 	rm -f data/*.dat
+	rm -f data/*.csv
 
 pylib : setup.py pytdm_ripper.pyx tdm_ripper.pxd tdm_ripper.o
 	python3 setup.py build_ext --inplace
