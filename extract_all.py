@@ -21,7 +21,7 @@ fprefix = args.prefix_name
 # if no prefix is given, .tdm filename will be used
 if fprefix == '' :
     fprefix = tdmpath.rstrip('.tdm').split('/')[-1]
-    # TODO better use os.path staff !!
+    # TODO better use os.path !!
 
 #print(fprefix)
 
