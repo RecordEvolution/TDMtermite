@@ -35,11 +35,17 @@ cdef class pytdmripper:
     def channel_name(self,int groupid,int channelid):
         return self.cripp.channel_name(groupid,channelid).decode('utf-8')
 
+    def group_name(self,int groupid):
+        return self.cripp.group_name(groupid).decode('utf-8')
+
     def channel_unit(self,int groupid,int channelid):
         return (self.cripp.channel_unit(groupid,channelid))
 
     def channel_exists(self,int groupid, string channelname):
         return self.cripp.channel_exists(groupid,channelname)
+
+    def obtain_channel_id(self,int groupid, int channelid):
+      return self.cripp.obtain_channel_id(groupid,channelid)
 
     def get_channel(self, int channelid):
         return np.asarray(self.cripp.get_channel(channelid))

@@ -542,13 +542,13 @@ std::vector<double> tdm_ripper::get_channel(int channelid)
   std::vector<double> chann = convert_channel(channel_ext_[channelid]);
 
   // check if converted value is within expected range
-  // for ( int i = 0; i < (int)chann.size(); i++ )
-  // {
-  //   if ( chann[i] < minmax_[channelid-1].first
-  //     || chann[i] > minmax_[channelid-1].second ) std::cout<<std::setw(20)<<chann[i]<<std::setw(20)<<minmax_[channelid-1].first<<std::setw(20)<<minmax_[channelid-1].second<<"\n";
-  //   assert( chann[i] >= minmax_[channelid-1].first  - 1.0e-6
-  //        && chann[i] <= minmax_[channelid-1].second + 1.0e-6 );
-  // }
+  for ( int i = 0; i < (int)chann.size(); i++ )
+  {
+    // if ( chann[i] < minmax_[channelid-1].first
+    //   || chann[i] > minmax_[channelid-1].second ) std::cout<<std::setw(20)<<chann[i]<<std::setw(20)<<minmax_[channelid-1].first<<std::setw(20)<<minmax_[channelid-1].second<<"\n";
+    assert( chann[i] >= minmax_[channelid-1].first  - 1.0e-6
+         && chann[i] <= minmax_[channelid-1].second + 1.0e-6 );
+  }
 
   return chann;
 }
