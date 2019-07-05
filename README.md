@@ -33,18 +33,39 @@ wrapper.
   - eUInt64Usi: 64 byte
   - eFloat32Usi: 32 byte
   - eFloat64Usi: 64 byte
+- The core of the library takes care of the decoding by reinterpretation of the
+  binary in the buffer as the required datatype implemented by
+
+  ```C++
+  uint8_t *dfcast = reinterpret_cast<uint8_t*>(&df);
+
+  for ( int i = 0; i < (int)sizeof(double); i++ )
+  {
+    dfcast[i] = (int)bych[i];
+  }
+  ```
+
+  where for instance df is the resulting float and bych contains the binary
+  data as an array of chars.
 - main.cpp contains an example of how the C++ library might be used to provide
   the channels and groups of the dataset. It is simply build by
 
   ```Shell
   make
   ```
+
 - extract_all.cpp takes the .tdm, the .tdx file and some output directory as arguments
-  to provide all given information in .csv format without any logging.
+  to provide all given information in .csv format without any logging. To build:
 
   ```Shell
   make extall
-  ```  
+  ```
+
+  For instance, the executable accepts the following arguments:
+
+  ```Shell
+  ./extract_all samples/SineData.tdm samples/SineData.tdx data/
+  ```
 
 ### Python module
 
