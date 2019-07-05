@@ -35,7 +35,7 @@ wrapper.
   - eFloat64Usi: 64 byte
 - main.cpp contains an example of how the C++ library might be used to provide
   the channels and groups of the dataset.
-- extract_all.cpp takes the .tdm, the .tdx file and a output directory as arguments
+- extract_all.cpp takes the .tdm, the .tdx file and some output directory as arguments
   to provide all given information in .csv format without any logging.
 
 ### Python module
@@ -44,4 +44,4 @@ wrapper.
   group channels in NumPy arrays as shown in example.py .
 - To extract all available information and data in the TDM files without any
   further interaction, the use of extract_all.py is recommended. To exhibit the
-  required arguments call $ python extract_all.py --help . 
+  required arguments call $ python extract_all.py --help .
