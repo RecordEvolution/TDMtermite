@@ -15,9 +15,16 @@ main.o : main.cpp
 tdm_ripper.o : lib/tdm_ripper.cpp lib/tdm_ripper.hpp
 	$(CC) -c $(CPPFLAGS) -I $(LIB) $< -o $@
 
+extall : extract_all.o tdm_ripper.o
+	$(CC) $(CPPFLAGS) $^ -o extract_all
+
+extract_all.o : extract_all.cpp
+	$(CC) -c $(CPPFLAGS) -I $(LIB) $< -o $@
+
 clean :
 	rm -f $(EXE) *.o
 	rm -f *.dat
+	rm -f extract_all
 	rm -f data/*.dat
 	rm -f data/*.csv
 

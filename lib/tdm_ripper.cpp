@@ -259,6 +259,9 @@ void tdm_ripper::parse_structure()
   // std::string keyinit("usi23258");
   // std::cout<<"xml test "<<xml_double_sequence_[xml_values_[xml_local_columns_[keyinit]]]<<"\n\n";
 
+  // for ( auto el: minmax_ ) std::cout<<el.first<<"  "<<el.second<<"\n";
+  // std::cout<<"\n\n";
+
   // check consistency of number of channel-groups
   int numgroups = count_occ_string(subtreedata.child("tdm_root").child_value("channelgroups"),"id");
   assert( (neglect_empty_groups_ && numgroups == num_groups_+num_empty_groups_)
@@ -544,10 +547,8 @@ std::vector<double> tdm_ripper::get_channel(int channelid)
   // check if converted value is within expected range
   for ( int i = 0; i < (int)chann.size(); i++ )
   {
-    // if ( chann[i] < minmax_[channelid-1].first
-    //   || chann[i] > minmax_[channelid-1].second ) std::cout<<std::setw(20)<<chann[i]<<std::setw(20)<<minmax_[channelid-1].first<<std::setw(20)<<minmax_[channelid-1].second<<"\n";
-    assert( chann[i] >= minmax_[channelid-1].first  - 1.0e-6
-         && chann[i] <= minmax_[channelid-1].second + 1.0e-6 );
+    assert( chann[i] >= minmax_[channelid].first  - 1.0e-6
+         && chann[i] <= minmax_[channelid].second + 1.0e-6 );
   }
 
   return chann;
