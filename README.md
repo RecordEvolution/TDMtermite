@@ -78,3 +78,18 @@ wrapper.
   ```Shell
   python extract_all.py --help
   ```
+- The same functionality may be obtained from an existing python script by
+  importing the tdm_ripper module and calling the extract_all function. For
+  instance
+
+  ```Python
+  import tdm_ripper as td
+
+  td.extract_all(b"samples/SineData.tdm",b"samples/SineData.tdx",b"data/",b"my_tdm")
+  ```
+
+  where the arguments "data/" and "my_tdm" are optional. "data/" specifies the
+  directory where all .csv outout is dumped while "my_tdm" represents a name
+  prefix for all csv. files.
+  Note, that all string arguments must be converted to bytes before passing to
+  the argument list by prepending "b".

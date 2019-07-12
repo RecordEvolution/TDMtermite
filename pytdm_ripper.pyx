@@ -1,6 +1,7 @@
 
 from tdm_ripper cimport tdm_ripper
 import numpy as np
+import re
 
 cdef class pytdmripper:
 
@@ -76,3 +77,56 @@ cdef class pytdmripper:
 
     def close(self):
         dummy = ""
+
+#-----------------------------------------------------------------------------#
+
+def extract_all(string tdmfile, string tdxfile, string outdirx = b"./", string prfxnam = b""):
+  """
+  Python function extracting all available data from .tdm and .tdx to .csv dump
+
+  Args:
+    tdmfile: path and filename of .tdm file
+    tdxfile: path and filename of associated .tdx file
+    outdirx: directory where all .csv output is dumped
+    prfxnam: optionally specify a name prefix for all .csv files
+
+  Return:
+    None
+  """
+
+  # TODO preliminary: assume utf-8
+  encoding = 'utf-8'
+
+  # set up instance of Cython ripper
+  td = pytdmripper(tdmfile,tdxfile)
+
+  # if no name prefix is given, .tdm filename will be used
+  prfx = ""
+  if prfxnam.decode(encoding) == prfx :
+      prfx = tdmfile.decode(encoding).rstrip('.tdm').split('/')[-1]
+  else:
+    prfx = prfxnam.decode(encoding)
+
+  # obtain number of available groups and channels
+  numgr = td.num_groups()
+  numch = td.num_channels()
+
+  # dump all meta information
+  td.print_meta((outdirx.decode(encoding)+prfx+'.csv').encode(encoding))
+
+  # dump all available groups and channels
+  for g in range(0,numgr):
+      numgrch = td.no_channels(g)
+      for c in range(0,numgrch):
+          # obtained overall channel id
+          chid = td.obtain_channel_id(g,c)
+          # get group's and channel's name
+          gname = td.group_name(g)
+          cname = td.channel_name(g,c)
+          # use regular expression replacement to sanitize group and channel names
+          gname = re.sub('[!@#$%^&*()-+= ,]','',gname)
+          cname = re.sub('[!@#$%^&*()-+= ,]','',cname)
+          # generate filename
+          fichan = prfx + '_' + str(g+1) + '_' + str(c+1) + '_' + gname + '_' + cname + '.csv'
+          # print channel
+          td.print_channel(chid,(outdirx.decode(encoding)+fichan).encode(encoding))
