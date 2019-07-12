@@ -12,6 +12,30 @@ The .tdm is represented in XML format and basically reveals what data the .tdx
 contains and how to read it. The XML tree is usually made up of several groups,
 each containing an arbitrary amount of channels.
 
+## Installation
+
+The makefile provides targets for using the library both as native C++ extension
+and as Python module. Building the C++ codes is done via
+
+```Shell
+make
+# or
+make extall
+```
+
+The package supports usage on Linux and MacOSX. The tdm_ripper module is built
+on these platforms by
+
+```Shell
+make install
+```
+
+and
+
+```Shell
+make install_osx
+```
+
 ## Usage
 
 Although the package is built upon a C++ core, which decodes the data, it may be
