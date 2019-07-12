@@ -89,7 +89,7 @@ wrapper.
   ```
 
   where the arguments "data/" and "my_tdm" are optional. "data/" specifies the
-  directory where all .csv outout is dumped while "my_tdm" represents a name
+  directory where all .csv output is dumped while "my_tdm" represents a name
   prefix for all csv. files.
   Note, that all string arguments must be converted to bytes before passing to
   the argument list by prepending "b".
