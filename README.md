@@ -15,16 +15,8 @@ each containing an arbitrary amount of channels.
 ## Installation
 
 The makefile provides targets for using the library both as native C++ extension
-and as Python module. Building the C++ codes is done via
-
-```Shell
-make
-# or
-make extall
-```
-
-The package supports usage on Linux and MacOSX. The tdm_ripper module is built
-on these platforms by
+and as Python module. The package supports usage on Linux and MacOSX.
+The tdm_ripper module is built on these platforms by
 
 ```Shell
 make install
