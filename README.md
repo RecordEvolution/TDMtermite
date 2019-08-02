@@ -101,7 +101,7 @@ wrapper.
   ```Python
   import tdm_ripper as td
 
-  td.extract_all(b"samples/SineData.tdm",b"samples/SineData.tdx",b"data/",b"my_tdm")
+  files = td.extract_all(b"samples/SineData.tdm",b"samples/SineData.tdx",b"data/",b"my_tdm")
   ```
 
   where the arguments "data/" and "my_tdm" are optional. "data/" specifies the
