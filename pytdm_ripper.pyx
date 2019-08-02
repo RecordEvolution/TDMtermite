@@ -78,7 +78,7 @@ cdef class pytdmripper:
     def close(self):
         dummy = ""
 
-#-----------------------------------------------------------------------------#
+#=============================================================================#
 
 def extract_all(string tdmfile, string tdxfile, string outdirx = b"./", string prfxnam = b""):
   """
@@ -111,8 +111,13 @@ def extract_all(string tdmfile, string tdxfile, string outdirx = b"./", string p
   numgr = td.num_groups()
   numch = td.num_channels()
 
+  # generate list of all files produced
+  filelist = []
+
   # dump all meta information
-  td.print_meta((outdirx.decode(encoding)+prfx+'.csv').encode(encoding))
+  metafile = outdirx.decode(encoding)+prfx+'.csv'
+  td.print_meta(metafile.encode(encoding))
+  filelist.append(metafile)
 
   # dump all available groups and channels
   for g in range(0,numgr):
@@ -130,3 +135,8 @@ def extract_all(string tdmfile, string tdxfile, string outdirx = b"./", string p
           fichan = prfx + '_' + str(g+1) + '_' + str(c+1) + '_' + gname + '_' + cname + '.csv'
           # print channel
           td.print_channel(chid,(outdirx.decode(encoding)+fichan).encode(encoding))
+          # append filename to list
+          filelist.append(fichan)
+
+    # return list of all files
+    return filelist
