@@ -117,7 +117,7 @@ def extract_all(string tdmfile, string tdxfile, string outdirx = b"./", string p
   # dump all meta information
   metafile = outdirx.decode(encoding)+prfx+'.csv'
   td.print_meta(metafile.encode(encoding))
-  filelist.append(metafile)
+  filelist.append(metafile.lstrip("./"))
 
   # dump all available groups and channels
   for g in range(0,numgr):
@@ -138,5 +138,5 @@ def extract_all(string tdmfile, string tdxfile, string outdirx = b"./", string p
           # append filename to list
           filelist.append(fichan)
 
-    # return list of all files
-    return filelist
+  # return list of all files
+  return filelist
