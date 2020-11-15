@@ -19,12 +19,16 @@ and as Python module. The package supports usage on Linux and MacOSX.
 The tdm_ripper module is built on these platforms by
 
 ```Shell
+# Linux
+pip install Cython
 make install
 ```
 
 and
 
 ```Shell
+# macOS
+pip install Cython
 make install_osx
 ```
 
