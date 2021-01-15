@@ -65,7 +65,7 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
     }
     else
     {
-      throw std::runtime_error(argmsg + std::string("\n") + arguse);
+      std::cerr<<argmsg + std::string("\n") + arguse + std::string("\n");
     }
   }
   else if ( argc > 2 ) // && argc%2 == 1 )
@@ -81,7 +81,7 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
                          + std::string(" does not look like a .tdm file")
                          + std::string(", evtl. add file extension *.tdm")
                          + std::string("\n") + arguse;
-      throw std::runtime_error(tdmerr);
+      std::cerr<<tdmerr + std::string("\n");
     }
     // tdx file
     if ( std::string(argv[argc-1]).find(std::string(".tdx")) != std::string::npos )
@@ -94,7 +94,7 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
                          + std::string(" does not look like a .tdx file")
                          + std::string(", evtl. add file extension *.tdx")
                          + std::string("\n") + arguse;
-      throw std::runtime_error(tdxerr);
+      std::cerr<<tdxerr + std::string("\n");
     }
 
     // options (in any order)
@@ -132,13 +132,13 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
       else
       {
         std::string argerr = std::string("unkown option '") + argv[i] + std::string("'");
-        throw std::runtime_error(argerr + std::string("\n") + arguse);
+        std::cerr<<argerr + std::string("\n") + arguse + std::string("\n");
       }
     }
   }
   else
   {
-    throw std::runtime_error(argmsg + std::string("\n") + arguse);
+    std::cerr<<argmsg + std::string("\n") + arguse + std::string("\n");
   }
 
   return prsdkeys;
@@ -193,8 +193,8 @@ int main(int argc, char* argv[])
       }
       else
       {
-        throw std::runtime_error( std::string("directory '") + output
-                                + std::string("' does not exist"));
+        std::cerr<<std::string("directory '") + output 
+                 + std::string("' does not exist") + std::string("\n");
       }
     }
   }

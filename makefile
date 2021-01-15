@@ -22,14 +22,14 @@ INST := /usr/local/bin
 # --------------------------------------------------------------------------- #
 # CLI tool
 
+$(EXE) : main.o tdm_ripper.o
+	$(CC) $(OPT) $^ -o $@
+
 install : $(EXE)
 	sudo cp $< $(INST)/
 
 uninstall : $(INST)/$(EXE)
 	sudo rm $<
-
-$(EXE) : main.o tdm_ripper.o
-	$(CC) $(OPT) $^ -o $@
 
 # build main.cpp object file and include git version/commit tag
 main.o : src/main.cpp
