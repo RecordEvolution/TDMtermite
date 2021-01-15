@@ -8,7 +8,7 @@ National Instruments, Labview and DIAdem.
 
 Datasets encoded in the TDM/TDX format come along in pairs comprised of a
 .tdm and .tdx file. While the .tdm file is a human-readable document providing
-meta information about the dataset, the .tdx is a binary containing the actual
+meta information about the data set, the .tdx is a binary containing the actual
 data. The .tdm is written in XML format and basically reveals what data the .tdx
 contains and how to read it. The XML tree is usually made up of any number of
 groups, each containing an arbitrary number of channels.
@@ -26,7 +26,7 @@ make install
 ```
 
 which uses `/usr/local/bin` as installation directory. On _macOSX_ please first
-build the binary locally with `make` and install it to in your prefered location.
+build the binary locally with `make` and install it to in your preferred location.
 
 ### Python
 
