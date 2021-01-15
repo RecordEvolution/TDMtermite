@@ -4,7 +4,7 @@
 EXE = tdmripper
 
 # compiler and C++ standard
-CC = g++ -std=c++11
+CC = g++ -std=c++17
 
 # compiler options and optimization flags
 OPT = -O3 -Wall -Werror -Wunused-variable -Wsign-compare
@@ -13,9 +13,8 @@ OPT = -O3 -Wall -Werror -Wunused-variable -Wsign-compare
 LIB = pugixml/
 
 # determine git version/commit tag
-TAGV := $(shell git describe --tag | head -n1)
-COMM := $(shell git rev-parse HEAD | head -c8)
-GITV := $(TAGV)-g$(COMM)
+GTAG := $(shell git tag | head -n1)
+GHSH := $(shell git rev-parse HEAD | head -c8)
 
 # --------------------------------------------------------------------------- #
 # CLI tool
@@ -26,8 +25,8 @@ $(EXE) : main.o tdm_ripper.o
 # build main.cpp object file and include git version/commit tag
 main.o : src/main.cpp
 	@cp $< $<.cpp
-	@sed -i 's/tagfullstring/$(GITV)/g' $<.cpp
-	@sed -i 's/versionstring/$(TAGV)/g' $<.cpp
+	@sed -i 's/TAGSTRING/$(GTAG)/g' $<.cpp
+	@sed -i 's/HASHSTRING/$(GHSH)/g' $<.cpp
 	$(CC) -c $(OPT) -I $(LIB) -I lib/ $<.cpp -o $@
 	@rm $<.cpp
 

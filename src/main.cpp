@@ -2,15 +2,18 @@
 
 #include "tdm_ripper.hpp"
 
+#include <filesystem>
+#include <regex>
+
 // ------------------------------------------------------------------------- //
 
-const std::string tagfull("tagfullstring");
-const std::string version("versionstring");
+const std::string gittag("TAGSTRING");
+const std::string githash("HASHSTRING");
 
 void show_usage()
 {
   std::cout<<"\n"
-           <<"tdmripper ["<<tagfull<<"] (Copyright © 2021 Record Evolution GmbH)"
+           <<"tdmripper ["<<gittag<<"-g"<<githash<<"] (Copyright © 2021 Record Evolution GmbH)"
            <<"\n\n"
            <<"Decode TDM/TDX files and dump data as *.csv"
            <<"\n\n"
@@ -19,10 +22,13 @@ void show_usage()
            <<"\n\n"
            <<"Options:"
            <<"\n\n"
-           <<" -d, --outputdir  output directory (must already exist!) for .csv files (default: current working directory)\n"
-           <<" -s, --csvsep     separator character used in .csv files (default is comma ',')\n"
-           <<" -h, --help       show this help message \n"
-           <<" -v, --version    display version\n"
+           <<" -d, --output        (existing!) output directory (default: current working directory)\n"
+           <<" -s, --csvsep        separator character used in .csv files (default is comma ',')\n"
+           <<" -p, --prefix        name prefix for .csv files (default is none)\n"
+           <<" -g, --listgroups    list groups in data\n"
+           <<" -c, --listchannels  list channels in data\n"
+           <<" -h, --help          show this help message \n"
+           <<" -v, --version       display version\n"
            <<"\n";
 }
 
@@ -30,6 +36,9 @@ void show_usage()
 
 // define type of key-value map object
 typedef std::map<std::string,std::string> optkeys;
+
+const std::string argmsg = std::string("both .tdm and .tdx file (and maybe any valid option) must be provided!");
+const std::string arguse = std::string("see $ tdmripper --help for usage");
 
 optkeys parse_args(int argc, char* argv[], bool showargs = false)
 {
@@ -42,107 +51,94 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
   // declare empty key-value object
   optkeys prsdkeys;
 
-  // at least both tdm and tdx file must be provided
-  if ( argc > 1 )
+  if ( argc == 2 )
   {
-    if ( std::string(argv[1]) == std::string("--help") )
+    if ( std::string(argv[1]) == std::string("--help")
+      || std::string(argv[1]) == std::string("-h") )
     {
       show_usage();
     }
-    else if ( std::string(argv[1]) == std::string("--version") )
+    else if ( std::string(argv[1]) == std::string("--version")
+           || std::string(argv[1]) == std::string("-v") )
     {
-      std::cout<<"tdmripper "<<version<<"\n";
+      std::cout<<"tdmripper "<<gittag<<"\n";
     }
     else
     {
-      for ( int i = 1; i < argc; i++ )
-      {
+      throw std::runtime_error(argmsg + std::string("\n") + arguse);
+    }
+  }
+  else if ( argc > 2 ) // && argc%2 == 1 )
+  {
+    // tdm file
+    if ( std::string(argv[argc-2]).find(std::string(".tdm")) != std::string::npos )
+    {
+      prsdkeys.insert(std::pair<std::string,std::string>("tdm",argv[argc-2]));
+    }
+    else
+    {
+      std::string tdmerr = std::string(argv[argc-2])
+                         + std::string(" does not look like a .tdm file")
+                         + std::string(", evtl. add file extension *.tdm")
+                         + std::string("\n") + arguse;
+      throw std::runtime_error(tdmerr);
+    }
+    // tdx file
+    if ( std::string(argv[argc-1]).find(std::string(".tdx")) != std::string::npos )
+    {
+      prsdkeys.insert(std::pair<std::string,std::string>("tdx",argv[argc-1]));
+    }
+    else
+    {
+      std::string tdxerr = std::string(argv[argc-1])
+                         + std::string(" does not look like a .tdx file")
+                         + std::string(", evtl. add file extension *.tdx")
+                         + std::string("\n") + arguse;
+      throw std::runtime_error(tdxerr);
+    }
 
+    // options (in any order)
+    // for ( int i = 1; i < argc-2; i+=2 )
+    for ( int i = 1; i < argc-2; i++ )
+    {
+      if ( std::string(argv[i]) == std::string("--output")
+        || std::string(argv[i]) == std::string("-d") )
+      {
+        prsdkeys.insert(std::pair<std::string,std::string>("output",argv[i+1]));
+        i += 1;
+      }
+      else if ( std::string(argv[i]) == std::string("--csvsep")
+        || std::string(argv[i]) == std::string("-s") )
+      {
+        prsdkeys.insert(std::pair<std::string,std::string>("csvsep",argv[i+1]));
+        i += 1;
+      }
+      else if ( std::string(argv[i]) == std::string("--prefix")
+             || std::string(argv[i]) == std::string("-p") )
+      {
+        prsdkeys.insert(std::pair<std::string,std::string>("prefix",argv[i+1]));
+        i += 1;
+      }
+      else if ( std::string(argv[i]) == std::string("--listgroups")
+             || std::string(argv[i]) == std::string("-g") )
+      {
+        prsdkeys.insert(std::pair<std::string,std::string>("listgroups",argv[i+1]));
+      }
+      else if ( std::string(argv[i]) == std::string("--listchannels")
+             || std::string(argv[i]) == std::string("-c") )
+      {
+        prsdkeys.insert(std::pair<std::string,std::string>("listchannels",argv[i+1]));
+      }
+      else
+      {
+        std::string argerr = std::string("unkown option '") + argv[i] + std::string("'");
+        throw std::runtime_error(argerr + std::string("\n") + arguse);
       }
     }
-  //   {
-  //     if ( std::string(argv[i]) == std::string("--image") )
-  //     {
-  //       if ( i+1 == argc || std::string(argv[i+1]).substr(0,2) == std::string("--") )
-  //       {
-  //         throw std::runtime_error("invalid or missing --image argument");
-  //       }
-  //       else
-  //       {
-  //         prsdkeys.insert(std::pair<std::string,std::string>("image",argv[i+1]));
-  //       }
-  //       i++;
-  //     }
-  //     else if ( std::string(argv[i]) == std::string("--drive") )
-  //     {
-  //       if ( i+1 == argc || std::string(argv[i+1]).substr(0,2) == std::string("--") )
-  //       {
-  //         throw std::runtime_error("invalid or missing --drive argument");
-  //       }
-  //       else
-  //       {
-  //         prsdkeys.insert(std::pair<std::string,std::string>("drive",argv[i+1]));
-  //       }
-  //       i++;
-  //     }
-  //     else if ( std::string(argv[i]) == std::string("--config") )
-  //     {
-  //       if ( i+1 == argc || std::string(argv[i+1]).substr(0,2) == std::string("--") )
-  //       {
-  //         throw std::runtime_error("invalid or missing --config argument");
-  //       }
-  //       else
-  //       {
-  //         prsdkeys.insert(std::pair<std::string,std::string>("config",argv[i+1]));
-  //       }
-  //       i++;
-  //     }
-  //     else if ( std::string(argv[i]) == std::string("--writeblocksize") )
-  //     {
-  //       if ( i+1 == argc || std::string(argv[i+1]).substr(0,2) == std::string("--") )
-  //       {
-  //         throw std::runtime_error("invalid or missing --writeblocksize argument");
-  //       }
-  //       else
-  //       {
-  //         prsdkeys.insert(std::pair<std::string,std::string>("writeblock",argv[i+1]));
-  //       }
-  //       i++;
-  //     }
-  //     else if ( std::string(argv[i]) == std::string("--readblocksize") )
-  //     {
-  //       if ( i+1 == argc || std::string(argv[i+1]).substr(0,2) == std::string("--") )
-  //       {
-  //         throw std::runtime_error("invalid or missing --readblocksize argument");
-  //       }
-  //       else
-  //       {
-  //         prsdkeys.insert(std::pair<std::string,std::string>("readblock",argv[i+1]));
-  //       }
-  //       i++;
-  //     }
-  //     else if ( std::string(argv[i]) == std::string("--novalidate") )
-  //     {
-  //       prsdkeys.insert(std::pair<std::string,std::string>("novalidate","no"));
-  //     }
-  //     else if ( std::string(argv[i]) == std::string("--listdrives") )
-  //     {
-  //       prsdkeys.insert(std::pair<std::string,std::string>("listdrives","yes"));
-  //     }
-  //     else if ( std::string(argv[i]) == std::string("--help") )
-  //     {
-  //       show_usage();
-  //     }
-  //     else
-  //     {
-  //       throw std::runtime_error(std::string("invalid argument ") + std::string(argv[i]));
-  //     }
-  //   }
   }
   else
   {
-    // show_usage();
-    throw std::runtime_error(".tdm/.tdx files are missing! see $ ./tdmripper --help for usage");
+    throw std::runtime_error(argmsg + std::string("\n") + arguse);
   }
 
   return prsdkeys;
@@ -155,67 +151,53 @@ int main(int argc, char* argv[])
   // parse CLI arguments
   optkeys cfgopts = parse_args(argc,argv);
 
-  // // path of filename provided ?
-  // assert( argc > 1 && "please provide a filename and path" );
-  //
-  // std::cout<<"number of CLI-arguments: "<<argc<<"\n";
-  // for ( int i = 0; i < argc; i++ ) std::cout<<std::setw(5)<<i<<":   "<<argv[i]<<"\n";
+  if ( cfgopts.count("tdm") == 1 && cfgopts.count("tdx") == 1 )
+  {
+    // set required option values
+    std::string output = cfgopts.count("output") == 1 ? cfgopts.at("output")
+                                                      : std::string("./");
+    std::string csvsep = cfgopts.count("csvsep") == 1 ? cfgopts.at("csvsep")
+                                                      : std::string(",");
+    std::string prefix = cfgopts.count("prefix") == 1 ? cfgopts.at("prefix")
+                                                      : std::string("");
+    bool listgroups = cfgopts.count("listgroups") == 1 ? true : false;
+    bool listchannels = cfgopts.count("listchannels") == 1 ? true : false;
 
-  // // declare and initialize tdm_ripper
-  // assert( argc == 3 );
-  // tdm_ripper ripper(argv[1],argv[2],false); //,"samples/SineData.tdx",false);
-  //
-  // // ripper.list_datatypes();
-  // // ripper.show_structure();
-  //
-  // ripper.print_hash_local("data/hash_table_xml_local.dat");
-  // ripper.print_hash_values("data/hash_table_xml_value.dat");
-  // ripper.print_hash_double("data/hash_table_xml_double.dat");
-  // ripper.print_extid("data/channel_ext_id.dat");
-  //
-  // ripper.list_groups();
-  // std::ofstream gout("data/list_of_groups.dat");
-  // ripper.list_groups(gout);
-  // gout.close();
-  //
-  // ripper.list_channels();
-  // std::ofstream fout("data/list_of_channels.dat");
-  // ripper.list_channels(fout);
-  // fout.close();
-  //
-  // // long int nsa = 6.3636349745e10; // expected result: 22.07.2016, 19:49:05
-  // // long int nsb = 6.3636350456e10;
-  // // std::string ts = std::to_string(nsa);
-  // // std::cout<<ripper.unix_timestamp(ts)<<"\n";
-  //
-  // std::cout<<"number of channels "<<ripper.num_channels()<<"\n";
-  // std::cout<<"number of groups "<<ripper.num_groups()<<"\n\n";
-  //
-  // // obtain some specific meta information tags
-  // std::cout<<"\n"<<ripper.get_meta("SMP_Name")<<"\n";
-  // std::cout<<ripper.get_meta("SMP_Aufbau_Nr")<<"\n";
-  // std::cout<<ripper.get_meta("SMP_Type")<<"\n";
-  // std::cout<<ripper.get_meta("Location")<<"\n\n";
-  //
-  // // print all meta information
-  // ripper.print_meta("data/meta_info.csv");
-  //
-  // // for ( int i = 0; i < ripper.num_groups(); i++ )
-  // // {
-  // //   std::cout<<std::setw(10)<<i+1<<std::setw(10)<<ripper.no_channels(i+1)<<"\n";
-  // //   for ( int j = 0; j < ripper.no_channels(i+1); j++ )
-  // //   {
-  // //     std::cout<<std::setw(10)<<i+1<<std::setw(10)<<j+1<<std::setw(30)<<ripper.channel_name(i+1,j+1)<<"\n";
-  // //   }
-  // // }
-  //
-  // // for ( int i = 3; i < 10; i++ )
-  // for ( int i = 0; i < ripper.num_channels(); i++ )
-  // // for ( int i = 11880; i < ripper.num_channels(); i++ )
-  // {
-  //   ripper.print_channel(i,("data/channel_"+std::to_string(i+1)+"_"
-  //                                       +ripper.channel_name(i)+".dat").c_str());
-  // }
+    // declare and initialize tdm_ripper instance
+    tdm_ripper jack(cfgopts.at("tdm"),cfgopts.at("tdx"));
+
+    // print list of groups or channels to stdout
+    if ( listgroups ) jack.list_groups();
+    if ( listchannels ) jack.list_channels();
+
+    // write all groups/channels to filesystem
+    if ( !listgroups && !listchannels )
+    {
+      std::filesystem::path pd = output;
+      if ( std::filesystem::is_directory(pd) )
+      {
+        for ( int i = 0; i < jack.num_channels(); i++ )
+        {
+          // sanitize channel name
+          std::regex reg("([^A-Za-z0-9])");
+          std::string chname = std::regex_replace(jack.channel_name(i),reg,"");
+
+          // concat path and construct file name
+          std::filesystem::path outfile = pd / ( std::string("channel_")
+                                               + std::to_string(i+1) + std::string("_")
+                                               + chname + std::string(".csv") );
+
+          // write channel to filesystem
+          jack.print_channel(i,outfile.c_str());
+        }
+      }
+      else
+      {
+        throw std::runtime_error( std::string("directory '") + output
+                                + std::string("' does not exist"));
+      }
+    }
+  }
 
   return 0;
 }
