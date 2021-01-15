@@ -1,6 +1,7 @@
 # tdm_ripper
 
-The tdm_ripper provides convenient access to the TDM/TDMS data format employed by
+The tdm_ripper provides convenient access to the TDM/TDMS data format
+(TDM = Technical data management) employed by
 National Instruments LabView and DIAdem.
 
 ## Data Format
@@ -113,3 +114,7 @@ wrapper.
   prefix for all csv. files.
   Note, that all string arguments must be converted to bytes before passing to
   the argument list by prepending "b".
+
+## References
+
+- https://zone.ni.com/reference/en-XX/help/371361R-01/lvhowto/ni_test_data_exchange/
