@@ -1,19 +1,56 @@
 # tdm_ripper
 
-The tdm_ripper provides convenient access to the TDM/TDMS data format
-(TDM = Technical data management) employed by
-National Instruments LabView and DIAdem.
+The _tdm_ripper_ is a C++ based library that decodes the _technical data management_
+file format _TDM/TDX_ and is mainly employed for measurement data by
+National Instruments, Labview and DIAdem.
 
 ## Data Format
 
-Datasets encoded in the TDM/TDMS format come along in pairs comprised of a
+Datasets encoded in the TDM/TDX format come along in pairs comprised of a
 .tdm and .tdx file. While the .tdm file is a human-readable document providing
-meta information about the dataset, the .tdx is a binary containing the actual data.
-The .tdm is represented in XML format and basically reveals what data the .tdx
-contains and how to read it. The XML tree is usually made up of several groups,
-each containing an arbitrary amount of channels.
+meta information about the dataset, the .tdx is a binary containing the actual
+data. The .tdm is written in XML format and basically reveals what data the .tdx
+contains and how to read it. The XML tree is usually made up of any number of
+groups, each containing an arbitrary number of channels.
 
 ## Installation
+
+The library can be used both as a _CLI_ based tool and as a _Python_ module.
+
+### CLI tool
+
+To install the CLI tool _tdmripper_ do
+
+```Shell
+make install
+```
+
+which uses `/usr/local/bin` as installation directory. On _macOSX_ please first
+build the binary locally with `make` and install it to in your prefered location.
+
+### Python
+
+...tbc...
+
+## Usage
+
+The usage of the CLI tool is sufficiently clarified by its help message displayed
+by `tdmripper --help`. For instance, to extract the data decoded in the pair of
+files `samples/SineData.tdm` and `samples/SineData.tdx` into the directory
+`/home/jack/data/`:
+
+```Shell
+tdmripper --output /home/jack/data samples/SineData.tdm samples/SineData.tdx
+```
+
+### CLI tool
+
+### Python
+
+...tbc...
+
+
+## !!! Deprecated !!!
 
 The makefile provides targets for using the library both as native C++ extension
 and as Python module. The package supports usage on Linux and MacOSX.

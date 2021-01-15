@@ -16,11 +16,17 @@ LIB = pugixml/
 GTAG := $(shell git tag | head -n1)
 GHSH := $(shell git rev-parse HEAD | head -c8)
 
+# define install location
+INST := /usr/local/bin
+
 # --------------------------------------------------------------------------- #
 # CLI tool
 
 install : $(EXE)
-	sudo cp $< /usr/local/bin
+	sudo cp $< $(INST)/
+
+uninstall : $(INST)/$(EXE)
+	sudo rm $<
 
 $(EXE) : main.o tdm_ripper.o
 	$(CC) $(OPT) $^ -o $@
