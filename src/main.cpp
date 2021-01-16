@@ -133,6 +133,7 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
       {
         std::string argerr = std::string("unkown option '") + argv[i] + std::string("'");
         std::cerr<<argerr + std::string("\n") + arguse + std::string("\n");
+        prsdkeys.insert(std::pair<std::string,std::string>("invalidoption",argv[i]));
         return prsdkeys;
       }
     }
@@ -152,7 +153,8 @@ int main(int argc, char* argv[])
   // parse CLI arguments
   optkeys cfgopts = parse_args(argc,argv);
 
-  if ( cfgopts.count("tdm") == 1 && cfgopts.count("tdx") == 1 )
+  if ( cfgopts.count("tdm") == 1 && cfgopts.count("tdx") == 1
+    && cfgopts.count("invalidoption") == 0 )
   {
     // set required option values
     std::string output = cfgopts.count("output") == 1 ? cfgopts.at("output")
