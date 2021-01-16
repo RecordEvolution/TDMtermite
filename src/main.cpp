@@ -133,6 +133,7 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
       {
         std::string argerr = std::string("unkown option '") + argv[i] + std::string("'");
         std::cerr<<argerr + std::string("\n") + arguse + std::string("\n");
+        return prsdkeys;
       }
     }
   }
