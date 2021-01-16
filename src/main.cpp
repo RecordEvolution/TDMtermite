@@ -66,6 +66,8 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
     else
     {
       std::cerr<<argmsg + std::string("\n") + arguse + std::string("\n");
+      prsdkeys.insert(std::pair<std::string,std::string>("invalidoption",argv[1]));
+      return prsdkeys;
     }
   }
   else if ( argc > 2 ) // && argc%2 == 1 )
@@ -82,6 +84,8 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
                          + std::string(", evtl. add file extension *.tdm")
                          + std::string("\n") + arguse;
       std::cerr<<tdmerr + std::string("\n");
+      prsdkeys.insert(std::pair<std::string,std::string>("invalidoption",argv[argc-2]));
+      return prsdkeys;
     }
     // tdx file
     if ( std::string(argv[argc-1]).find(std::string(".tdx")) != std::string::npos )
@@ -95,6 +99,8 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
                          + std::string(", evtl. add file extension *.tdx")
                          + std::string("\n") + arguse;
       std::cerr<<tdxerr + std::string("\n");
+      prsdkeys.insert(std::pair<std::string,std::string>("invalidoption",argv[argc-1]));
+      return prsdkeys;
     }
 
     // options (in any order)
