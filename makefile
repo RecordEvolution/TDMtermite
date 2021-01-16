@@ -26,10 +26,10 @@ $(EXE) : main.o tdm_ripper.o
 	$(CC) $(OPT) $^ -o $@
 
 install : $(EXE)
-	sudo cp $< $(INST)/
+	cp $< $(INST)/
 
 uninstall : $(INST)/$(EXE)
-	sudo rm $<
+	rm $<
 
 # build main.cpp object file and include git version/commit tag
 main.o : src/main.cpp
