@@ -62,10 +62,10 @@ looks basically like this:
 
 and is comprised of _four_ main XML elements: `usi:documentation`, `usi:model`,
 `usi:include` and `usi:data`. The element `usi:include` reveals one of _two_
-possible orderings of the mass data (.tdx): either _channel wise_ (`<block>`)
-- all values of a specific channel follow subsequently -
-or _block wise_ (`<block_bm>`) - all values of a specific measurement time
-follow subsequently - ordering. The supported _numerical data types_ are
+possible orderings of the mass data (.tdx):
+either _channel wise_ (`<block>`) - all values of a specific channel follow subsequently -
+or _block wise_ (`<block_bm>`) - all values of a specific measurement time follow subsequently -
+ordering. The supported _numerical data types_ are
 
 | datatype    | channel datatype | numeric | value sequence  | size  | description             |
 |-------------|------------------|---------|-----------------|-------|-------------------------|
