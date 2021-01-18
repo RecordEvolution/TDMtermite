@@ -13,7 +13,7 @@ const std::string githash("HASHSTRING");
 void show_usage()
 {
   std::cout<<"\n"
-           <<"tdmripper ["<<gittag<<"-g"<<githash<<"] (Copyright © 2021 Record Evolution GmbH)"
+           <<"tdmripper ["<<gittag<<"-g"<<githash<<"] (github.com/RecordEvolution/tdm_ripper.git)"
            <<"\n\n"
            <<"Decode TDM/TDX files and dump data as *.csv"
            <<"\n\n"
@@ -23,8 +23,10 @@ void show_usage()
            <<"Options:"
            <<"\n\n"
            <<" -d, --output        (existing!) output directory (default: current working directory)\n"
+           <<" -f, --filenames     filenaming rule using %C (channel index), %c (channel name),\n"
+           <<"                                           %G (group index), %g (group name) \n"
+           <<"                                           (default: --filenames=channel_%G_%C.csv )\n"
            <<" -s, --csvsep        separator character used in .csv files (default is comma ',')\n"
-           <<" -p, --prefix        name prefix for .csv files (default is none)\n"
            <<" -g, --listgroups    list groups in data\n"
            <<" -c, --listchannels  list channels in data\n"
            <<" -h, --help          show this help message \n"
@@ -119,10 +121,10 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
         prsdkeys.insert(std::pair<std::string,std::string>("csvsep",argv[i+1]));
         i += 1;
       }
-      else if ( std::string(argv[i]) == std::string("--prefix")
-             || std::string(argv[i]) == std::string("-p") )
+      else if ( std::string(argv[i]) == std::string("--filenames")
+             || std::string(argv[i]) == std::string("-f") )
       {
-        prsdkeys.insert(std::pair<std::string,std::string>("prefix",argv[i+1]));
+        prsdkeys.insert(std::pair<std::string,std::string>("filenames",argv[i+1]));
         i += 1;
       }
       else if ( std::string(argv[i]) == std::string("--listgroups")
@@ -167,8 +169,8 @@ int main(int argc, char* argv[])
                                                       : std::string("./");
     std::string csvsep = cfgopts.count("csvsep") == 1 ? cfgopts.at("csvsep")
                                                       : std::string(",");
-    std::string prefix = cfgopts.count("prefix") == 1 ? cfgopts.at("prefix")
-                                                      : std::string("");
+    std::string files = cfgopts.count("filenames") == 1 ? cfgopts.at("filenames")
+                                                      : std::string("channel_%C_%G.csv");
     bool listgroups = cfgopts.count("listgroups") == 1 ? true : false;
     bool listchannels = cfgopts.count("listchannels") == 1 ? true : false;
 
@@ -185,24 +187,41 @@ int main(int argc, char* argv[])
       std::filesystem::path pd = output;
       if ( std::filesystem::is_directory(pd) )
       {
-        for ( int i = 0; i < jack.num_channels(); i++ )
+        for ( int g = 0; g < jack.num_groups(); g++ )
         {
-          // sanitize channel name
-          std::regex reg("([^A-Za-z0-9])");
-          std::string chname = std::regex_replace(jack.channel_name(i),reg,"");
+          // get and sanitize group name
+          std::string grpnm = jack.group_name(g);
+          std::regex regg("([^A-Za-z0-9])");
+          std::string grpname = std::regex_replace(grpnm,regg,"");
 
-          // concat path and construct file name
-          std::filesystem::path outfile = pd / ( std::string("channel_")
-                                               + std::to_string(i+1) + std::string("_")
-                                               + chname + std::string(".csv") );
+          for ( int c = 0; c < jack.no_channels(g); c++ )
+          {
+            // get overall channel index/id
+            int chidx = jack.obtain_channel_id(g,c);
 
-          // write channel to filesystem
-          jack.print_channel(i,outfile.c_str());
+            // get and sanitize channel name
+            std::string chnm = jack.channel_name(g,c);
+            std::regex regc("([^A-Za-z0-9])");
+            std::string chname = std::regex_replace(chnm,regc,"");
+
+            // construct file name according to filenaming rule
+            std::string filenm = files;
+            filenm = std::regex_replace(files,std::regex("\\%C"),std::to_string(c+1));
+            filenm = std::regex_replace(filenm,std::regex("\\%c"),chname);
+            filenm = std::regex_replace(filenm,std::regex("\\%G"),std::to_string(g+1));
+            filenm = std::regex_replace(filenm,std::regex("\\%g"),grpname);
+
+            // concat paths
+            std::filesystem::path outfile = pd / filenm;
+
+            // write channel to filesystem
+            jack.print_channel(chidx,outfile.c_str());
+          }
         }
       }
       else
       {
-        std::cerr<<std::string("directory '") + output 
+        std::cerr<<std::string("directory '") + output
                  + std::string("' does not exist") + std::string("\n");
       }
     }

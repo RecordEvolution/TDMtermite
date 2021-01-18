@@ -203,7 +203,8 @@ public:
     {
       numsum += num_channels_group_[i];
     }
-    assert( (numsum + channelid) > 0 && (numsum + channelid) <= num_channels_ );
+    assert( (numsum + channelid) >= 0 );
+    assert( (numsum + channelid) <= num_channels_ );
 
     return numsum+channelid;
   }

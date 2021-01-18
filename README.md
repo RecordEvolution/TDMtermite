@@ -1,4 +1,13 @@
-# tdm_ripper
+
+<p align="center">
+  <a href="https://github.com/RecordEvolution/tdm_ripper.git">
+    <img
+      alt="tdmripper.svg"
+      src="tdmripper.svg"
+      width="400"
+    />
+  </a>
+</p>
 
 The _tdm_ripper_ is a C++ based library that decodes the _technical data management_
 file format _TDM/TDX_ and is mainly employed for measurement data by
@@ -154,4 +163,5 @@ wrapper.
 
 ## References
 
+- https://www.ni.com/de-de/support/documentation/supplemental/10/ni-tdm-data-model.html
 - https://zone.ni.com/reference/en-XX/help/371361R-01/lvhowto/ni_test_data_exchange/
