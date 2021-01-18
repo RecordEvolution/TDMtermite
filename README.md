@@ -67,19 +67,15 @@ possible orderings of the mass data (.tdx): either _channel wise_ (`<block>`)
 or _block wise_ (`<block_bm>`) - all values of a specific measurement time
 follow subsequently - ordering. The supported _numerical data types_ are
 
-|-------------|------------------|---------|-----------------|-------|-------------------------|
 | datatype    | channel datatype | numeric | value sequence  | size  | description             |
 |-------------|------------------|---------|-----------------|-------|-------------------------|
 | eInt16Usi   | DT_SHORT         | 2       | short_sequence  | 2byte | signed 16 bit integer   |
 | eInt32Usi   | DT_LONG          | 6       | long_sequence   | 4byte | signed 32 bit integer   |
-|-------------|------------------|---------|-----------------|-------|-------------------------|
 | eUInt8Usi   | DT_BYTE          | 5       | byte_sequence   | 1byte | unsigned 8 bit integer  |
 | eUInt16Usi  | DT_SHORT         | 2       | short_sequence  | 2byte | unsigned 16 bit integer |
 | eUInt32Usi  | DT_LONG          | 6       | long_sequence   | 4byte | unsigned 32 bit integer |
-|-------------|------------------|---------|-----------------|-------|-------------------------|
 | eFloat32Usi | DT_FLOAT         | 3       | float_sequence  | 4byte | 32 bit float            |
 | eFloat64Usi | DT_DOUBLE        | 7       | double_sequence | 8byte | 64 Bit double           |
-|-------------|------------------|---------|-----------------|-------|-------------------------|
 | eStringUsi  | DT_STRING        | 1       | string_sequence |       | text                    |
 
 ## Installation
