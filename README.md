@@ -2,14 +2,14 @@
 <p align="center">
   <a href="https://github.com/RecordEvolution/tdm_ripper.git">
     <img
-      alt="tdmripper.svg"
-      src="tdmripper.svg"
+      alt="tdmreaper.svg"
+      src="tdmreaper.svg"
       width="400"
     />
   </a>
 </p>
 
-The _tdm_ripper_ is a C++ based library that decodes the proprietary
+The _tdm_reaper_ is a C++ based library that decodes (encodes) the proprietary
 file format _TDM/TDX_ for measurement data, which relies upon the
 _technical data management_ data model. The TDM format was introduced by
 [National Instruments](https://www.ni.com) and is employed by
@@ -93,7 +93,7 @@ make install
 ```
 
 which uses `/usr/local/bin` as installation directory. On _macOSX_ please first
-build the binary locally with `make` and install it to in your preferred location.
+build the binary locally with `make` and install it in your preferred location.
 
 ### Python
 
