@@ -170,7 +170,7 @@ int main(int argc, char* argv[])
     std::string csvsep = cfgopts.count("csvsep") == 1 ? cfgopts.at("csvsep")
                                                       : std::string(",");
     std::string files = cfgopts.count("filenames") == 1 ? cfgopts.at("filenames")
-                                                      : std::string("channel_%C_%G.csv");
+                                                      : std::string("channel_%G_%C.csv");
     bool listgroups = cfgopts.count("listgroups") == 1 ? true : false;
     bool listchannels = cfgopts.count("listchannels") == 1 ? true : false;
 
@@ -224,7 +224,7 @@ int main(int argc, char* argv[])
         }
 
         // print meta data
-        jack.print_meta((pd / "meta-data.txt").c_str());
+        jack.print_meta((pd / "meta-data.log").c_str());
       }
       else
       {

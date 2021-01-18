@@ -8,3 +8,5 @@ build/
 data/
 tdmripper
 *.csv
+*.log
+*.txt

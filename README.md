@@ -9,18 +9,78 @@
   </a>
 </p>
 
-The _tdm_ripper_ is a C++ based library that decodes the _technical data management_
-file format _TDM/TDX_ and is mainly employed for measurement data by
-National Instruments, Labview and DIAdem.
+The _tdm_ripper_ is a C++ based library that decodes the proprietary
+file format _TDM/TDX_ for measurement data, which relies upon the
+_technical data management_ data model. The TDM format was introduced by
+[National Instruments](https://www.ni.com) and is employed by
+[LabVIEW](https://www.ni.com/de-de/shop/labview.html), LabWindows™/CVI™,
+Measurement Studio, SignalExpress, and [DIAdem](https://www.ni.com/de-de/shop/data-acquisition-and-control/application-software-for-data-acquisition-and-control-category/what-is-diadem.html).
 
 ## Data Format
 
 Datasets encoded in the TDM/TDX format come along in pairs comprised of a
-.tdm and .tdx file. While the .tdm file is a human-readable document providing
-meta information about the data set, the .tdx is a binary containing the actual
-data. The .tdm is written in XML format and basically reveals what data the .tdx
-contains and how to read it. The XML tree is usually made up of any number of
-groups, each containing an arbitrary number of channels.
+.tdm (header) and a .tdx (data) file. While the .tdm file is a human-readable
+file providing meta information about the data set, the .tdx is a binary
+containing the actual data. The .tdm based on the _technical data management_
+model is an XML file and basically describes what data the .tdx contains and how
+to read it. The
+[TDM data model](https://www.ni.com/de-de/support/documentation/supplemental/10/ni-tdm-data-model.html)
+structures the data hierarchically with respect to _file_, (channel) _groups_ and
+_channels_. The file level XML may contain any number of (channel) groups each
+of which is made up of an arbitrary number of channels. Thus, the XML tree in
+the [TDM header file](https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_headerfile/)
+looks basically like this:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<usi:tdm xmlns:usi="http://www.ni.com/Schemas/USI/1_0" version="1.0">
+
+  <usi:documentation>
+    <usi:exporter>National Instruments USI</usi:exporter>
+    <usi:exporterVersion>1.5</usi:exporterVersion>
+  </usi:documentation>
+
+  <usi:model modelName="National Instruments USI generated meta file" modelVersion="1.0">
+    <usi:include nsUri="http://www.ni.com/DataModels/USI/TDM/1_0"/>
+  </usi:model>
+
+  <usi:include>
+    <file byteOrder="littleEndian" url="example.tdx">
+    ...
+    <block byteOffset="0" id="inc0" length="1000" valueType="eFloat64Usi"/>
+    ...
+    <block_bm id="inc4" blockOffset="100" blockSize="7" byteOffset="0" length="4" valueType="eInt8Usi"/>
+    ...
+  </usi:include>
+
+  <usi:data>
+    ...
+  </usi:data>
+
+</usi:tdm>
+```
+
+and is comprised of _four_ main XML elements: `usi:documentation`, `usi:model`,
+`usi:include` and `usi:data`. The element `usi:include` reveals one of _two_
+possible orderings of the mass data (.tdx): either _channel wise_ (`<block>`)
+- all values of a specific channel follow subsequently -
+or _block wise_ (`<block_bm>`) - all values of a specific measurement time
+follow subsequently - ordering. The supported _numerical data types_ are
+
+|-------------|------------------|---------|-----------------|-------|-------------------------|
+| datatype    | channel datatype | numeric | value sequence  | size  | description             |
+|-------------|------------------|---------|-----------------|-------|-------------------------|
+| eInt16Usi   | DT_SHORT         | 2       | short_sequence  | 2byte | signed 16 bit integer   |
+| eInt32Usi   | DT_LONG          | 6       | long_sequence   | 4byte | signed 32 bit integer   |
+|-------------|------------------|---------|-----------------|-------|-------------------------|
+| eUInt8Usi   | DT_BYTE          | 5       | byte_sequence   | 1byte | unsigned 8 bit integer  |
+| eUInt16Usi  | DT_SHORT         | 2       | short_sequence  | 2byte | unsigned 16 bit integer |
+| eUInt32Usi  | DT_LONG          | 6       | long_sequence   | 4byte | unsigned 32 bit integer |
+|-------------|------------------|---------|-----------------|-------|-------------------------|
+| eFloat32Usi | DT_FLOAT         | 3       | float_sequence  | 4byte | 32 bit float            |
+| eFloat64Usi | DT_DOUBLE        | 7       | double_sequence | 8byte | 64 Bit double           |
+|-------------|------------------|---------|-----------------|-------|-------------------------|
+| eStringUsi  | DT_STRING        | 1       | string_sequence |       | text                    |
 
 ## Installation
 
@@ -164,4 +224,10 @@ wrapper.
 ## References
 
 - https://www.ni.com/de-de/support/documentation/supplemental/10/ni-tdm-data-model.html
+- https://zone.ni.com/reference/en-XX/help/371361R-01/lvconcepts/fileio_tdms_model/
 - https://zone.ni.com/reference/en-XX/help/371361R-01/lvhowto/ni_test_data_exchange/
+- https://www.ni.com/de-de/support/documentation/supplemental/06/the-ni-tdms-file-format.html
+- https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_headerfile/
+
+### Code example
+- https://www.ni.com/content/dam/web/product-documentation/c_dll_tdm.zip
