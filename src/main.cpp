@@ -181,12 +181,16 @@ int main(int argc, char* argv[])
     if ( listgroups ) jack.list_groups();
     if ( listchannels ) jack.list_channels();
 
-    // write all groups/channels to filesystem
+    // write data to filesystem
     if ( !listgroups && !listchannels )
     {
+      // declare filesystem path
       std::filesystem::path pd = output;
+
+      // check for given directory
       if ( std::filesystem::is_directory(pd) )
       {
+        // print (group,channel) data
         for ( int g = 0; g < jack.num_groups(); g++ )
         {
           // get and sanitize group name
@@ -218,6 +222,9 @@ int main(int argc, char* argv[])
             jack.print_channel(chidx,outfile.c_str());
           }
         }
+
+        // print meta data
+        jack.print_meta((pd / "meta-data.txt").c_str());
       }
       else
       {
