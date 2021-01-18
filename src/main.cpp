@@ -1,6 +1,6 @@
 // ------------------------------------------------------------------------- //
 
-#include "tdm_ripper.hpp"
+#include "tdm_reaper.hpp"
 
 #include <filesystem>
 #include <regex>
@@ -13,7 +13,7 @@ const std::string githash("HASHSTRING");
 void show_usage()
 {
   std::cout<<"\n"
-           <<"tdmripper ["<<gittag<<"-g"<<githash<<"] (github.com/RecordEvolution/tdm_ripper.git)"
+           <<"tdmreaper ["<<gittag<<"-g"<<githash<<"] (github.com/RecordEvolution/tdm_ripper.git)"
            <<"\n\n"
            <<"Decode TDM/TDX files and dump data as *.csv"
            <<"\n\n"
@@ -181,57 +181,57 @@ int main(int argc, char* argv[])
     if ( listgroups ) jack.list_groups();
     if ( listchannels ) jack.list_channels();
 
-    // write data to filesystem
-    if ( !listgroups && !listchannels )
-    {
-      // declare filesystem path
-      std::filesystem::path pd = output;
-
-      // check for given directory
-      if ( std::filesystem::is_directory(pd) )
-      {
-        // print (group,channel) data
-        for ( int g = 0; g < jack.num_groups(); g++ )
-        {
-          // get and sanitize group name
-          std::string grpnm = jack.group_name(g);
-          std::regex regg("([^A-Za-z0-9])");
-          std::string grpname = std::regex_replace(grpnm,regg,"");
-
-          for ( int c = 0; c < jack.no_channels(g); c++ )
-          {
-            // get overall channel index/id
-            int chidx = jack.obtain_channel_id(g,c);
-
-            // get and sanitize channel name
-            std::string chnm = jack.channel_name(g,c);
-            std::regex regc("([^A-Za-z0-9])");
-            std::string chname = std::regex_replace(chnm,regc,"");
-
-            // construct file name according to filenaming rule
-            std::string filenm = files;
-            filenm = std::regex_replace(files,std::regex("\\%C"),std::to_string(c+1));
-            filenm = std::regex_replace(filenm,std::regex("\\%c"),chname);
-            filenm = std::regex_replace(filenm,std::regex("\\%G"),std::to_string(g+1));
-            filenm = std::regex_replace(filenm,std::regex("\\%g"),grpname);
-
-            // concat paths
-            std::filesystem::path outfile = pd / filenm;
-
-            // write channel to filesystem
-            jack.print_channel(chidx,outfile.c_str());
-          }
-        }
-
-        // print meta data
-        jack.print_meta((pd / "meta-data.log").c_str());
-      }
-      else
-      {
-        std::cerr<<std::string("directory '") + output
-                 + std::string("' does not exist") + std::string("\n");
-      }
-    }
+    // // write data to filesystem
+    // if ( !listgroups && !listchannels )
+    // {
+    //   // declare filesystem path
+    //   std::filesystem::path pd = output;
+    //
+    //   // check for given directory
+    //   if ( std::filesystem::is_directory(pd) )
+    //   {
+    //     // print (group,channel) data
+    //     for ( int g = 0; g < jack.num_groups(); g++ )
+    //     {
+    //       // get and sanitize group name
+    //       std::string grpnm = jack.group_name(g);
+    //       std::regex regg("([^A-Za-z0-9])");
+    //       std::string grpname = std::regex_replace(grpnm,regg,"");
+    //
+    //       for ( int c = 0; c < jack.no_channels(g); c++ )
+    //       {
+    //         // get overall channel index/id
+    //         int chidx = jack.obtain_channel_id(g,c);
+    //
+    //         // get and sanitize channel name
+    //         std::string chnm = jack.channel_name(g,c);
+    //         std::regex regc("([^A-Za-z0-9])");
+    //         std::string chname = std::regex_replace(chnm,regc,"");
+    //
+    //         // construct file name according to filenaming rule
+    //         std::string filenm = files;
+    //         filenm = std::regex_replace(files,std::regex("\\%C"),std::to_string(c+1));
+    //         filenm = std::regex_replace(filenm,std::regex("\\%c"),chname);
+    //         filenm = std::regex_replace(filenm,std::regex("\\%G"),std::to_string(g+1));
+    //         filenm = std::regex_replace(filenm,std::regex("\\%g"),grpname);
+    //
+    //         // concat paths
+    //         std::filesystem::path outfile = pd / filenm;
+    //
+    //         // write channel to filesystem
+    //         jack.print_channel(chidx,outfile.c_str());
+    //       }
+    //     }
+    //
+    //     // print meta data
+    //     jack.print_meta((pd / "meta-data.log").c_str());
+    //   }
+    //   else
+    //   {
+    //     std::cerr<<std::string("directory '") + output
+    //              + std::string("' does not exist") + std::string("\n");
+    //   }
+    // }
   }
 
   return 0;

@@ -1,3 +1,4 @@
+// ------------------------------------------------------------------------- //
 
 #ifndef TDM_RIPPER
 #define TDM_RIPPER
@@ -13,21 +14,38 @@
 #include <numeric>
 #include <algorithm>
 
-#include "../pugixml/pugixml.hpp"
+#include "pugixml.hpp"
+
+// -------------------------------------------------------------------------- //
+// define datatypes
+
+struct datatype {
+  std::string name_;
+  std::string channel_datatype_;
+  int numeric_;
+  std::string value_sequence_;
+  int size_;
+  std::string description;
+};
+
+const std::map<std::string,datatype> tdm_datatypes = {
+  {"eInt16Usi",{"eInt16Usi","DT_SHORT",2,"short_sequence",2,"signed 16 bit integer"}}
+};
+
+// -------------------------------------------------------------------------- //
 
 class tdm_ripper
 {
-  // .tdm and .tdx filenames
+  // .tdm and .tdx paths/filenames
   std::string tdmfile_;
   std::string tdxfile_;
   bool suppress_status_;
 
+  // set of .csv files
+  std::vector<std::string> csvfile_;
+
   // endianness (true = little, false = big)
   bool endianness_, machine_endianness_;
-
-  // evtl. neglect groups with no actual channels
-  bool neglect_empty_groups_;
-  int num_empty_groups_;
 
   // number/names/ids of channels, channelgroups and channels's assignment to groups
   int num_channels_, num_groups_;
@@ -37,6 +55,10 @@ class tdm_ripper
   std::vector<int> num_channels_group_;
   std::vector<int> channels_group_;
   std::vector<int> channel_ext_;
+
+  // neglect empty groups
+  bool neglect_empty_groups_;
+  int num_empty_groups_;
 
   // minimum/maximum value in particular channel (is provided in .tdm file as float)
   std::vector<std::pair<double,double>> minmax_;
@@ -50,7 +72,7 @@ class tdm_ripper
   std::vector<std::string> type_;
   std::vector<std::string> external_id_;
 
-  // mapping of NI datatype to size (in bytes) of type
+  // NI datatypes ( )
   std::map<std::string, int> datatypes_;
 
   // xml parser

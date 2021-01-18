@@ -3,7 +3,7 @@
   <a href="https://github.com/RecordEvolution/tdm_ripper.git">
     <img
       alt="tdmreaper.svg"
-      src="tdmreaper.svg"
+      src="assets/tdmreaper.svg"
       width="400"
     />
   </a>

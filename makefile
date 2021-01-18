@@ -1,7 +1,10 @@
 # --------------------------------------------------------------------------- #
 
 # declare name of executable
-EXE = tdmripper
+EXE = tdmreaper
+
+# source name
+SRC := tdm_reaper
 
 # compiler and C++ standard
 CC = g++ -std=c++17
@@ -22,7 +25,7 @@ INST := /usr/local/bin
 # --------------------------------------------------------------------------- #
 # CLI tool
 
-$(EXE) : main.o tdm_ripper.o
+$(EXE) : main.o $(SRC).o
 	$(CC) $(OPT) $^ -o $@
 
 install : $(EXE)
@@ -39,13 +42,7 @@ main.o : src/main.cpp
 	$(CC) -c $(OPT) -I $(LIB) -I lib/ $<.cpp -o $@
 	@rm $<.cpp
 
-tdm_ripper.o : lib/tdm_ripper.cpp lib/tdm_ripper.hpp
-	$(CC) -c $(OPT) -I $(LIB) $< -o $@
-
-extall : extract_all.o tdm_ripper.o
-	$(CC) $(OPT) $^ -o extract_all
-
-extract_all.o : extract_all.cpp
+$(SRC).o : lib/$(SRC).cpp lib/$(SRC).hpp
 	$(CC) -c $(OPT) -I $(LIB) $< -o $@
 
 clean :
@@ -71,3 +68,6 @@ clean :
 # 	rm -f -r build
 # 	rm -f pytdm_ripper.cpp
 # 	rm -f *.so
+
+
+# --------------------------------------------------------------------------- #
