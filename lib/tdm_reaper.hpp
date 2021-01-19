@@ -152,8 +152,8 @@ struct tdm_channel {
 // https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_tdxdata_submatrix/
 struct tdm_submatrix {
   std::string name_;
-  unsigned long int number_of_rows_;
-  unsigned long int measurement_id_;
+  unsigned long int number_of_rows_;  // -> number of values in channels
+  unsigned long int measurement_id_;  // -> channelgroup
   unsigned long int local_column_id_;
 };
 
@@ -171,9 +171,9 @@ struct localcolumn {
   double minimum_, maximum_;
   representation sequence_representation_;
   std::vector<double> generation_parameters_; // { offset, factor }
-  unsigned long int measurement_quantity_id_;
+  unsigned long int measurement_quantity_id_; // -> references single channel
   unsigned long int submatrix_id_;
-  unsigned long int values_id_;
+  unsigned long int values_id_;               // -> refers to usi:data -> _sequence
 };
 
 // -------------------------------------------------------------------------- //
@@ -183,7 +183,6 @@ class tdm_ripper
   // .tdm and .tdx paths/filenames
   std::string tdmfile_;
   std::string tdxfile_;
-  bool suppress_status_;
 
   // set of .csv files
   std::vector<std::string> csvfile_;

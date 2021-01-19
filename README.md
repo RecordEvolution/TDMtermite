@@ -61,8 +61,8 @@ looks basically like this:
 ```
 
 and is comprised of _four_ main XML elements: `usi:documentation`, `usi:model`,
-`usi:include` and `usi:data`. The element `usi:include` reveals one of _two_
-possible orderings of the mass data (.tdx):
+`usi:include` and `usi:data`. The element `usi:include` references the data file
+`example.tdx` and reveals one of _two_ possible orderings of the mass data (.tdx):
 
 1. either _channel wise_ (`<block>`) - all values of a specific channel follow subsequently -
 1. or _block wise_ (`<block_bm>`) - all values of a specific measurement time follow subsequently -
@@ -79,6 +79,47 @@ ordering. The supported _numerical data types_ are
 | eFloat32Usi | DT_FLOAT         | 3       | float_sequence  | 4byte | 32 bit float            |
 | eFloat64Usi | DT_DOUBLE        | 7       | double_sequence | 8byte | 64 Bit double           |
 | eStringUsi  | DT_STRING        | 1       | string_sequence |       | text                    |
+
+The XML element `<usi:data>` is basically comprised of _five_ different types of
+elements that are `<tdm_root>`, `<tdm_channelgroup>`, `<tdm_channel>`, `<localcolumn>`
+and `<submatrix>`. The root element `<tdm_root>` describes the general properties
+of the dataset and lists the _id's_ of all channel groups that belong to
+the dataset. The element `<tdm_channelgroup>` divides the _channels_ into groups
+and has a unique _id_ that is referenced by its root element. The `<channels>`
+element in `<tdm_channelgroup>` lists the unique ids of all channels that belong
+to that group. Finally, the element `<tdm_channel>` describes a single column of
+actual data including its datatype. The remaining element types are
+`<localcolumn>`
+
+```xml
+<localcolumn id="usiXY">
+  <name>Untitled</name>
+  <measurement_quantity>#xpointer(id("usiAB"))</measurement_quantity>
+  <submatrix>#xpointer(id("usiMN"))</submatrix>
+  <global_flag>15</global_flag>
+  <independent>0</independent>
+  <sequence_representation> ... </sequence_representation>
+  <values>#xpointer(id("usiZ"))</values>
+</localcolumn>
+```
+
+with a unique id, the `<measurement_quantity>` refering to one specific channel,
+the `<submatrix>` and its id respectively, the type of representation in
+`<sequence_representation>` - being one of _explicit_, _implicit linear_ or
+_rawlinear_ - and the `<values>` element, which refers to one _value sequence_,
+and the element `<submatrix>`
+
+```xml
+<submatrix id="usiXX">
+  <name>Untitled</name>
+  <measurement>#xpointer(id("usiUV"))</measurement>
+  <number_of_rows>N</number_of_rows>
+  <local_columns>#xpointer(id("usiMN"))</local_columns>
+</submatrix>
+```
+
+that references the channel group in `<measurement>` it belongs to and provides
+the _number of rows_ in the channels listed in `<local_columns>`.
 
 ## Installation
 
