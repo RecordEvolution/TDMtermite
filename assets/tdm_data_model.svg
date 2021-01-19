@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.1" baseProfile="full"
+     width="1200px" height="800px"
+     viewBox="0 0 1200 800">
+     <title>TDM data model</title>
+     <desc>Graphical respresentation of the TDM data model</desc>
+
+<style>
+  .rered {
+    fill: #e62828;
+  }
+  .reblue {
+    fill: #334d5c;
+  }
+  .rebrown {
+    fill: #c7ae7f;
+  }
+  .regreen {
+    fill: #49a078;
+  }
+  .reorange {
+    fill: #f9ae1e;
+  }
+  .regunmetal {
+    fill: #233543;
+  }
+  .relightgrey {
+    fill: #98a6ac;
+  }
+
+  .header {
+    font-family:sans-serif;	
+    font-size: 26px;
+    font-weight: normal;
+    fill: #33bb78;
+    stroke: #33bb78;
+    stroke-width: 1;
+  }
+
+</style>
+
+<!-- tdm_root -->
+<rect x="400" y="200" width="400" height="100" fill="white" stroke="black"/>
+<text class="header" id="tdmroot" x="600" y="240">tdm_root</text>
+
+<!-- <path d="M 174.5,126.0 L 175.0,127.5 173.5,128.0 174.5,126.0 Z M 100,100 C 100,200 200,100 200,200 Q 50,150,100,100 L 200,100 z" /> -->
+
+<!-- <line x1="0" y1="200" x2="700" y2="200" stroke="black" stroke-width="20px"/> -->
+<!-- Das Rechteck -->
+<!-- <rect x="100" y="100" width="500" height="200" fill="white" stroke="black" stroke-width="20px"/> -->
+<!-- Der Schleifer -->
+<!-- <line x1="180" y1="370" x2="500" y2="50" stroke="black" stroke-width="15px"/> -->
+<!-- Die Pfeilspitze --> 
+<!-- <polygon points="585 0 525 25 585 50" transform="rotate(135 525 25)" stroke="black" stroke-width="4px" fill="blue"/> -->
+
+<!-- <circle class="reblue" cx="50" cy="50" r="40" stroke="black"/> -->
+
+</svg>
