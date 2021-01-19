@@ -4,8 +4,29 @@
 
 // -------------------------------------------------------------------------- //
 
+tdm_reaper::tdm_reaper()
+{
+
+}
+
 tdm_reaper::tdm_reaper(std::string tdmfile, std::string tdxfile, bool showlog):
   tdmfile_(tdmfile), tdxfile_(tdxfile)
+{
+  // start processing tdm data model
+  this->process_tdm(showlog);
+}
+
+void tdm_reaper::submit_files(std::string tdmfile, std::string tdxfile, bool showlog)
+{
+  // save files
+  tdmfile_ = tdmfile;
+  tdxfile_ = tdxfile;
+
+  // start processing tdm data model
+  this->process_tdm(showlog);
+}
+
+void tdm_reaper::process_tdm(bool showlog)
 {
   // check both tdm, tdx files
   std::filesystem::path ptdm(tdmfile_), ptdx(tdxfile_);
@@ -43,6 +64,7 @@ tdm_reaper::tdm_reaper(std::string tdmfile, std::string tdxfile, bool showlog):
 
   // process elements of XML
   this->process_include(showlog);
+  this->process_root(showlog);
 
 }
 
@@ -55,6 +77,9 @@ void tdm_reaper::process_include(bool showlog)
   std::string endianness(tdmincl.child("file").attribute("byteOrder").value());
   endianness_ = endianness.compare("littleEndian") == 0 ? true : false;
 
+  // check referenced .tdx file
+  std::string urltdx(tdmincl.child("file").attribute("url").value());
+
   // obtain machine's endianess
   int num = 1;
   machine_endianness_ = ( *(char*)&num == 1 );
@@ -64,11 +89,9 @@ void tdm_reaper::process_include(bool showlog)
   {
     std::cout<<"\n";
     std::cout<<"endianess:          "<<(endianness_?"little":"big")<<"\n"
-             <<"machine endianness: "<<(machine_endianness_?"little":"big")<<"\n\n";
+             <<"machine endianness: "<<(machine_endianness_?"little":"big")<<"\n"
+             <<"url:                "<<urltdx<<"\n\n";
   }
-
-  // check for existence of attributes before using
-  // pugi::xml_attribute attr;
 
   // list block of massdata
   for (pugi::xml_node anode: tdmincl.child("file").children())
@@ -107,27 +130,52 @@ void tdm_reaper::process_include(bool showlog)
     if ( showlog ) std::cout<<tdxblock.get_info()<<"\n";
   }
 
-  if ( showlog ) std::cout<<"number of blocks: "<<tdx_blocks_.size()<<"\n";
+  if ( showlog ) std::cout<<"number of blocks: "<<tdx_blocks_.size()<<"\n\n";
 }
 
+void tdm_reaper::process_root(bool showlog)
+{
+  // get XML node
+  pugi::xml_node tdmdataroot = xml_doc_.child("usi:tdm").child("usi:data")
+                                                        .child("tdm_root");
+
+  // extract properties
+  tdmroot_.id_ = tdmdataroot.attribute("id").value();
+  tdmroot_.name_ = tdmdataroot.child_value("name");
+  tdmroot_.description_ = tdmdataroot.child_value("description");
+  tdmroot_.title_ = tdmdataroot.child_value("title");
+  tdmroot_.author_ = tdmdataroot.child_value("author");
+  tdmroot_.timestamp_ = tdmdataroot.child_value("datetime");
+
+  // collect group identifiers by means of regex pattern "usi[0-9]+"
+  std::string chnlgrps = tdmdataroot.child_value("channelgroups");
+  std::regex regid("(usi[0-9]+)");
+  std::smatch usi_match;
+  std::sregex_iterator pos(chnlgrps.begin(), chnlgrps.end(), regid);
+  std::sregex_iterator end;
+  for ( ; pos != end; ++pos) tdmroot_.channelgroups_.push_back(pos->str());
+  // std::cout<<pos->str(0)<<"\n";
+
+  if ( showlog ) std::cout<<tdmroot_.get_info()<<"\n";
+}
 
   // pugi::xml_node xmlusiincl = xml_doc_.child("usi:tdm").child("usi:include");
   // pugi::xml_node xmlusidata = xml_doc_.child("usi:tdm").child("usi:data");
   // pugi::xml_node xmltdmroot = xml_doc_.child("usi:tdm").child("usi:data").child("tdm_root");
 
-void tdm_reaper::print_channel(int idx, char const* name, int width)
-{
-
-}
-
-void tdm_reaper::list_groups(std::ostream& out, int g, int c)
-{
-
-}
-
-void tdm_reaper::list_channels(std::ostream& out, int g, int c)
-{
-
-}
+// void tdm_reaper::print_channel(int idx, char const* name, int width)
+// {
+//
+// }
+//
+// void tdm_reaper::list_groups(std::ostream& out, int g, int c)
+// {
+//
+// }
+//
+// void tdm_reaper::list_channels(std::ostream& out, int g, int c)
+// {
+//
+// }
 
 // -------------------------------------------------------------------------- //

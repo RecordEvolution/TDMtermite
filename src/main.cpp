@@ -175,7 +175,12 @@ int main(int argc, char* argv[])
     // bool listchannels = cfgopts.count("listchannels") == 1 ? true : false;
 
     // declare and initialize tdm_ripper instance
-    tdm_reaper jack(cfgopts.at("tdm"),cfgopts.at("tdx"),true);
+    tdm_reaper jack;
+    try {
+      jack.submit_files(cfgopts.at("tdm"),cfgopts.at("tdx"),true);
+    } catch (const std::exception& e) {
+      throw std::runtime_error("failed to load and parse tdm/tdx files");
+    }
 
     // print list of groups or channels to stdout
     // if ( listgroups ) jack.list_groups();
