@@ -22,17 +22,24 @@
 
 // -------------------------------------------------------------------------- //
 
-class tdm_ripper
+class tdm_reaper
 {
   // .tdm and .tdx paths/filenames
   std::string tdmfile_;
   std::string tdxfile_;
 
-  // set of .csv files
+  // set of .csv files (encoding mode)
   std::vector<std::string> csvfile_;
+
+  // XML parser
+  pugi::xml_document xml_doc_;
+  pugi::xml_parse_result xml_result_;
 
   // endianness (true = little, false = big)
   bool endianness_, machine_endianness_;
+
+  // blocks of data in .tdx file
+  std::map<std::string,block> tdx_blocks_;
 
   // tdm root
   tdm_root tdmroot_;
@@ -65,10 +72,6 @@ class tdm_ripper
   // NI datatypes ( )
   std::map<std::string, int> datatypes_;
 
-  // xml parser
-  pugi::xml_document xml_doc_;
-  pugi::xml_parse_result xml_result_;
-
   // .tdm-file eventually contains some meta information (about measurement)
   std::map<std::string,std::string> root_info_;
   std::map<std::string,std::string> meta_info_;
@@ -78,7 +81,14 @@ class tdm_ripper
 
 public:
 
-  tdm_ripper(std::string tdmfile, std::string tdxfile = std::string(""), bool showlog = false);
+  // decoding
+  tdm_reaper(std::string tdmfile, std::string tdxfile = std::string(""), bool showlog = false);
+
+  // encoding
+  tdm_reaper(std::vector<std::string> csvfile);
+
+  // process <usi:include> element
+  void process_include(bool showlog);
 
   void parse_structure();
 

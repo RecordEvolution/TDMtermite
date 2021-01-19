@@ -171,15 +171,15 @@ int main(int argc, char* argv[])
                                                       : std::string(",");
     std::string files = cfgopts.count("filenames") == 1 ? cfgopts.at("filenames")
                                                       : std::string("channel_%G_%C.csv");
-    bool listgroups = cfgopts.count("listgroups") == 1 ? true : false;
-    bool listchannels = cfgopts.count("listchannels") == 1 ? true : false;
+    // bool listgroups = cfgopts.count("listgroups") == 1 ? true : false;
+    // bool listchannels = cfgopts.count("listchannels") == 1 ? true : false;
 
     // declare and initialize tdm_ripper instance
-    tdm_ripper jack(cfgopts.at("tdm"),cfgopts.at("tdx"));
+    tdm_reaper jack(cfgopts.at("tdm"),cfgopts.at("tdx"),true);
 
     // print list of groups or channels to stdout
-    if ( listgroups ) jack.list_groups();
-    if ( listchannels ) jack.list_channels();
+    // if ( listgroups ) jack.list_groups();
+    // if ( listchannels ) jack.list_channels();
 
     // // write data to filesystem
     // if ( !listgroups && !listchannels )

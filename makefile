@@ -42,7 +42,7 @@ main.o : src/main.cpp
 	$(CC) -c $(OPT) -I $(LIB) -I lib/ $<.cpp -o $@
 	@rm $<.cpp
 
-$(SRC).o : lib/$(SRC).cpp lib/$(SRC).hpp
+$(SRC).o : lib/$(SRC).cpp lib/$(SRC).hpp lib/tdm_datamodel.hpp
 	$(CC) -c $(OPT) -I $(LIB) $< -o $@
 
 clean :
