@@ -32,9 +32,9 @@ tdm_ripper::tdm_ripper(std::string tdmfile, std::string tdxfile, bool showlog):
     throw std::runtime_error(std::string("failed to load tdm file: ") + e.what());
   }
 
-  pugi::xml_node xmlusiincl = xml_doc_.child("usi:tdm").child("usi:include");
-  pugi::xml_node xmlusidata = xml_doc_.child("usi:tdm").child("usi:data");
-  pugi::xml_node xmltdmroot = xml_doc_.child("usi:tdm").child("usi:data").child("tdm_root");
+  // pugi::xml_node xmlusiincl = xml_doc_.child("usi:tdm").child("usi:include");
+  // pugi::xml_node xmlusidata = xml_doc_.child("usi:tdm").child("usi:data");
+  // pugi::xml_node xmltdmroot = xml_doc_.child("usi:tdm").child("usi:data").child("tdm_root");
 
 }
 

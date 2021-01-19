@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------- //
 
-#ifndef TDM_RIPPER
-#define TDM_RIPPER
+#ifndef TDM_REAPER
+#define TDM_REAPER
 
 #include <iostream>
 #include <fstream>
@@ -18,163 +18,7 @@
 #include <filesystem>
 
 #include "pugixml.hpp"
-
-// -------------------------------------------------------------------------- //
-// define datatypes
-
-// https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_header_tdx_data/
-
-enum class tdm_datatype {
-  eInt16Usi,
-  eInt32Usi,
-  //
-  eUInt8Usi,
-  eUInt16Usi,
-  eUInt32Usi,
-  //
-  eFloat32Usi,
-  eFloat64Usi,
-  //
-  eStringUsi
-};
-
-struct datatype {
-  std::string name_;
-  std::string channel_datatype_;
-  int numeric_;
-  std::string value_sequence_;
-  int size_;
-  std::string description_;
-
-  std::string get_info()
-  {
-    std::stringstream ss;
-    ss<<"name:             "<<name_<<"\n"
-      <<"channel_datatype: "<<channel_datatype_<<"\n"
-      <<"numeric:          "<<numeric_<<"\n"
-      <<"value_sequence:   "<<value_sequence_<<"\n"
-      <<"size:             "<<size_<<"\n"
-      <<"description:      "<<description_<<"\n";
-    return ss.str();
-  }
-};
-
-const std::map<std::string,datatype> tdm_datatypes = {
-
-  {"eInt16Usi",{"eInt16Usi","DT_SHORT",2,"short_sequence",2,"signed 16 bit integer"}},
-  {"eInt32Usi",{"eInt32Usi","DT_LONG",6,"long_sequence",4,"signed 32 bit integer"}},
-
-  {"eUInt8Usi",{"eUInt8Usi","DT_BYTE",5,"byte_sequence",1,"unsigned 8 bit integer"}},
-  {"eUInt16Usi",{"eUInt16Usi","DT_SHORT",2,"short_sequence",2,"unsigned 16 bit integer"}},
-  {"eUInt32Usi",{"eUInt32Usi","DT_LONG",6,"long_sequence",4,"unsigned 32 bit integer"}},
-
-  {"eFloat32Usi",{"eFloat32Usi","DT_FLOAT",3,"float_sequence",4,"32 bit float"}},
-  {"eFloat64Usi",{"eFloat64Usi","DT_DOUBLE",7,"double_sequence",8,"64 bit double"}},
-
-  {"eStringUsi",{"eStringUsi","DT_STRING",1,"string_sequence",0,"text"}}
-
-};
-
-// -------------------------------------------------------------------------- //
-// tdm root, tdm group and tdm channel, etc.
-
-// for reference of the tdm data model, see
-// https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_headerfile/
-// https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_datamodel/
-
-struct tdm_root {
-  std::string name_;
-  std::string description_;
-  std::string title_;
-  std::string author_;
-  std::string timestamp_;
-  // std::chrono::time_point timestamp_; // from string 2008-05-06T17:20:12.65074539184570313
-
-  // std::stringstream ss;
-  // ss<<"2008-05-06T17:20:12.65074539184570313";
-  // std::cout<<ss.str()<<"\n";
-  //
-  // std::chrono::time_point start = std::chrono::high_resolution_clock::now();
-  // std::time_t tt = std::chrono::system_clock::to_time_t(start);
-  // // https://en.cppreference.com/w/cpp/io/manip/put_time
-  // std::cout<<std::put_time(std::localtime(&tt),"%Y-%m-%dT%H:%M:%S")<<"\n";// "%F %T")<<"\n";
-  //
-  // // std::tm ts;
-  // // // https://en.cppreference.com/w/cpp/io/manip/get_time
-  // // std::get_time(&ts, "%Y-%m-%dT%H:%M:%S");
-  // // auto tp = std::chrono::system_clock::from_time_t(std::mktime(&ts));
-  // // std::time_t tt = std::chrono::system_clock::to_time_t(tp);
-  // // // std::cout<<tt.strftime("%Y")<<"\n";
-  // // std::cout<<ctime(&tt)<<"\n";
-
-  std::string channelgroups_;
-};
-
-// https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_metadata_chngroup/
-struct tdm_channelgroup {
-  unsigned long int id_;
-  std::string name_;
-  std::string description_;
-  long int rootid_;
-  std::vector<long int> channels_; // referenced by id
-};
-
-enum class wf_time_pref_type {
-  absolute,
-  relative
-};
-
-// additional elements for wave form channels (encoded as attributes in
-// <instance_attributes> of <tdm_channel>)
-// https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_tdxdata_waveform/
-struct waveform_channel {
-  std::string wf_xname_;
-  std::string wf_xunit_string_;
-  std::string wf_start_time_;
-  double wf_start_offset_;
-  double wf_increment_;
-  unsigned long wf_samples_;
-  wf_time_pref_type wf_time_pref;
-};
-
-// https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_metadata_channel/
-struct tdm_channel {
-  unsigned long int id_;
-  std::string name_;
-  std::string description_;
-  std::string unit_string_;
-  tdm_datatype datatype_;
-  double minimum_, maximum_;
-  unsigned long int groupd_id_;
-  waveform_channel wf_channel_;
-};
-
-// https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_tdxdata_submatrix/
-struct tdm_submatrix {
-  std::string name_;
-  unsigned long int number_of_rows_;  // -> number of values in channels
-  unsigned long int measurement_id_;  // -> channelgroup
-  unsigned long int local_column_id_;
-};
-
-enum class representation {
-  explicit_,          // !! explicit is C++ keyword!!
-  implicit_linear_,   // datatype is always DT_DOUBLE, no <value_sequence> for implicit_linear_!!
-  raw_linear_         // datatype is always DT_DOUBLE
-};
-
-// https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_tdxdata_localcolumn/
-struct localcolumn {
-  std::string name_;
-  unsigned long int global_flag_;
-  unsigned long int independent_;
-  double minimum_, maximum_;
-  representation sequence_representation_;
-  std::vector<double> generation_parameters_; // { offset, factor }
-  unsigned long int measurement_quantity_id_; // -> references single channel
-  unsigned long int submatrix_id_;
-  unsigned long int values_id_;               // -> refers to usi:data -> _sequence
-};
+#include "tdm_datamodel.hpp"
 
 // -------------------------------------------------------------------------- //
 
@@ -526,3 +370,5 @@ public:
 };
 
 #endif
+
+// -------------------------------------------------------------------------- //
