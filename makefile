@@ -49,6 +49,13 @@ clean :
 	rm -f $(EXE) *.o
 
 # --------------------------------------------------------------------------- #
+# check process
+
+checkps :
+	@ps aux | head -n1
+	@ps aux | grep $(EXE) | grep -v "grep"
+
+# --------------------------------------------------------------------------- #
 # python module
 #
 # pylib : setup.py pytdm_ripper.pyx tdm_ripper.pxd tdm_ripper.o
