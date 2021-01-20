@@ -73,22 +73,22 @@ void tdm_reaper::process_include(bool showlog)
   // get XML node
   pugi::xml_node tdmincl = xml_doc_.child("usi:tdm").child("usi:include");
 
-  // check endianess
+  // check endianness
   std::string endianness(tdmincl.child("file").attribute("byteOrder").value());
   endianness_ = endianness.compare("littleEndian") == 0 ? true : false;
 
   // check referenced .tdx file
   std::string urltdx(tdmincl.child("file").attribute("url").value());
 
-  // obtain machine's endianess
+  // obtain machine's endianness
   int num = 1;
   machine_endianness_ = ( *(char*)&num == 1 );
-  if ( machine_endianness_ != endianness_ ) throw std::runtime_error("endianess mismatch");
+  if ( machine_endianness_ != endianness_ ) throw std::runtime_error("endianness mismatch");
 
   if ( showlog )
   {
     std::cout<<"\n";
-    std::cout<<"endianess:          "<<(endianness_?"little":"big")<<"\n"
+    std::cout<<"endianness:         "<<(endianness_?"little":"big")<<"\n"
              <<"machine endianness: "<<(machine_endianness_?"little":"big")<<"\n"
              <<"url:                "<<urltdx<<"\n\n";
   }
