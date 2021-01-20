@@ -317,7 +317,8 @@ struct localcolumn {
       // TODO
       // <<std::setw(width)<<std::left<<"generation_parameters_:"<<"{"<<generation_parameters_[0]
       //                                                         <<","<<generation_parameters_[1]<<"}"<<"\n"
-      <<std::setw(width)<<std::left<<"values:"<<values_<<"\n";
+      <<std::setw(width)<<std::left<<"values:"<<values_<<"\n"
+      <<std::setw(width)<<std::left<<"external:"<<external_id_<<"\n";
     return ss.str();
   }
 };

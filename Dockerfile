@@ -10,8 +10,6 @@ RUN g++ -v
 
 COPY ./ /tdm_ripper/
 
-RUN cd /tdm_ripper && ls -lh && make install && ls -lh /usr/local/bin/tdmripper
+RUN cd /tdm_ripper && ls -lh && make install && ls -lh /usr/local/bin/tdmreaper
 
 CMD ["sleep","inifity"]
-
-

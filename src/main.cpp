@@ -188,16 +188,24 @@ int main(int argc, char* argv[])
     // check available datatypes on machine
     jack.check_local_datatypes();
 
+    // show some meta data of the dataset
+    std::cout<<"\n"<<jack.get_root().get_info()<<"\n\n";
+
     std::vector<std::string> chgrids = jack.get_channelgroup_ids();
     for ( auto el: chgrids ) std::cout<<el<<",";
-    std::cout<<"\n\n";
-
+    std::cout<<"\n";
     std::vector<std::string> chids = jack.get_channel_ids();
     for ( auto el: chids ) std::cout<<el<<",";
     std::cout<<"\n\n";
 
-    std::string id("usi23");
-    std::vector<double> chi = jack.get_channel(id);
+    // std::string id("usi15");
+    // std::vector<double> chi = jack.get_channel(id);
+
+    for ( auto el: chids )
+    {
+      std::string chfile = std::string("channel_") +el +std::string(".csv");
+      jack.print_channel(el,chfile.c_str());
+    }
 
     // print list of groups or channels to stdout
     // if ( listgroups ) jack.list_groups();

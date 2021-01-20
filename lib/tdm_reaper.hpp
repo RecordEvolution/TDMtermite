@@ -55,8 +55,8 @@ class tdm_reaper
   std::map<std::string,submatrix> submatrices_;
   std::map<std::string,localcolumn> localcolumns_;
 
-  // // binary data container
-  // std::vector<unsigned char> tdxbuf_;
+  // binary data container
+  std::vector<unsigned char> tdxbuffer_;
 
   // extract list of identifiers from e.g. "#xpointer(id("usi12") id("usi13"))"
   std::vector<std::string> extract_ids(std::string idstring)
@@ -140,6 +140,12 @@ public:
   void process_submatrices(bool showlog);
   void process_localcolumns(bool showlog);
 
+  // get root element
+  tdm_root get_root()
+  {
+    return tdmroot_;
+  }
+
   // get list of channelgroup ids
   std::vector<std::string> get_channelgroup_ids()
   {
@@ -163,6 +169,15 @@ public:
   // extract channel by id
   // (TODO introduce template T to reference specific datatype instead of double in general)
   std::vector<double> get_channel(std::string &id);
+
+  void print_channel(std::string &id, const char* filename);
+
+private:
+
+  template<typename datatype>
+  void convert_data_to_type(std::vector<unsigned char> &buffer,
+                            std::vector<datatype> &channel);
+
 };
 
 #endif

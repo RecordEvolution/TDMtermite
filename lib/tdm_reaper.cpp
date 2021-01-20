@@ -73,6 +73,24 @@ void tdm_reaper::process_tdm(bool showlog)
   this->process_channels(showlog);
   this->process_submatrices(showlog);
   this->process_localcolumns(showlog);
+
+  // open .tdx and stream all binary data into buffer
+  try {
+    std::ifstream fin(tdxfile_.c_str(),std::ifstream::binary);
+    // if ( !fin.good() ) std::cerr<<"failed to open .tdx-file\n";
+
+    std::vector<unsigned char> tdxbuf((std::istreambuf_iterator<char>(fin)),
+                                      (std::istreambuf_iterator<char>()));
+    tdxbuffer_ = tdxbuf;
+
+    if ( showlog ) std::cout<<"size of .tdx buffer (bytes): "<<tdxbuffer_.size()<<"\n\n";
+
+    // close .tdx file
+    fin.close();
+  } catch (const std::exception& e ) {
+    throw std::runtime_error( std::string("failed to open .tdx and stream data to buffer: ")
+                              + e.what() );
+  }
 }
 
 void tdm_reaper::process_include(bool showlog)
@@ -229,7 +247,7 @@ void tdm_reaper::process_channels(bool showlog)
     }
     else
     {
-      throw std::runtime_error("tdm_channel with out/multiple group id(s)");
+      throw std::logic_error("tdm_channel with out/multiple group id(s)");
     }
     tdmchannel.local_columns_ = this->extract_ids(channel.child_value("local_columns"));
 
@@ -265,7 +283,7 @@ void tdm_reaper::process_submatrices(bool showlog)
     }
     else
     {
-      throw std::runtime_error("submatrix with out/multiple measurement id(s)");
+      throw std::logic_error("submatrix with out/multiple measurement id(s)");
     }
     submat.local_columns_ = this->extract_ids(subm.child_value("local_columns"));
     std::string numrows = subm.child_value("number_of_rows");
@@ -304,7 +322,7 @@ void tdm_reaper::process_localcolumns(bool showlog)
     }
     else
     {
-      throw std::runtime_error("localcolumn with out/multiple measurement quantity id(s)");
+      throw std::logic_error("localcolumn with out/multiple measurement quantity id(s)");
     }
     std::vector<std::string> sm = this->extract_ids(loccol.child_value("submatrix"));
     if ( sm.size() == 1 )
@@ -313,7 +331,7 @@ void tdm_reaper::process_localcolumns(bool showlog)
     }
     else
     {
-      throw std::runtime_error("localcolumn with out/multiple submatrix id(s)");
+      throw std::logic_error("localcolumn with out/multiple submatrix id(s)");
     }
     std::string lcmin = loccol.child_value("minimum");
     lcmin = lcmin.empty() ? std::string("0.0") : lcmin;
@@ -332,7 +350,36 @@ void tdm_reaper::process_localcolumns(bool showlog)
     }
     else
     {
-      throw std::runtime_error("localcolumn with out/multiple values id(s)");
+      throw std::logic_error("localcolumn with out/multiple values id(s)");
+    }
+
+    // add external id referring to block in <usi:include>
+    {
+      // relying on fully initialized "tdmchannels_" !!)
+      if ( tdmchannels_.size() == 0 ) throw std::logic_error("tdmchannels_ not initialized");
+
+      // determine "channel_datatype_" and map it to its sequence type
+      std::string dt = tdmchannels_.at(locc.measurement_quantity_).datatype_;
+      std::string sequence_type;
+      for( auto itd = std::begin(tdm_datatypes); itd != std::end(tdm_datatypes); ++itd)
+      {
+        if ( dt == itd->channel_datatype_ ) sequence_type = itd->value_sequence_;
+      }
+
+      for ( pugi::xml_node seq = tdmdata.child(sequence_type.c_str()); seq;
+                           seq = seq.next_sibling(sequence_type.c_str()) )
+      {
+        if ( seq.attribute("id").value() == locc.values_ )
+        {
+          locc.external_id_ = seq.child("values").attribute("external").value();
+        }
+      }
+
+      if ( locc.external_id_.empty() )
+      {
+        throw std::logic_error( std::string("no external id found for ")
+                              + sequence_type + std::string(" with ") + locc.values_ );
+      }
     }
 
     // add localcolumn to map
@@ -348,23 +395,71 @@ void tdm_reaper::process_localcolumns(bool showlog)
 
 std::vector<double> tdm_reaper::get_channel(std::string &id)
 {
-  // declare vector of channel data
-  std::vector<double> chn;
-
   // check for existence of required channel id (=key)
   if ( tdmchannels_.count(id) == 1 )
   {
+    // retrieve full channel info
     tdm_channel chn = tdmchannels_.at(id);
-    std::cout<<chn.get_info()<<"\n";
-    std::cout<<localcolumns_.at(chn.local_columns_[0]).get_info()<<"\n";
 
+    // extract (first) "localcolumn" for channel
+    localcolumn loccol = localcolumns_.at(chn.local_columns_[0]);
+
+    // use "values" id to map to external block
+    block blk = tdx_blocks_.at(loccol.external_id_);
+
+    // declare buffer covering the required range of "tdxbuffer_"
+    std::vector<unsigned char> blkbuff( tdxbuffer_.begin()+blk.byte_offset_,
+                                        tdxbuffer_.begin()+blk.byte_offset_
+                                         + blk.length_*sizeof(double)        );
+
+    std::vector<double> datvec(blk.length_);
+    this->convert_data_to_type<double>(blkbuff,datvec);
+
+    return datvec;
   }
   else
   {
     throw std::invalid_argument(std::string("channel id does not exist: ") + id);
   }
+}
 
-  return chn;
+void tdm_reaper::print_channel(std::string &id, const char* filename)
+{
+  std::ofstream fou(filename);
+
+  std::vector<double> chn = this->get_channel(id);
+
+  for ( auto el: chn ) fou<<el<<"\n";
+
+  fou.close();
+}
+
+template<typename datatype>
+void tdm_reaper::convert_data_to_type(std::vector<unsigned char> &buffer,
+                                      std::vector<datatype> &channel)
+{
+  // check number of elements of type "datatype" in buffer
+  if ( buffer.size() != channel.size()*sizeof(datatype) )
+  {
+    throw std::runtime_error("size mismatch between buffer and datatype");
+  }
+
+  // extract every single number of type "datatype" from buffer
+  for ( unsigned long int i = 0; i < channel.size(); i++ )
+  {
+    // declare number of required type and point it to first byte in buffer
+    // representing the number
+    datatype df;
+    uint8_t* dfcast = reinterpret_cast<uint8_t*>(&df);
+
+    for ( unsigned long int j = 0; j < sizeof(datatype); j++ )
+    {
+      dfcast[j] = (int)buffer[i*sizeof(datatype)+j];
+    }
+
+    // save number in channel
+    channel[i] = df;
+  }
 }
 
 // -------------------------------------------------------------------------- //
