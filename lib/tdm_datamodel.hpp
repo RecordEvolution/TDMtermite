@@ -292,7 +292,7 @@ struct localcolumn {
 
   std::string values_;                        // -> refers to usi:data -> _sequence
 
-  const std::string get_info(int width = 20)
+  const std::string get_info(int width = 25)
   {
     std::stringstream ss;
     ss<<std::setw(width)<<std::left<<"id:"<<id_<<"\n"
@@ -303,8 +303,9 @@ struct localcolumn {
       <<std::setw(width)<<std::left<<"minimum:"<<std::to_string(minimum_)<<"\n"
       <<std::setw(width)<<std::left<<"maximum:"<<std::to_string(maximum_)<<"\n"
       <<std::setw(width)<<std::left<<"sequence_representation:"<<sequence_representation_<<"\n"
-      <<std::setw(width)<<std::left<<"generation_parameters_:"<<"{"<<generation_parameters_[0]
-                                                              <<","<<generation_parameters_[1]<<"}"<<"\n"
+      // TODO
+      // <<std::setw(width)<<std::left<<"generation_parameters_:"<<"{"<<generation_parameters_[0]
+      //                                                         <<","<<generation_parameters_[1]<<"}"<<"\n"
       <<std::setw(width)<<std::left<<"values:"<<values_<<"\n";
     return ss.str();
   }

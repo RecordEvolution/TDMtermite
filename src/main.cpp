@@ -181,7 +181,8 @@ int main(int argc, char* argv[])
     try {
       jack.submit_files(cfgopts.at("tdm"),cfgopts.at("tdx"),true);
     } catch (const std::exception& e) {
-      throw std::runtime_error("failed to load and parse tdm/tdx files");
+      throw std::runtime_error( std::string("failed to load and parse tdm/tdx files: ")
+                              + e.what() );
     }
 
     // print list of groups or channels to stdout

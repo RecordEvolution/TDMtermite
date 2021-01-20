@@ -71,6 +71,8 @@ void tdm_reaper::process_tdm(bool showlog)
   this->process_root(showlog);
   this->process_channelgroups(showlog);
   this->process_channels(showlog);
+  this->process_submatrices(showlog);
+  this->process_localcolumns(showlog);
 }
 
 void tdm_reaper::process_include(bool showlog)
@@ -181,7 +183,7 @@ void tdm_reaper::process_channelgroups(bool showlog)
     }
     else
     {
-      throw std::runtime_error("tdm_channelgroup without root id");
+      throw std::runtime_error("tdm_channelgroup with out/multiple root id(s)");
     }
     tdmchannelgroup.channels_ = this->extract_ids(group.child_value("channels"));
     tdmchannelgroup.submatrices_ = this->extract_ids(group.child_value("submatrices"));
@@ -214,8 +216,12 @@ void tdm_reaper::process_channels(bool showlog)
     tdmchannel.description_ = channel.child_value("description");
     tdmchannel.unit_string_ = channel.child_value("unit_string");
     tdmchannel.datatype_ = channel.child_value("datatype");
-    tdmchannel.minimum_ = std::stod(channel.child_value("minimum"));
-    tdmchannel.maximum_ = std::stod(channel.child_value("maximum"));
+    std::string chmin = channel.child_value("minimum");
+    chmin = chmin.empty() ? std::string("0.0") : chmin;
+    tdmchannel.minimum_ = std::stod(chmin);
+    std::string chmax = channel.child_value("maximum");
+    chmax = chmax.empty() ? std::string("0.0") : chmax;
+    tdmchannel.maximum_ = std::stod(chmax);
     std::vector<std::string> cg = this->extract_ids(channel.child_value("group"));
     if ( cg.size() == 1 )
     {
@@ -223,7 +229,7 @@ void tdm_reaper::process_channels(bool showlog)
     }
     else
     {
-      throw std::runtime_error("tdm_channel without group id");
+      throw std::runtime_error("tdm_channel with out/multiple group id(s)");
     }
     tdmchannel.local_columns_ = this->extract_ids(channel.child_value("local_columns"));
 
@@ -234,6 +240,108 @@ void tdm_reaper::process_channels(bool showlog)
   }
 
   if ( showlog ) std::cout<<"number of channels: "<<tdmchannels_.size()<<"\n\n";
+}
+
+void tdm_reaper::process_submatrices(bool showlog)
+{
+  // get XML node <usi:data>
+  pugi::xml_node tdmdata = xml_doc_.child("usi:tdm").child("usi:data");
+
+  // find all its <submatrix> elements
+  for ( pugi::xml_node subm = tdmdata.child("submatrix"); subm;
+                       subm = subm.next_sibling("submatrix") )
+  {
+    // declare new submatrix
+    submatrix submat;
+
+    // extract properties
+    submat.id_ = subm.attribute("id").value();
+    submat.name_ = subm.child_value("name");
+    submat.description_ = subm.child_value("description");
+    std::vector<std::string> mid = this->extract_ids(subm.child_value("measurement"));
+    if ( mid.size() == 1 )
+    {
+      submat.measurement_ = mid.at(0);
+    }
+    else
+    {
+      throw std::runtime_error("submatrix with out/multiple measurement id(s)");
+    }
+    submat.local_columns_ = this->extract_ids(subm.child_value("local_columns"));
+    std::string numrows = subm.child_value("number_of_rows");
+    numrows = numrows.empty() ? std::string("0") : numrows; 
+    submat.number_of_rows_ = std::stoul(numrows);
+
+    // add submatrix to map
+    submatrices_.insert( std::pair<std::string,submatrix>(submat.id_,submat) );
+
+    if ( showlog ) std::cout<<submat.get_info()<<"\n";
+  }
+
+  if ( showlog ) std::cout<<"number of submatrices: "<<submatrices_.size()<<"\n\n";
+}
+
+void tdm_reaper::process_localcolumns(bool showlog)
+{
+  // get XML node <usi:data>
+  pugi::xml_node tdmdata = xml_doc_.child("usi:tdm").child("usi:data");
+
+  // find all its <localcolumn> elements
+  for ( pugi::xml_node loccol = tdmdata.child("localcolumn"); loccol;
+                       loccol = loccol.next_sibling("localcolumn") )
+  {
+    // declare new localcolumn
+    localcolumn locc;
+
+    // extract properties
+    locc.id_ = loccol.attribute("id").value();
+    locc.name_ = loccol.child_value("name");
+    locc.description_ = loccol.child_value("description");
+    std::vector<std::string> mq = this->extract_ids(loccol.child_value("measurement_quantity"));
+    if ( mq.size() == 1 )
+    {
+      locc.measurement_quantity_ = mq.at(0);
+    }
+    else
+    {
+      throw std::runtime_error("localcolumn with out/multiple measurement quantity id(s)");
+    }
+    std::vector<std::string> sm = this->extract_ids(loccol.child_value("submatrix"));
+    if ( sm.size() == 1 )
+    {
+      locc.submatrix_ = sm.at(0);
+    }
+    else
+    {
+      throw std::runtime_error("localcolumn with out/multiple submatrix id(s)");
+    }
+    std::string lcmin = loccol.child_value("minimum");
+    lcmin = lcmin.empty() ? std::string("0.0") : lcmin;
+    locc.minimum_ = std::stod(lcmin);
+    std::string lcmax = loccol.child_value("maximum");
+    lcmax = lcmax.empty() ? std::string("0.0") : lcmax;
+    locc.maximum_ = std::stod(lcmax);
+    locc.sequence_representation_ = loccol.child_value("sequence_representation");
+    // TODO
+    // .... loccal.child_value("generation_parameters");
+
+    std::vector<std::string> vl = this->extract_ids(loccol.child_value("values"));
+    if ( vl.size() == 1 )
+    {
+      locc.values_ = vl.at(0);
+    }
+    else
+    {
+      throw std::runtime_error("localcolumn with out/multiple values id(s)");
+    }
+
+    // add localcolumn to map
+    localcolumns_.insert( std::pair<std::string,localcolumn>(locc.id_,locc) );
+
+    if ( showlog ) std::cout<<locc.get_info()<<"\n";
+  }
+
+  if ( showlog ) std::cout<<"number of localcolumns: "<<localcolumns_.size()<<"\n\n";
 }
 
 
