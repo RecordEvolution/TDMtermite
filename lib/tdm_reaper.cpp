@@ -41,7 +41,11 @@ void tdm_reaper::process_tdm(bool showlog)
 
   // set up xml-parser and load tdm-file
   try {
-    xml_result_ = xml_doc_.load_file(tdmfile_.c_str());
+    // load XML document from stream
+    std::ifstream fin(tdmfile_.c_str());
+    xml_result_ = xml_doc_.load(fin);
+    fin.close();
+    // xml_result_ = xml_doc_.load_file(tdmfile_.c_str());
 
     if ( showlog )
     {
