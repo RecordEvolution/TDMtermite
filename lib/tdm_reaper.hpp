@@ -45,6 +45,9 @@ class tdm_reaper
   // tdm root
   tdm_root tdmroot_;
 
+  // tdm channelgroups
+  std::map<std::string,tdm_channelgroup> tdmchannelgroups_;
+
   // // number/names/ids of channels, channelgroups and channels's assignment to groups
   // int num_channels_, num_groups_;
   // std::vector<std::string> channel_id_, inc_id_, units_, channel_name_;
@@ -80,6 +83,24 @@ class tdm_reaper
   // // binary data container
   // std::vector<unsigned char> tdxbuf_;
 
+  // extract list of identifiers from e.g. "#xpointer(id("usi12") id("usi13"))"
+  std::vector<std::string> extract_ids(std::string idstring)
+  {
+    // collect group identifiers by means of regex pattern "usi[0-9]+"
+    std::regex regid("(usi[0-9]+)");
+
+    // declare match instance and regex iterator (to find ALL matches)
+    std::smatch usi_match;
+    std::sregex_iterator pos(idstring.begin(), idstring.end(), regid);
+    std::sregex_iterator end;
+
+    // iterate through all matches
+    std::vector<std::string> listofids;
+    for ( ; pos != end; ++pos) listofids.push_back(pos->str());
+
+    return listofids;
+  }
+
 public:
 
   // encoding
@@ -102,8 +123,8 @@ public:
   void process_root(bool showlog);
 
   // process/list all channels and groups
+  void process_channelgroups(bool showlog);
   void process_channels(bool showlog);
-  void process_groups(bool showlog);
 
   // void parse_structure();
   //

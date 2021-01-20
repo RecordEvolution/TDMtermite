@@ -152,7 +152,8 @@ struct tdm_channelgroup {
   std::string name_;
   std::string description_;
   std::string root_;
-  std::vector<long int> channels_; // referenced by id
+  std::vector<std::string> channels_; // referenced by id
+  std::vector<std::string> submatrices_;
 
   const std::string get_info(int width = 20)
   {

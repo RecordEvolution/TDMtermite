@@ -65,7 +65,7 @@ void tdm_reaper::process_tdm(bool showlog)
   // process elements of XML
   this->process_include(showlog);
   this->process_root(showlog);
-
+  this->process_channelgroups(showlog);
 }
 
 void tdm_reaper::process_include(bool showlog)
@@ -147,16 +147,48 @@ void tdm_reaper::process_root(bool showlog)
   tdmroot_.author_ = tdmdataroot.child_value("author");
   tdmroot_.timestamp_ = tdmdataroot.child_value("datetime");
 
-  // collect group identifiers by means of regex pattern "usi[0-9]+"
-  std::string chnlgrps = tdmdataroot.child_value("channelgroups");
-  std::regex regid("(usi[0-9]+)");
-  std::smatch usi_match;
-  std::sregex_iterator pos(chnlgrps.begin(), chnlgrps.end(), regid);
-  std::sregex_iterator end;
-  for ( ; pos != end; ++pos) tdmroot_.channelgroups_.push_back(pos->str());
-  // std::cout<<pos->str(0)<<"\n";
+  // collect channelgroup identifiers associated to root
+  tdmroot_.channelgroups_ = this->extract_ids(tdmdataroot.child_value("channelgroups"));
 
   if ( showlog ) std::cout<<tdmroot_.get_info()<<"\n";
+}
+
+void tdm_reaper::process_channelgroups(bool showlog)
+{
+  // get XML node <usi:data>
+  pugi::xml_node tdmdata = xml_doc_.child("usi:tdm").child("usi:data");
+
+  // find all its <tdm_channelgroup> elements
+  for ( pugi::xml_node group = tdmdata.child("tdm_channelgroup"); group;
+                       group = group.next_sibling("tdm_channelgroup") )
+  {
+    // declare new group
+    tdm_channelgroup tdmchannelgroup;
+
+    // extract properties
+    tdmchannelgroup.id_ = group.attribute("id").value();
+    tdmchannelgroup.name_ = group.child_value("name");
+    tdmchannelgroup.description_ = group.child_value("description");
+    std::vector<std::string> gr = this->extract_ids(group.child_value("root"));
+    if ( gr.size() == 1 )
+    {
+      tdmchannelgroup.root_ = gr.at(0);
+    }
+    else
+    {
+      throw std::runtime_error("tdm_channelgroup without root id");
+    }
+    tdmchannelgroup.channels_ = this->extract_ids(group.child_value("channels"));
+    tdmchannelgroup.submatrices_ = this->extract_ids(group.child_value("submatrices"));
+
+    // add channelgroup to map
+    tdmchannelgroups_.insert( std::pair<std::string,tdm_channelgroup>(
+                                      tdmchannelgroup.id_,tdmchannelgroup) );
+
+    if ( showlog ) std::cout<<tdmchannelgroup.get_info()<<"\n";
+  }
+
+  if ( showlog ) std::cout<<"number of channelgroups: "<<tdmchannelgroups_.size()<<"\n\n";
 }
 
   // pugi::xml_node xmlusiincl = xml_doc_.child("usi:tdm").child("usi:include");
