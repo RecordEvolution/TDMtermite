@@ -70,6 +70,7 @@ void tdm_reaper::process_tdm(bool showlog)
   this->process_include(showlog);
   this->process_root(showlog);
   this->process_channelgroups(showlog);
+  this->process_channels(showlog);
 }
 
 void tdm_reaper::process_include(bool showlog)
@@ -195,23 +196,45 @@ void tdm_reaper::process_channelgroups(bool showlog)
   if ( showlog ) std::cout<<"number of channelgroups: "<<tdmchannelgroups_.size()<<"\n\n";
 }
 
-  // pugi::xml_node xmlusiincl = xml_doc_.child("usi:tdm").child("usi:include");
-  // pugi::xml_node xmlusidata = xml_doc_.child("usi:tdm").child("usi:data");
-  // pugi::xml_node xmltdmroot = xml_doc_.child("usi:tdm").child("usi:data").child("tdm_root");
+void tdm_reaper::process_channels(bool showlog)
+{
+  // get XML node <usi:data>
+  pugi::xml_node tdmdata = xml_doc_.child("usi:tdm").child("usi:data");
 
-// void tdm_reaper::print_channel(int idx, char const* name, int width)
-// {
-//
-// }
-//
-// void tdm_reaper::list_groups(std::ostream& out, int g, int c)
-// {
-//
-// }
-//
-// void tdm_reaper::list_channels(std::ostream& out, int g, int c)
-// {
-//
-// }
+  // find all its <tdm_channel> elements
+  for ( pugi::xml_node channel = tdmdata.child("tdm_channel"); channel;
+                       channel = channel.next_sibling("tdm_channel") )
+  {
+    // declare new channel
+    tdm_channel tdmchannel;
+
+    // extract properties
+    tdmchannel.id_ = channel.attribute("id").value();
+    tdmchannel.name_ = channel.child_value("name");
+    tdmchannel.description_ = channel.child_value("description");
+    tdmchannel.unit_string_ = channel.child_value("unit_string");
+    tdmchannel.datatype_ = channel.child_value("datatype");
+    tdmchannel.minimum_ = std::stod(channel.child_value("minimum"));
+    tdmchannel.maximum_ = std::stod(channel.child_value("maximum"));
+    std::vector<std::string> cg = this->extract_ids(channel.child_value("group"));
+    if ( cg.size() == 1 )
+    {
+      tdmchannel.group_ = cg.at(0);
+    }
+    else
+    {
+      throw std::runtime_error("tdm_channel without group id");
+    }
+    tdmchannel.local_columns_ = this->extract_ids(channel.child_value("local_columns"));
+
+    // add channel to map
+    tdmchannels_.insert( std::pair<std::string,tdm_channel>(tdmchannel.id_,tdmchannel) );
+
+    if ( showlog ) std::cout<<tdmchannel.get_info()<<"\n";
+  }
+
+  if ( showlog ) std::cout<<"number of channels: "<<tdmchannels_.size()<<"\n\n";
+}
+
 
 // -------------------------------------------------------------------------- //

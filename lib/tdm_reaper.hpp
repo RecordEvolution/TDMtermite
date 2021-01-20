@@ -48,6 +48,9 @@ class tdm_reaper
   // tdm channelgroups
   std::map<std::string,tdm_channelgroup> tdmchannelgroups_;
 
+  // tdm channels
+  std::map<std::string,tdm_channel> tdmchannels_;
+
   // // number/names/ids of channels, channelgroups and channels's assignment to groups
   // int num_channels_, num_groups_;
   // std::vector<std::string> channel_id_, inc_id_, units_, channel_name_;
