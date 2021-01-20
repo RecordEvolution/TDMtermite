@@ -53,6 +53,16 @@ struct block {
 
 // https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_header_tdx_data/
 
+enum class tdmdatatype {
+  eInt16Usi,
+  eInt32Usi,
+  eUInt8Usi,
+  eUInt16Usi,
+  eUInt32Usi,
+  eFloat32Usi,
+  eFloat64Usi
+};
+
 struct tdm_datatype {
 
   std::string name_;

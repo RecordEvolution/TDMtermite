@@ -185,6 +185,9 @@ int main(int argc, char* argv[])
                               + e.what() );
     }
 
+    // check available datatypes on machine
+    jack.check_local_datatypes();
+
     std::vector<std::string> chgrids = jack.get_channelgroup_ids();
     for ( auto el: chgrids ) std::cout<<el<<",";
     std::cout<<"\n\n";

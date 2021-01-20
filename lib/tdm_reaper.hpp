@@ -78,6 +78,41 @@ class tdm_reaper
 
 public:
 
+  // check machine's datatypes
+  // https://en.cppreference.com/w/cpp/language/types
+  void check_local_datatypes()
+  {
+    std::cout<<"\nmachine's C++ datatypes:\n";
+    std::cout<<std::setw(25)<<std::left<<"char:"
+             <<std::setw(5)<<std::left<<sizeof(char)<<"byte(s)\n"
+             <<std::setw(25)<<std::left<<"uint8_t:"
+             <<std::setw(5)<<std::left<<sizeof(uint8_t)<<"byte(s)\n"
+
+             <<std::setw(25)<<std::left<<"short int:"
+             <<std::setw(5)<<std::left<<sizeof(short int)<<"byte(s)\n"
+             <<std::setw(25)<<std::left<<"unsigned short int:"
+             <<std::setw(5)<<std::left<<sizeof(unsigned short int)<<"byte(s)\n"
+
+             <<std::setw(25)<<std::left<<"int:"
+             <<std::setw(5)<<std::left<<sizeof(int)<<"byte(s)\n"
+             <<std::setw(25)<<std::left<<"unsigned int:"
+             <<std::setw(5)<<std::left<<sizeof(unsigned int)<<"byte(s)\n"
+
+             <<std::setw(25)<<std::left<<"long int:"
+             <<std::setw(5)<<std::left<<sizeof(long int)<<"byte(s)\n"
+             <<std::setw(25)<<std::left<<"unsigned long int:"
+             <<std::setw(5)<<std::left<<sizeof(unsigned long int)<<"byte(s)\n"
+
+             <<std::setw(25)<<std::left<<"float:"
+             <<std::setw(5)<<std::left<<sizeof(float)<<"byte(s)\n"
+             <<std::setw(25)<<std::left<<"double:"
+             <<std::setw(5)<<std::left<<sizeof(double)<<"byte(s)\n"
+             <<std::setw(25)<<std::left<<"long double:"
+             <<std::setw(5)<<std::left<<sizeof(long double)<<"byte(s)\n\n";
+  }
+
+public:
+
   // encoding
   tdm_reaper(std::vector<std::string> csvfile);
 

@@ -35,7 +35,7 @@ uninstall : $(INST)/$(EXE)
 	rm $<
 
 # build main.cpp object file and include git version/commit tag
-main.o : src/main.cpp
+main.o : src/main.cpp lib/$(SRC).hpp
 	@cp $< $<.cpp
 	@sed -i 's/TAGSTRING/$(GTAG)/g' $<.cpp
 	@sed -i 's/HASHSTRING/$(GHSH)/g' $<.cpp
