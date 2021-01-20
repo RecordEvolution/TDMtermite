@@ -269,7 +269,7 @@ void tdm_reaper::process_submatrices(bool showlog)
     }
     submat.local_columns_ = this->extract_ids(subm.child_value("local_columns"));
     std::string numrows = subm.child_value("number_of_rows");
-    numrows = numrows.empty() ? std::string("0") : numrows; 
+    numrows = numrows.empty() ? std::string("0") : numrows;
     submat.number_of_rows_ = std::stoul(numrows);
 
     // add submatrix to map
@@ -344,5 +344,27 @@ void tdm_reaper::process_localcolumns(bool showlog)
   if ( showlog ) std::cout<<"number of localcolumns: "<<localcolumns_.size()<<"\n\n";
 }
 
+// -------------------------------------------------------------------------- //
+
+std::vector<double> tdm_reaper::get_channel(std::string &id)
+{
+  // declare vector of channel data
+  std::vector<double> chn;
+
+  // check for existence of required channel id (=key)
+  if ( tdmchannels_.count(id) == 1 )
+  {
+    tdm_channel chn = tdmchannels_.at(id);
+    std::cout<<chn.get_info()<<"\n";
+    std::cout<<localcolumns_.at(chn.local_columns_[0]).get_info()<<"\n";
+
+  }
+  else
+  {
+    throw std::invalid_argument(std::string("channel id does not exist: ") + id);
+  }
+
+  return chn;
+}
 
 // -------------------------------------------------------------------------- //

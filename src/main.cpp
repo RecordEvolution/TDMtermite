@@ -179,11 +179,22 @@ int main(int argc, char* argv[])
     // declare and initialize tdm_ripper instance
     tdm_reaper jack;
     try {
-      jack.submit_files(cfgopts.at("tdm"),cfgopts.at("tdx"),true);
+      jack.submit_files(cfgopts.at("tdm"),cfgopts.at("tdx"),false);
     } catch (const std::exception& e) {
       throw std::runtime_error( std::string("failed to load and parse tdm/tdx files: ")
                               + e.what() );
     }
+
+    std::vector<std::string> chgrids = jack.get_channelgroup_ids();
+    for ( auto el: chgrids ) std::cout<<el<<",";
+    std::cout<<"\n\n";
+
+    std::vector<std::string> chids = jack.get_channel_ids();
+    for ( auto el: chids ) std::cout<<el<<",";
+    std::cout<<"\n\n";
+
+    std::string id("usi23");
+    std::vector<double> chi = jack.get_channel(id);
 
     // print list of groups or channels to stdout
     // if ( listgroups ) jack.list_groups();

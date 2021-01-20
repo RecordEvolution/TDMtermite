@@ -104,6 +104,30 @@ public:
   // process submatrices and localcolumns
   void process_submatrices(bool showlog);
   void process_localcolumns(bool showlog);
+
+  // get list of channelgroup ids
+  std::vector<std::string> get_channelgroup_ids()
+  {
+    std::vector<std::string> channelgroup_ids;
+    for (std::map<std::string,tdm_channelgroup>::iterator it=tdmchannelgroups_.begin();
+                    it!=tdmchannelgroups_.end(); ++it) channelgroup_ids.push_back(it->first);
+
+    return channelgroup_ids;
+  }
+
+  // get list of channel ids
+  std::vector<std::string> get_channel_ids()
+  {
+    std::vector<std::string> channel_ids;
+    for (std::map<std::string,tdm_channel>::iterator it=tdmchannels_.begin();
+                    it!=tdmchannels_.end(); ++it) channel_ids.push_back(it->first);
+
+    return channel_ids;
+  }
+
+  // extract channel by id
+  // (TODO introduce template T to reference specific datatype instead of double in general)
+  std::vector<double> get_channel(std::string &id);
 };
 
 #endif

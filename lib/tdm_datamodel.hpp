@@ -35,7 +35,7 @@ struct block {
     value_type_ = std::string("");
   }
 
-  const std::string get_info(int width = 20)
+  const std::string get_info(int width = 25)
   {
     std::stringstream ss;
     ss<<std::setw(width)<<std::left<<"id:"<<id_<<"\n"
@@ -62,7 +62,7 @@ struct tdm_datatype {
   int size_;
   std::string description_;
 
-  const std::string get_info(int width = 20)
+  const std::string get_info(int width = 25)
   {
     std::stringstream ss;
     ss<<std::setw(width)<<std::left<<"name:"<<name_<<"\n"
@@ -75,19 +75,19 @@ struct tdm_datatype {
   }
 };
 
-const std::map<std::string,tdm_datatype> tdm_datatypes = {
+const std::vector<tdm_datatype> tdm_datatypes = {
 
-  {"eInt16Usi",{"eInt16Usi","DT_SHORT",2,"short_sequence",2,"signed 16 bit integer"}},
-  {"eInt32Usi",{"eInt32Usi","DT_LONG",6,"long_sequence",4,"signed 32 bit integer"}},
+  {"eInt16Usi","DT_SHORT",2,"short_sequence",2,"signed 16 bit integer"},
+  {"eInt32Usi","DT_LONG",6,"long_sequence",4,"signed 32 bit integer"},
 
-  {"eUInt8Usi",{"eUInt8Usi","DT_BYTE",5,"byte_sequence",1,"unsigned 8 bit integer"}},
-  {"eUInt16Usi",{"eUInt16Usi","DT_SHORT",2,"short_sequence",2,"unsigned 16 bit integer"}},
-  {"eUInt32Usi",{"eUInt32Usi","DT_LONG",6,"long_sequence",4,"unsigned 32 bit integer"}},
+  {"eUInt8Usi","DT_BYTE",5,"byte_sequence",1,"unsigned 8 bit integer"},
+  {"eUInt16Usi","DT_SHORT",2,"short_sequence",2,"unsigned 16 bit integer"},
+  {"eUInt32Usi","DT_LONG",6,"long_sequence",4,"unsigned 32 bit integer"},
 
-  {"eFloat32Usi",{"eFloat32Usi","DT_FLOAT",3,"float_sequence",4,"32 bit float"}},
-  {"eFloat64Usi",{"eFloat64Usi","DT_DOUBLE",7,"double_sequence",8,"64 bit double"}},
+  {"eFloat32Usi","DT_FLOAT",3,"float_sequence",4,"32 bit float"},
+  {"eFloat64Usi","DT_DOUBLE",7,"double_sequence",8,"64 bit double"},
 
-  {"eStringUsi",{"eStringUsi","DT_STRING",1,"string_sequence",0,"text"}}
+  {"eStringUsi","DT_STRING",1,"string_sequence",0,"text"}
 
 };
 
@@ -124,7 +124,7 @@ struct tdm_root {
 
   std::vector<std::string> channelgroups_;
 
-  const std::string get_info(int width = 20)
+  const std::string get_info(int width = 25)
   {
     std::stringstream ss;
     ss<<std::setw(width)<<std::left<<"id:"<<id_<<"\n"
@@ -155,7 +155,7 @@ struct tdm_channelgroup {
   std::vector<std::string> channels_; // referenced by id
   std::vector<std::string> submatrices_;
 
-  const std::string get_info(int width = 20)
+  const std::string get_info(int width = 25)
   {
     std::stringstream ss;
     ss<<std::setw(width)<<std::left<<"id:"<<id_<<"\n"
@@ -214,7 +214,7 @@ struct tdm_channel {
   // TODO
   waveform_channel wf_channel_;
 
-  const std::string get_info(int width = 20)
+  const std::string get_info(int width = 25)
   {
     std::stringstream ss;
     ss<<std::setw(width)<<std::left<<"id:"<<id_<<"\n"
@@ -247,7 +247,7 @@ struct submatrix {
   std::vector<std::string> local_columns_;  // -> list of type "localcolumn"
   unsigned long int number_of_rows_;        // -> number of values in channels
 
-  const std::string get_info(int width = 20)
+  const std::string get_info(int width = 25)
   {
     std::stringstream ss;
     ss<<std::setw(width)<<std::left<<"id:"<<id_<<"\n"
@@ -291,6 +291,7 @@ struct localcolumn {
   std::vector<double> generation_parameters_; // { offset, factor }
 
   std::string values_;                        // -> refers to usi:data -> _sequence
+  std::string external_id_;
 
   const std::string get_info(int width = 25)
   {
