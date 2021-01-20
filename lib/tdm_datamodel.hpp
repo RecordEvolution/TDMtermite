@@ -166,6 +166,12 @@ struct tdm_channelgroup {
     for ( auto el: channels_ ) ss<<el<<",";
     std::string infostr = ss.str();
     infostr.pop_back();
+    ss.str(std::string());
+    ss<<infostr<<"\n"
+      <<std::setw(width)<<std::left<<"submatrices:";
+    for ( auto el: submatrices_ ) ss<<el<<",";
+    infostr = ss.str();
+    infostr.pop_back();
     return ( infostr + std::string("\n") );
   }
 };
