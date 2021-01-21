@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
     // declare and initialize tdm_ripper instance
     tdm_reaper jack;
     try {
-      jack.submit_files(cfgopts.at("tdm"),cfgopts.at("tdx"),false);
+      jack.submit_files(cfgopts.at("tdm"),cfgopts.at("tdx"),true);
     } catch (const std::exception& e) {
       throw std::runtime_error( std::string("failed to load/parse tdm/tdx files: ")
                               + e.what() );
@@ -191,15 +191,17 @@ int main(int argc, char* argv[])
     // show some meta data of the dataset
     std::cout<<"\n"<<jack.get_root().get_info()<<"\n\n";
 
-    std::vector<std::string> chgrids = jack.get_channelgroup_ids();
-    for ( auto el: chgrids ) std::cout<<el<<",";
-    std::cout<<"\n";
-    std::vector<std::string> chids = jack.get_channel_ids();
-    for ( auto el: chids ) std::cout<<el<<",";
-    std::cout<<"\n\n";
+    // get complete channel overview
+    format chformatter(14,false,false,' ');
+    std::cout<<jack.get_channel_overview(chformatter)<<"\n";
 
-    std::string id("usi15");
-    std::vector<double> chi = jack.get_channel(id);
+    // std::vector<std::string> chgrids = jack.get_channelgroup_ids();
+    // for ( auto el: chgrids ) std::cout<<el<<",";
+    // std::cout<<"\n";
+    // std::vector<std::string> chids = jack.get_channel_ids();
+    // for ( auto el: chids ) std::cout<<el<<",";
+    // std::cout<<"\n\n";
+
 
     // for ( auto el: chids )
     // {

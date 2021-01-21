@@ -393,6 +393,49 @@ void tdm_reaper::process_localcolumns(bool showlog)
 
 // -------------------------------------------------------------------------- //
 
+std::string tdm_reaper::get_channel_overview(format chformatter)
+{
+  // declare format instance
+  // format chformatter(15,false,false,' ');
+
+  // summarize all output in single string
+  std::string channels_summary;
+
+  // set tabular mode of formatter
+  chformatter.set_tabular(true);
+
+  // compose header
+  chformatter.set_header(true);
+  tdm_channelgroup grp;
+  channels_summary += grp.get_info(chformatter);
+  tdm_channel chn;
+  channels_summary += chn.get_info(chformatter);
+  std::string rule; // = std::string("#");
+  for ( unsigned long int i = 0; i < channels_summary.size(); i++ )
+  {
+    rule += std::string("-");
+  }
+  // rule += std::string("#");
+  channels_summary = // std::string("# ") +
+                channels_summary + std::string("\n") + rule + std::string("\n");
+
+  chformatter.set_header(false);
+  for (std::map<std::string,tdm_channel>::iterator it=tdmchannels_.begin();
+                                                   it!=tdmchannels_.end(); ++it)
+  {
+    // get corresponding group
+    tdm_channelgroup grp = tdmchannelgroups_.at(it->second.group_);
+    channels_summary += grp.get_info(chformatter);
+    // ...and actual channel
+    channels_summary += it->second.get_info(chformatter);
+    channels_summary += std::string("\n");
+  }
+
+  return channels_summary;
+}
+
+// -------------------------------------------------------------------------- //
+
 std::vector<double> tdm_reaper::get_channel(std::string &id)
 {
   // check for existence of required channel id (=key)

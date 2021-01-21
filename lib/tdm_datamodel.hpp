@@ -16,6 +16,105 @@
 #include <sstream>
 
 // -------------------------------------------------------------------------- //
+// format output of info strings for terminal and file table
+
+class format
+{
+
+private:
+
+  unsigned int width_;
+  bool tabular_;
+  bool header_;
+  char sep_;
+  std::vector<std::pair<std::string,std::string>> columns_;
+
+public:
+
+  format(int width = 25, bool tabular = false, bool header = false, char sep = ' '):
+    width_(width), tabular_(tabular), header_(header), sep_(sep)
+  {
+
+  }
+
+  void set_width(int width)
+  {
+    width_ = width;
+  }
+
+  void set_tabular(bool tabular)
+  {
+    tabular_ = tabular;
+  }
+
+  void set_header(bool header)
+  {
+    header_ = header;
+  }
+
+  void set_sep(char sep)
+  {
+    sep_ = sep;
+  }
+
+  void set_columns(std::vector<std::pair<std::string,std::string>> columns)
+  {
+    columns_ = columns;
+  }
+
+  std::string get_info()
+  {
+    std::stringstream ss;
+
+    for ( std::vector<std::pair<std::string,std::string>>::iterator it = columns_.begin();
+                                                                    it != columns_.end(); ++it )
+    {
+      if ( tabular_ )
+      {
+        // header or body of table
+        std::string entry = header_? it->first : it->second;
+
+        // make broad aligned columns for human reader
+        if ( sep_ == ' ' )
+        {
+          entry = entry.size() > width_-2 ? entry.substr(0,width_-2) : entry;
+          // if ( it == columns_.begin() && !header_ ) ss<<"  ";
+          ss<<std::setw(width_)<<std::left<<entry;
+        }
+        // make compressed csv like columns
+        else
+        {
+          ss<<entry;
+          if ( std::next(it,1) != columns_.end() ) ss<<sep_;
+        }
+      }
+      else
+      {
+        ss<<std::setw(width_)<<std::left<<(it->first+std::string(":"))<<it->second<<"\n";
+      }
+    }
+
+    return ss.str();
+  }
+};
+
+// define default formatter
+static format defformat(25,false,false,',');
+
+// join a list of strings
+static std::string join_strings(std::vector<std::string> &thestring, const char* sep = " ")
+{
+  std::string joined;
+  for ( std::vector<std::string>::iterator it = thestring.begin();
+                                           it != thestring.end(); ++it )
+  {
+    joined += std::next(it,1) != thestring.end() ? ( *it + std::string(sep) ) : *it;
+  }
+
+  return joined;
+}
+
+// -------------------------------------------------------------------------- //
 // tdm datatypes
 
 // https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_header_tdx_data/
@@ -39,16 +138,17 @@ struct tdm_datatype {
   int size_;
   std::string description_;
 
-  const std::string get_info(int width = 25)
+  const std::string get_info() { return get_info(defformat); }
+  const std::string get_info(format& formatter)
   {
-    std::stringstream ss;
-    ss<<std::setw(width)<<std::left<<"name:"<<name_<<"\n"
-      <<std::setw(width)<<std::left<<"channel_datatype:"<<channel_datatype_<<"\n"
-      <<std::setw(width)<<std::left<<"numeric:"<<numeric_<<"\n"
-      <<std::setw(width)<<std::left<<"value_sequence:"<<value_sequence_<<"\n"
-      <<std::setw(width)<<std::left<<"size:"<<size_<<"\n"
-      <<std::setw(width)<<std::left<<"description:"<<description_<<"\n";
-    return ss.str();
+    formatter.set_columns( { std::make_pair("name",name_),
+                             std::make_pair("channel_datatype",channel_datatype_),
+                             std::make_pair("name",name_),
+                             std::make_pair("value_sequence",value_sequence_),
+                             std::make_pair("size",std::to_string(size_)),
+                             std::make_pair("description",description_) } );
+
+    return formatter.get_info();
   }
 };
 
@@ -88,17 +188,19 @@ struct block {
     value_type_ = std::string("");
   }
 
-  const std::string get_info(int width = 25)
+  const std::string get_info() { return get_info(defformat); }
+  const std::string get_info(format& formatter)
   {
-    std::stringstream ss;
-    ss<<std::setw(width)<<std::left<<"id:"<<id_<<"\n"
-      <<std::setw(width)<<std::left<<"byteOffset:"<<std::to_string(byte_offset_)<<"\n"
-      <<std::setw(width)<<std::left<<"length:"<<std::to_string(length_)<<"\n"
-      <<std::setw(width)<<std::left<<"blockOffset:"<<std::to_string(block_offset_)<<"\n"
-      <<std::setw(width)<<std::left<<"blockSize:"<<std::to_string(block_size_)<<"\n"
-      <<std::setw(width)<<std::left<<"valueType:"<<value_type_<<"\n";
-    return ss.str();
+    formatter.set_columns({ std::make_pair("block-id",id_),
+                            std::make_pair("byteOffset",std::to_string(byte_offset_)),
+                            std::make_pair("length",std::to_string(length_)),
+                            std::make_pair("blockOffset",std::to_string(block_offset_)),
+                            std::make_pair("blockSize",std::to_string(block_size_)),
+                            std::make_pair("valueType",value_type_) });
+
+    return formatter.get_info();
   }
+
 };
 
 // -------------------------------------------------------------------------- //
@@ -134,21 +236,20 @@ struct tdm_root {
 
   std::vector<std::string> channelgroups_;
 
-  const std::string get_info(int width = 25)
+  const std::string get_info() { return get_info(defformat); }
+  const std::string get_info(format& formatter)
   {
-    std::stringstream ss;
-    ss<<std::setw(width)<<std::left<<"id:"<<id_<<"\n"
-      <<std::setw(width)<<std::left<<"name:"<<name_<<"\n"
-      <<std::setw(width)<<std::left<<"description:"<<description_<<"\n"
-      <<std::setw(width)<<std::left<<"title:"<<title_<<"\n"
-      <<std::setw(width)<<std::left<<"author:"<<author_<<"\n"
-      <<std::setw(width)<<std::left<<"timestamp:"<<timestamp_<<"\n"
-      <<std::setw(width)<<std::left<<"channelgroups:";
-    for ( auto el: channelgroups_ ) ss<<el<<",";
-    std::string infostr = ss.str();
-    infostr.pop_back();
-    return ( infostr + std::string("\n") );
+    formatter.set_columns({ std::make_pair("root-id",id_),
+                            std::make_pair("name",name_),
+                            std::make_pair("description",description_),
+                            std::make_pair("title",title_),
+                            std::make_pair("author",author_),
+                            std::make_pair("timestamp",timestamp_),
+                            std::make_pair("channelgroups",join_strings(channelgroups_)) });
+
+    return formatter.get_info();
   }
+
 };
 
 // -------------------------------------------------------------------------- //
@@ -165,25 +266,19 @@ struct tdm_channelgroup {
   std::vector<std::string> channels_; // referenced by id
   std::vector<std::string> submatrices_;
 
-  const std::string get_info(int width = 25)
+  const std::string get_info() { return get_info(defformat); }
+  const std::string get_info(format& formatter)
   {
-    std::stringstream ss;
-    ss<<std::setw(width)<<std::left<<"id:"<<id_<<"\n"
-      <<std::setw(width)<<std::left<<"name:"<<name_<<"\n"
-      <<std::setw(width)<<std::left<<"description:"<<description_<<"\n"
-      <<std::setw(width)<<std::left<<"root:"<<root_<<"\n"
-      <<std::setw(width)<<std::left<<"channels:";
-    for ( auto el: channels_ ) ss<<el<<",";
-    std::string infostr = ss.str();
-    infostr.pop_back();
-    ss.str(std::string());
-    ss<<infostr<<"\n"
-      <<std::setw(width)<<std::left<<"submatrices:";
-    for ( auto el: submatrices_ ) ss<<el<<",";
-    infostr = ss.str();
-    infostr.pop_back();
-    return ( infostr + std::string("\n") );
+    formatter.set_columns({ std::make_pair("group-id",id_),
+                            std::make_pair("name",name_),
+                            std::make_pair("description",description_),
+                            std::make_pair("root",root_),
+                            std::make_pair("channels",join_strings(channels_)),
+                            std::make_pair("submatrices",join_strings(submatrices_)) });
+
+    return formatter.get_info();
   }
+
 };
 
 // -------------------------------------------------------------------------- //
@@ -224,23 +319,22 @@ struct tdm_channel {
   // TODO
   waveform_channel wf_channel_;
 
-  const std::string get_info(int width = 25)
+  const std::string get_info() { return get_info(defformat); }
+  const std::string get_info(format& formatter)
   {
-    std::stringstream ss;
-    ss<<std::setw(width)<<std::left<<"id:"<<id_<<"\n"
-      <<std::setw(width)<<std::left<<"name:"<<name_<<"\n"
-      <<std::setw(width)<<std::left<<"description:"<<description_<<"\n"
-      <<std::setw(width)<<std::left<<"unit_string:"<<unit_string_<<"\n"
-      <<std::setw(width)<<std::left<<"datatype:"<<datatype_<<"\n"
-      <<std::setw(width)<<std::left<<"minimum:"<<std::to_string(minimum_)<<"\n"
-      <<std::setw(width)<<std::left<<"maximum:"<<std::to_string(maximum_)<<"\n"
-      <<std::setw(width)<<std::left<<"group:"<<group_<<"\n"
-      <<std::setw(width)<<std::left<<"local_columns:";
-    for ( auto el: local_columns_ ) ss<<el<<",";
-    std::string infostr = ss.str();
-    infostr.pop_back();
-    return ( infostr + std::string("\n") );
+    formatter.set_columns({ std::make_pair("channel-id",id_),
+                            std::make_pair("name",name_),
+                            std::make_pair("description",description_),
+                            std::make_pair("unit_string",unit_string_),
+                            std::make_pair("datatype",datatype_),
+                            std::make_pair("minimum",std::to_string(minimum_)),
+                            std::make_pair("maximum",std::to_string(maximum_)),
+                            std::make_pair("group",group_),
+                            std::make_pair("local_columns",join_strings(local_columns_)) });
+
+    return formatter.get_info();
   }
+
 };
 
 // -------------------------------------------------------------------------- //
@@ -257,20 +351,19 @@ struct submatrix {
   std::vector<std::string> local_columns_;  // -> list of type "localcolumn"
   unsigned long int number_of_rows_;        // -> number of values in channels
 
-  const std::string get_info(int width = 25)
+  const std::string get_info() { return get_info(defformat); }
+  const std::string get_info(format& formatter)
   {
-    std::stringstream ss;
-    ss<<std::setw(width)<<std::left<<"id:"<<id_<<"\n"
-      <<std::setw(width)<<std::left<<"name:"<<name_<<"\n"
-      <<std::setw(width)<<std::left<<"description:"<<description_<<"\n"
-      <<std::setw(width)<<std::left<<"measurement:"<<measurement_<<"\n"
-      <<std::setw(width)<<std::left<<"number_of_rows:"<<number_of_rows_<<"\n"
-      <<std::setw(width)<<std::left<<"local_columns:";
-    for ( auto el: local_columns_ ) ss<<el<<",";
-    std::string infostr = ss.str();
-    infostr.pop_back();
-    return ( infostr + std::string("\n") );
+    formatter.set_columns({ std::make_pair("id",id_),
+                            std::make_pair("name",name_),
+                            std::make_pair("description",description_),
+                            std::make_pair("measurement",measurement_),
+                            std::make_pair("local_columns",join_strings(local_columns_)),
+                            std::make_pair("number_of_rows",std::to_string(number_of_rows_)) });
+
+    return formatter.get_info();
   }
+
 };
 
 // -------------------------------------------------------------------------- //
@@ -303,24 +396,23 @@ struct localcolumn {
   std::string values_;                        // -> refers to usi:data -> _sequence
   std::string external_id_;
 
-  const std::string get_info(int width = 25)
+  const std::string get_info() { return get_info(defformat); }
+  const std::string get_info(format& formatter)
   {
-    std::stringstream ss;
-    ss<<std::setw(width)<<std::left<<"id:"<<id_<<"\n"
-      <<std::setw(width)<<std::left<<"name:"<<name_<<"\n"
-      <<std::setw(width)<<std::left<<"description:"<<description_<<"\n"
-      <<std::setw(width)<<std::left<<"measurement_quantity:"<<measurement_quantity_<<"\n"
-      <<std::setw(width)<<std::left<<"submatrix_:"<<submatrix_<<"\n"
-      <<std::setw(width)<<std::left<<"minimum:"<<std::to_string(minimum_)<<"\n"
-      <<std::setw(width)<<std::left<<"maximum:"<<std::to_string(maximum_)<<"\n"
-      <<std::setw(width)<<std::left<<"sequence_representation:"<<sequence_representation_<<"\n"
-      // TODO
-      // <<std::setw(width)<<std::left<<"generation_parameters_:"<<"{"<<generation_parameters_[0]
-      //                                                         <<","<<generation_parameters_[1]<<"}"<<"\n"
-      <<std::setw(width)<<std::left<<"values:"<<values_<<"\n"
-      <<std::setw(width)<<std::left<<"external:"<<external_id_<<"\n";
-    return ss.str();
+    formatter.set_columns({ std::make_pair("id",id_),
+                            std::make_pair("name",name_),
+                            std::make_pair("description",description_),
+                            std::make_pair("measurement_quantity",measurement_quantity_),
+                            std::make_pair("submatrix_",submatrix_),
+                            std::make_pair("minimum",std::to_string(minimum_)),
+                            std::make_pair("maximum",std::to_string(maximum_)),
+                            std::make_pair("sequence_representation",sequence_representation_),
+                            std::make_pair("values",values_),
+                            std::make_pair("external",external_id_) });
+
+    return formatter.get_info();
   }
+
 };
 
 #endif

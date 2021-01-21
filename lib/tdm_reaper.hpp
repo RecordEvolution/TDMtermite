@@ -146,6 +146,9 @@ public:
     return tdmroot_;
   }
 
+  // get full channel(group) overview
+  std::string get_channel_overview(format chformatter);
+
   // get list of channelgroup ids
   std::vector<std::string> get_channelgroup_ids()
   {
