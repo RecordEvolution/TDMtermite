@@ -181,7 +181,7 @@ int main(int argc, char* argv[])
     try {
       jack.submit_files(cfgopts.at("tdm"),cfgopts.at("tdx"),false);
     } catch (const std::exception& e) {
-      throw std::runtime_error( std::string("failed to load and parse tdm/tdx files: ")
+      throw std::runtime_error( std::string("failed to load/parse tdm/tdx files: ")
                               + e.what() );
     }
 
@@ -198,14 +198,14 @@ int main(int argc, char* argv[])
     for ( auto el: chids ) std::cout<<el<<",";
     std::cout<<"\n\n";
 
-    // std::string id("usi15");
-    // std::vector<double> chi = jack.get_channel(id);
+    std::string id("usi15");
+    std::vector<double> chi = jack.get_channel(id);
 
-    for ( auto el: chids )
-    {
-      std::string chfile = std::string("channel_") +el +std::string(".csv");
-      jack.print_channel(el,chfile.c_str());
-    }
+    // for ( auto el: chids )
+    // {
+    //   std::string chfile = std::string("channel_") +el +std::string(".csv");
+    //   jack.print_channel(el,chfile.c_str());
+    // }
 
     // print list of groups or channels to stdout
     // if ( listgroups ) jack.list_groups();

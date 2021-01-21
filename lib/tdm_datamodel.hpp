@@ -16,39 +16,6 @@
 #include <sstream>
 
 // -------------------------------------------------------------------------- //
-// block of data
-
-struct block {
-
-  std::string id_;
-  unsigned long int byte_offset_;
-  unsigned long int length_;
-  unsigned long int block_offset_, block_size_;
-  std::string value_type_;
-
-  block () {
-    id_ = std::string("");
-    byte_offset_ = 0;
-    length_ = 0;
-    block_offset_ = 0;
-    block_size_ = 0;
-    value_type_ = std::string("");
-  }
-
-  const std::string get_info(int width = 25)
-  {
-    std::stringstream ss;
-    ss<<std::setw(width)<<std::left<<"id:"<<id_<<"\n"
-      <<std::setw(width)<<std::left<<"byteOffset:"<<std::to_string(byte_offset_)<<"\n"
-      <<std::setw(width)<<std::left<<"length:"<<std::to_string(length_)<<"\n"
-      <<std::setw(width)<<std::left<<"blockOffset:"<<std::to_string(block_offset_)<<"\n"
-      <<std::setw(width)<<std::left<<"blockSize:"<<std::to_string(block_size_)<<"\n"
-      <<std::setw(width)<<std::left<<"valueType:"<<value_type_<<"\n";
-    return ss.str();
-  }
-};
-
-// -------------------------------------------------------------------------- //
 // tdm datatypes
 
 // https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_header_tdx_data/
@@ -99,6 +66,39 @@ const std::vector<tdm_datatype> tdm_datatypes = {
 
   {"eStringUsi","DT_STRING",1,"string_sequence",0,"text"}
 
+};
+
+// -------------------------------------------------------------------------- //
+// block of data
+
+struct block {
+
+  std::string id_;
+  unsigned long int byte_offset_;
+  unsigned long int length_;
+  unsigned long int block_offset_, block_size_;
+  std::string value_type_;
+
+  block () {
+    id_ = std::string("");
+    byte_offset_ = 0;
+    length_ = 0;
+    block_offset_ = 0;
+    block_size_ = 0;
+    value_type_ = std::string("");
+  }
+
+  const std::string get_info(int width = 25)
+  {
+    std::stringstream ss;
+    ss<<std::setw(width)<<std::left<<"id:"<<id_<<"\n"
+      <<std::setw(width)<<std::left<<"byteOffset:"<<std::to_string(byte_offset_)<<"\n"
+      <<std::setw(width)<<std::left<<"length:"<<std::to_string(length_)<<"\n"
+      <<std::setw(width)<<std::left<<"blockOffset:"<<std::to_string(block_offset_)<<"\n"
+      <<std::setw(width)<<std::left<<"blockSize:"<<std::to_string(block_size_)<<"\n"
+      <<std::setw(width)<<std::left<<"valueType:"<<value_type_<<"\n";
+    return ss.str();
+  }
 };
 
 // -------------------------------------------------------------------------- //
