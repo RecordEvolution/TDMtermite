@@ -491,6 +491,80 @@ std::string tdm_reaper::get_localcolumn_overview(format formatter)
   return summary;
 }
 
+std::string tdm_reaper::get_block_overview(format formatter)
+{
+  // summarize all output in single string
+  std::string summary;
+
+  // set tabular mode of formatter
+  formatter.set_tabular(true);
+
+  // compose header
+  formatter.set_header(true);
+  block blk;
+  summary += blk.get_info(formatter);
+  std::string rule;
+  for ( unsigned long int i = 0; i < summary.size(); i++ )
+  {
+    rule += std::string("-");
+  }
+  summary += std::string("\n") + rule + std::string("\n");
+
+  formatter.set_header(false);
+  for (std::map<std::string,block>::iterator it=tdx_blocks_.begin();
+                                             it!=tdx_blocks_.end(); ++it)
+  {
+    summary += it->second.get_info(formatter);
+    summary += std::string("\n");
+  }
+
+  return summary;
+}
+
+// template<typename tdmelement>
+// std::string tdm_reaper::get_overview(format formatter)
+// {
+//   // summarize all output in single string
+//   std::string summary;
+//
+//   // set tabular mode of formatter
+//   formatter.set_tabular(true);
+//
+//   // compose header
+//   formatter.set_header(true);
+//   tdmelement tdmel;
+//   summary += tdmel.get_info(formatter);
+//   std::string rule;
+//   for ( unsigned long int i = 0; i < summary.size(); i++ )
+//   {
+//     rule += std::string("-");
+//   }
+//   summary += std::string("\n") + rule + std::string("\n");
+//
+//   formatter.set_header(false);
+//   std::map<std::string,tdmelement> thedat = this->get_tdm_member<tdmelement>(tdmel);
+//   for ( std::map<std::string,tdmelement> el: thedat )
+//   {
+//     summary += el->second.get_info(formatter) + std::string("\n");
+//   }
+//   // for (std::map<std::string,tdmelement>::iterator it=thedat.begin();
+//   //                                                 it!=thedat.end(); ++it)
+//   // {
+//   //   summary += it->second.get_info(formatter);
+//   //   summary += std::string("\n");
+//   // }
+//
+//   return summary;
+// }
+//
+// template<typename tdmelement>
+// std::map<std::string,tdmelement> tdm_reaper::get_tdm_member(block blk)
+// {
+//   return this->tdx_blocks_;
+// }
+//
+// template std::string tdm_reaper::get_overview<block>(format formatter);
+
 // -------------------------------------------------------------------------- //
 
 std::vector<double> tdm_reaper::get_channel(std::string &id)

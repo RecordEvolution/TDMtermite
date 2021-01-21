@@ -149,9 +149,14 @@ public:
   // get full channel(group) overview
   std::string get_channel_overview(format chformatter);
 
-  // get submatrix/localcolumn overview
+  // get block/submatrix/localcolumn overview
+  // template<typename tdmelement>
+  // std::string get_overview(format formatter);
+  // template<typename tdmelement>
+  // std::map<std::string,tdmelement> get_tdm_member(block blk);
   std::string get_submatrix_overview(format formatter);
   std::string get_localcolumn_overview(format formatter);
+  std::string get_block_overview(format formatter);
 
   // get list of channelgroup ids
   std::vector<std::string> get_channelgroup_ids()
@@ -174,6 +179,75 @@ public:
   }
 
   // extract channel by id
+  template<typename tdmtype>
+  std::vector<tdmtype> get_channel(std::string& id)
+  {
+    // check for existence of required channel id (=key)
+    if ( tdmchannels_.count(id) == 1 )
+    {
+      // // retrieve full channel info
+      // tdm_channel chn = tdmchannels_.at(id);
+      //
+      // // extract (first) "localcolumn" for channel
+      // if ( chn.local_columns_.size() != 1 )
+      // {
+      //   throw std::runtime_error(std::string("invalid local_columns_ of channel: ") + id);
+      // }
+      // localcolumn loccol = localcolumns_.at(chn.local_columns_[0]);
+      //
+      // if ( loccol.sequence_representation_ != "explicit" )
+      // {
+      //   throw std::runtime_error(std::string("unsupported sequence_representation: ")
+      //                             + loccol.sequence_representation_);
+      // }
+      //
+      // // use "values" id to map to external block
+      // block blk = tdx_blocks_.at(loccol.external_id_);
+      //
+      // // distinguish numeric datatypes
+      // switch ( blk.value_type_ )
+      // {
+      //   case "eInt16Usi" :
+      //     break;
+      //   case "eInt32Usi" :
+      //     break;
+      //   case "eUInt8Usi" :
+      //     break;
+      //   case "eUInt16Usi" :
+      //     break;
+      //   case "eUInt32Usi" :
+      //     break;
+      //   case "eFloat32Usi" :
+      //     // declare buffer covering the required range of "tdxbuffer_"
+      //     std::vector<unsigned char> blkF32( tdxbuffer_.begin()+blk.byte_offset_,
+      //                                         tdxbuffer_.begin()+blk.byte_offset_
+      //                                          + blk.length_*sizeof(eFloat32Usi) );
+      //     std::vector<eFloat32Usi> datvecF32(blk.length_);
+      //     this->convert_data_to_type<eFloat32Usi>(blkF32,datvecF32);
+      //     return datvecF32;
+      //     break;
+      //   case "eFloat64Usi" :
+      //     // declare buffer covering the required range of "tdxbuffer_"
+      //     std::vector<unsigned char> blkF64( tdxbuffer_.begin()+blk.byte_offset_,
+      //                                         tdxbuffer_.begin()+blk.byte_offset_
+      //                                          + blk.length_*sizeof(eFloat64Usi) );
+      //     std::vector<eFloat64Usi> datvecF64(blk.length_);
+      //     this->convert_data_to_type<eFloat64Usi>(blkF64,datvecF64);
+      //     return datvecF64;
+      //     break;
+      //   case "eStringUsi" :
+      //     throw std::runtime_error("datatype 'eStringUsi' is not supported");
+      //     break;
+      // }
+    }
+    else
+    {
+      throw std::invalid_argument(std::string("channel id does not exist: ") + id);
+    }
+
+    return std::vector<tdmtype>();
+  }
+
   // (TODO introduce template T to reference specific datatype instead of double in general)
   std::vector<double> get_channel(std::string &id);
 

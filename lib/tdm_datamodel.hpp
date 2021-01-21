@@ -119,6 +119,15 @@ static std::string join_strings(std::vector<std::string> &thestring, const char*
 
 // https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_header_tdx_data/
 
+// define mapping of locally supported datatypes to tdm datatypes
+typedef short int eInt16Usi;
+typedef int eInt32Usi;
+typedef unsigned char eUInt8Usi;
+typedef unsigned short int eUInt16Usi;
+typedef unsigned int eUInt32Usi;
+typedef float eFloat32Usi;
+typedef double eFloat64Usi;
+
 enum class tdmdatatype {
   eInt16Usi,
   eInt32Usi,

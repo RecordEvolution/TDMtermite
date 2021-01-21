@@ -199,6 +199,10 @@ int main(int argc, char* argv[])
     format formatter(18,false,false,' ');
     std::cout<<jack.get_submatrix_overview(formatter)<<"\n";
     std::cout<<jack.get_localcolumn_overview(formatter)<<"\n";
+    std::cout<<jack.get_block_overview(formatter)<<"\n";
+
+    std::string chid("usi14");
+    std::vector<tdmdatatype> chdata = jack.get_channel<tdmdatatype>(chid);
 
     // std::vector<std::string> chgrids = jack.get_channelgroup_ids();
     // for ( auto el: chgrids ) std::cout<<el<<",";
