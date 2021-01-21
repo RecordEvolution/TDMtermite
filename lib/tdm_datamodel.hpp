@@ -354,7 +354,7 @@ struct submatrix {
   const std::string get_info() { return get_info(defformat); }
   const std::string get_info(format& formatter)
   {
-    formatter.set_columns({ std::make_pair("id",id_),
+    formatter.set_columns({ std::make_pair("submatrix-id",id_),
                             std::make_pair("name",name_),
                             std::make_pair("description",description_),
                             std::make_pair("measurement",measurement_),
@@ -399,7 +399,7 @@ struct localcolumn {
   const std::string get_info() { return get_info(defformat); }
   const std::string get_info(format& formatter)
   {
-    formatter.set_columns({ std::make_pair("id",id_),
+    formatter.set_columns({ std::make_pair("localcolumn-id",id_),
                             std::make_pair("name",name_),
                             std::make_pair("description",description_),
                             std::make_pair("measurement_quantity",measurement_quantity_),

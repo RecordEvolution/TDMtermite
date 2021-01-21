@@ -179,14 +179,14 @@ int main(int argc, char* argv[])
     // declare and initialize tdm_ripper instance
     tdm_reaper jack;
     try {
-      jack.submit_files(cfgopts.at("tdm"),cfgopts.at("tdx"),true);
+      jack.submit_files(cfgopts.at("tdm"),cfgopts.at("tdx"),false);
     } catch (const std::exception& e) {
       throw std::runtime_error( std::string("failed to load/parse tdm/tdx files: ")
                               + e.what() );
     }
 
     // check available datatypes on machine
-    jack.check_local_datatypes();
+    // jack.check_local_datatypes();
 
     // show some meta data of the dataset
     std::cout<<"\n"<<jack.get_root().get_info()<<"\n\n";
@@ -194,6 +194,11 @@ int main(int argc, char* argv[])
     // get complete channel overview
     format chformatter(14,false,false,' ');
     std::cout<<jack.get_channel_overview(chformatter)<<"\n";
+
+    // get complete submatrix/localcolumns overview
+    format formatter(18,false,false,' ');
+    std::cout<<jack.get_submatrix_overview(formatter)<<"\n";
+    std::cout<<jack.get_localcolumn_overview(formatter)<<"\n";
 
     // std::vector<std::string> chgrids = jack.get_channelgroup_ids();
     // for ( auto el: chgrids ) std::cout<<el<<",";

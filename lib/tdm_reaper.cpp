@@ -395,9 +395,6 @@ void tdm_reaper::process_localcolumns(bool showlog)
 
 std::string tdm_reaper::get_channel_overview(format chformatter)
 {
-  // declare format instance
-  // format chformatter(15,false,false,' ');
-
   // summarize all output in single string
   std::string channels_summary;
 
@@ -432,6 +429,66 @@ std::string tdm_reaper::get_channel_overview(format chformatter)
   }
 
   return channels_summary;
+}
+
+std::string tdm_reaper::get_submatrix_overview(format formatter)
+{
+  // summarize all output in single string
+  std::string submatrix_summary;
+
+  // set tabular mode of formatter
+  formatter.set_tabular(true);
+
+  // compose header
+  formatter.set_header(true);
+  submatrix sbm;
+  submatrix_summary += sbm.get_info(formatter);
+  std::string rule;
+  for ( unsigned long int i = 0; i < submatrix_summary.size(); i++ )
+  {
+    rule += std::string("-");
+  }
+  submatrix_summary += std::string("\n") + rule + std::string("\n");
+
+  formatter.set_header(false);
+  for (std::map<std::string,submatrix>::iterator it=submatrices_.begin();
+                                                 it!=submatrices_.end(); ++it)
+  {
+    submatrix_summary += it->second.get_info(formatter);
+    submatrix_summary += std::string("\n");
+  }
+
+  return submatrix_summary;
+}
+
+std::string tdm_reaper::get_localcolumn_overview(format formatter)
+{
+  // summarize all output in single string
+  std::string summary;
+
+  // set tabular mode of formatter
+  formatter.set_tabular(true);
+
+  // compose header
+  formatter.set_header(true);
+  localcolumn lc;
+  summary += lc.get_info(formatter);
+  std::string rule;
+  for ( unsigned long int i = 0; i < summary.size(); i++ )
+  {
+    rule += std::string("-");
+  }
+  summary += std::string("\n") + rule + std::string("\n");
+
+  formatter.set_header(false);
+  for (std::map<std::string,localcolumn>::iterator it=localcolumns_.begin();
+                                                   it!=localcolumns_.end(); ++it)
+  {
+    summary += it->second.get_info(formatter);
+    summary += std::string("\n");
+  }
+
+  return summary;
 }
 
 // -------------------------------------------------------------------------- //
@@ -476,6 +533,9 @@ void tdm_reaper::print_channel(std::string &id, const char* filename)
 
   fou.close();
 }
+
+
+// -------------------------------------------------------------------------- //
 
 template<typename datatype>
 void tdm_reaper::convert_data_to_type(std::vector<unsigned char> &buffer,

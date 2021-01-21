@@ -149,6 +149,10 @@ public:
   // get full channel(group) overview
   std::string get_channel_overview(format chformatter);
 
+  // get submatrix/localcolumn overview
+  std::string get_submatrix_overview(format formatter);
+  std::string get_localcolumn_overview(format formatter);
+
   // get list of channelgroup ids
   std::vector<std::string> get_channelgroup_ids()
   {
