@@ -43,6 +43,10 @@ class tdm_reaper
   // blocks of data in .tdx file
   std::map<std::string,block> tdx_blocks_;
 
+  // resconstruct "tdm_datatype.hpp: tdm_datatypes" as map to quickly map
+  // "valueType"/"channel_datatype" to full datatype
+  std::map<std::string,tdm_datatype> tdmdt_name_, tdmdt_chan_;
+
   // tdm root
   tdm_root tdmroot_;
 
@@ -192,7 +196,7 @@ private:
 
   template<typename datatype>
   void convert_data_to_type(std::vector<unsigned char> &buffer,
-                            std::vector<datatype> &channel);
+                            std::vector<tdmdatatype> &channel);
 
 };
 

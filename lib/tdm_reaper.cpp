@@ -66,6 +66,47 @@ void tdm_reaper::process_tdm(bool showlog)
     throw std::runtime_error(std::string("failed to load tdm file: ") + e.what());
   }
 
+  // check datatype consistency, i.e. "local" representation of datatypes
+  // and build map(s) for "tdm_datatypes"
+  for ( tdm_datatype el: tdm_datatypes )
+  {
+    if ( el.name_ == "eInt16Usi" )
+    {
+      if ( el.size_ != sizeof(eInt16Usi) ) throw std::logic_error("invalid representation of eInt16Usi");
+    }
+    else if ( el.name_ == "eInt32Usi" )
+    {
+      if ( el.size_ != sizeof(eInt32Usi) ) throw std::logic_error("invalid representation of eInt32Usi");
+    }
+    else if ( el.name_ == "eUInt8Usi" )
+    {
+      if ( el.size_ != sizeof(eUInt8Usi) ) throw std::logic_error("invalid representation of eUInt8Usi");
+    }
+    else if ( el.name_ == "eUInt16Usi" )
+    {
+      if ( el.size_ != sizeof(eUInt16Usi) ) throw std::logic_error("invalid representation of eUInt16Usi");
+    }
+    else if ( el.name_ == "eUInt32Usi" )
+    {
+      if ( el.size_ != sizeof(eUInt32Usi) ) throw std::logic_error("invalid representation of eUInt32Usi");
+    }
+    else if ( el.name_ == "eFloat32Usi" )
+    {
+      if ( el.size_ != sizeof(eFloat32Usi) ) throw std::logic_error("invalid representation of eFloat32Usi");
+    }
+    else if ( el.name_ == "eFloat64Usi" )
+    {
+      if ( el.size_ != sizeof(eFloat64Usi) ) throw std::logic_error("invalid representation of eFloat64Usi");
+    }
+    else
+    {
+      throw std::logic_error("missing datatype validation");
+    }
+
+    tdmdt_name_.insert(std::pair<std::string,tdm_datatype>(el.name_,el));
+    tdmdt_chan_.insert(std::pair<std::string,tdm_datatype>(el.channel_datatype_,el));
+  }
+
   // process elements of XML
   this->process_include(showlog);
   this->process_root(showlog);
@@ -359,12 +400,24 @@ void tdm_reaper::process_localcolumns(bool showlog)
       if ( tdmchannels_.size() == 0 ) throw std::logic_error("tdmchannels_ not initialized");
 
       // determine "channel_datatype_" and map it to its sequence type
+      if ( tdmchannels_.count(locc.measurement_quantity_) != 1 )
+      {
+        throw std::runtime_error(std::string("measurement_quantity: ")
+                                 + locc.measurement_quantity_
+                                 + std::string(" is ambiguous") );
+      }
       std::string dt = tdmchannels_.at(locc.measurement_quantity_).datatype_;
       std::string sequence_type;
-      for( auto itd = std::begin(tdm_datatypes); itd != std::end(tdm_datatypes); ++itd)
+      // for( auto itd = std::begin(tdm_datatypes); itd != std::end(tdm_datatypes); ++itd)
+      // {
+      //   if ( dt == itd->channel_datatype_ ) sequence_type = itd->value_sequence_;
+      // }
+      if ( tdmdt_chan_.count(dt) != 1 )
       {
-        if ( dt == itd->channel_datatype_ ) sequence_type = itd->value_sequence_;
+        throw std::runtime_error(std::string("datatype: ") + dt
+                                 + std::string(" is unknown/invalid") );
       }
+      sequence_type = tdmdt_chan_.at(dt).value_sequence_;
 
       for ( pugi::xml_node seq = tdmdata.child(sequence_type.c_str()); seq;
                            seq = seq.next_sibling(sequence_type.c_str()) )
@@ -593,85 +646,61 @@ std::vector<tdmdatatype> tdm_reaper::get_channel(std::string& id)
     // use "values" id to map to external block
     block blk = tdx_blocks_.at(loccol.external_id_);
 
-    // // distinguish numeric datatypes
-    // switch ( blk.value_type_ )
-    // {
-    //   case "eInt16Usi" :
-    //     break;
-    //   case "eInt32Usi" :
-    //     break;
-    //   case "eUInt8Usi" :
-    //     break;
-    //   case "eUInt16Usi" :
-    //     break;
-    //   case "eUInt32Usi" :
-    //     break;
-    //   case "eFloat32Usi" :
-    //     // declare buffer covering the required range of "tdxbuffer_"
-    //     std::vector<unsigned char> blkF32( tdxbuffer_.begin()+blk.byte_offset_,
-    //                                         tdxbuffer_.begin()+blk.byte_offset_
-    //                                          + blk.length_*sizeof(eFloat32Usi) );
-    //     std::vector<eFloat32Usi> datvecF32(blk.length_);
-    //     this->convert_data_to_type<eFloat32Usi>(blkF32,datvecF32);
-    //     return datvecF32;
-    //     break;
-    //   case "eFloat64Usi" :
-    //     // declare buffer covering the required range of "tdxbuffer_"
-    //     std::vector<unsigned char> blkF64( tdxbuffer_.begin()+blk.byte_offset_,
-    //                                         tdxbuffer_.begin()+blk.byte_offset_
-    //                                          + blk.length_*sizeof(eFloat64Usi) );
-    //     std::vector<eFloat64Usi> datvecF64(blk.length_);
-    //     this->convert_data_to_type<eFloat64Usi>(blkF64,datvecF64);
-    //     return datvecF64;
-    //     break;
-    //   case "eStringUsi" :
-    //     throw std::runtime_error("datatype 'eStringUsi' is not supported");
-    //     break;
-    // }
+    // declare vector of appropriate length
+    std::vector<tdmdatatype> datavec(blk.length_);
+
+    // retrieve corresponding TDM datatype
+    tdm_datatype dtyp = this->tdmdt_name_.at(blk.value_type_);
+
+    // declare buffer covering the required range of "tdxbuffer_"
+    // (consider both channel-wise and block-wise ordering)
+    unsigned long int strtidx = blk.block_offset_*blk.block_size_
+                              + blk.byte_offset_,
+                      fnshidx = strtidx + blk.length_*dtyp.size_;
+    std::vector<unsigned char> tdxblk( tdxbuffer_.begin()+strtidx,
+                                       tdxbuffer_.begin()+fnshidx );
+
+    // distinguish numeric datatypes included in "tdmdatatype"
+    if ( blk.value_type_ == std::string("eInt16Usi") )
+    {
+      this->convert_data_to_type<eInt16Usi>(tdxblk,datavec);
+    }
+    else if ( blk.value_type_ == std::string("eInt32Usi") )
+    {
+      this->convert_data_to_type<eInt32Usi>(tdxblk,datavec);
+    }
+    else if ( blk.value_type_ == std::string("eUInt8Usi") )
+    {
+      this->convert_data_to_type<eUInt8Usi>(tdxblk,datavec);
+    }
+    else if ( blk.value_type_ == std::string("eUInt16Usi") )
+    {
+      this->convert_data_to_type<eUInt16Usi>(tdxblk,datavec);
+    }
+    else if ( blk.value_type_ == std::string("eUInt32Usi") )
+    {
+      this->convert_data_to_type<eUInt32Usi>(tdxblk,datavec);
+    }
+    else if ( blk.value_type_ == std::string("eFloat32Usi") )
+    {
+      this->convert_data_to_type<eFloat32Usi>(tdxblk,datavec);
+    }
+    else if ( blk.value_type_ == std::string("eFloat64Usi") )
+    {
+      this->convert_data_to_type<eFloat64Usi>(tdxblk,datavec);
+    }
+    else
+    {
+      throw std::runtime_error(std::string("unsupported/unknown datatype") + blk.value_type_);
+    }
+
+    return datavec;
   }
   else
   {
     throw std::invalid_argument(std::string("channel id does not exist: ") + id);
   }
-
-  std::vector<tdmdatatype> data;
-  eFloat32Usi m(4);
-  data.push_back(m);
-  // std::vector<tdmdatatype>();
-  return data;
 }
-
-// template std::vector<tdmdatatype> tdm_reaper::get_channel<tdmdatatype>(std::string& id);
-
-// std::vector<double> tdm_reaper::get_channel(std::string &id)
-// {
-//   // check for existence of required channel id (=key)
-//   if ( tdmchannels_.count(id) == 1 )
-//   {
-//     // retrieve full channel info
-//     tdm_channel chn = tdmchannels_.at(id);
-//
-//     // extract (first) "localcolumn" for channel
-//     localcolumn loccol = localcolumns_.at(chn.local_columns_[0]);
-//
-//     // use "values" id to map to external block
-//     block blk = tdx_blocks_.at(loccol.external_id_);
-//
-//     // declare buffer covering the required range of "tdxbuffer_"
-//     std::vector<unsigned char> blkbuff( tdxbuffer_.begin()+blk.byte_offset_,
-//                                         tdxbuffer_.begin()+blk.byte_offset_
-//                                          + blk.length_*sizeof(double)        );
-//
-//     std::vector<double> datvec(blk.length_);
-//     this->convert_data_to_type<double>(blkbuff,datvec);
-//
-//     return datvec;
-//   }
-//   else
-//   {
-//     throw std::invalid_argument(std::string("channel id does not exist: ") + id);
-//   }
-// }
 
 void tdm_reaper::print_channel(std::string &id, const char* filename)
 {
@@ -688,7 +717,7 @@ void tdm_reaper::print_channel(std::string &id, const char* filename)
 
 template<typename datatype>
 void tdm_reaper::convert_data_to_type(std::vector<unsigned char> &buffer,
-                                      std::vector<datatype> &channel)
+                                      std::vector<tdmdatatype> &channel)
 {
   // check number of elements of type "datatype" in buffer
   if ( buffer.size() != channel.size()*sizeof(datatype) )

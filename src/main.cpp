@@ -15,7 +15,7 @@ const std::string githash("HASHSTRING");
 void show_usage()
 {
   std::cout<<"\n"
-           <<"tdmreaper ["<<gittag<<"-g"<<githash<<"] (github.com/RecordEvolution/tdm_ripper.git)"
+           <<"tdmripper ["<<gittag<<"-g"<<githash<<"] (github.com/RecordEvolution/tdm_ripper.git)"
            <<"\n\n"
            <<"Decode TDM/TDX files and dump data as *.csv"
            <<"\n\n"

@@ -30,8 +30,8 @@ public:
   tdmdatatype(): sint16_(0), sint32_(0),
                  uint8_(0), uint16_(0), uint32_(0),
                  float32_(0.0), float64_(0.0),
-                 dtidx_(0) { std::cout<<"tdmdatatype constructor\n"; };
-  // every supported datatype get its own constructor
+                 dtidx_(0) { };
+  // every supported datatype gets its own constructor
   tdmdatatype(eInt16Usi num): sint16_(num), dtidx_(0) {};
   tdmdatatype(eInt32Usi num): sint32_(num), dtidx_(1) {};
   tdmdatatype(eUInt8Usi num): uint8_(num), dtidx_(2) {};
@@ -273,7 +273,7 @@ struct tdm_datatype {
   std::string channel_datatype_;
   int numeric_;
   std::string value_sequence_;
-  int size_;
+  unsigned int size_;
   std::string description_;
 
   const std::string get_info() { return get_info(defformat); }
