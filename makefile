@@ -3,8 +3,9 @@
 # declare name of executable
 EXE = tdmreaper
 
-# source name
+# sources and headers
 SRC := tdm_reaper
+HPP = $(wildcard lib/*.hpp)
 
 # compiler and C++ standard
 CC = g++ -std=c++17
@@ -38,7 +39,7 @@ uninstall : $(INST)/$(EXE)
 	rm $<
 
 # build main.cpp object file and include git version/commit tag
-main.o : src/main.cpp lib/$(SRC).hpp lib/tdm_datamodel.hpp
+main.o : src/main.cpp lib/$(SRC).hpp $(HPP)
 	@cp $< $<.cpp
 	@if [ $(OST) = "Linux" ]; then\
 		sed -i 's/TAGSTRING/$(GTAG)/g' $<.cpp; \
@@ -51,7 +52,7 @@ main.o : src/main.cpp lib/$(SRC).hpp lib/tdm_datamodel.hpp
 	$(CC) -c $(OPT) -I $(LIB) -I lib/ $<.cpp -o $@
 	@rm $<.cpp
 
-$(SRC).o : lib/$(SRC).cpp lib/$(SRC).hpp lib/tdm_datamodel.hpp
+$(SRC).o : lib/$(SRC).cpp lib/$(SRC).hpp $(HPP)
 	$(CC) -c $(OPT) -I $(LIB) $< -o $@
 
 clean :

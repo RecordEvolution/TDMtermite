@@ -201,11 +201,15 @@ int main(int argc, char* argv[])
     std::cout<<jack.get_localcolumn_overview(formatter)<<"\n";
     std::cout<<jack.get_block_overview(formatter)<<"\n";
 
-    std::string chid("usi14");
-    std::vector<tdmdatatype> chdata = jack.get_channel<tdmdatatype>(chid);
+    tdmdatatype A;
+    A = (eUInt8Usi)0.354;
+    std::cout<<A<<"\n";
 
-    std::cout<<"channel size: "<<chdata.size()<<"\n";
-    for ( tdmdatatype el: chdata ) std::cout<<el<<"\n";
+    // std::string chid("usi14");
+    // std::vector<tdmdatatype> chdata = jack.get_channel<tdmdatatype>(chid);
+    //
+    // std::cout<<"channel size: "<<chdata.size()<<"\n";
+    // for ( tdmdatatype el: chdata ) std::cout<<el<<"\n";
 
     // std::vector<std::string> chgrids = jack.get_channelgroup_ids();
     // for ( auto el: chgrids ) std::cout<<el<<",";

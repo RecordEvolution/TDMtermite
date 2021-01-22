@@ -5,174 +5,266 @@
 
 // https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_header_tdx_data/
 
-// define mapping of C++ supported datatypes to tdm datatypes
+// !!!! define mapping of locally supported datatypes to tdm datatypes
+//  !!!! this is where the magic happens !!!
+typedef short int eInt16Usi;
+typedef int eInt32Usi;
+typedef unsigned char eUInt8Usi;
+typedef unsigned short int eUInt16Usi;
+typedef unsigned int eUInt32Usi;
+typedef float eFloat32Usi;
+typedef double eFloat64Usi;
 
-// define mapping of locally supported datatypes to tdm datatypes
-// typedef short int eInt16Usi;
-// typedef int eInt32Usi;
-// typedef unsigned char eUInt8Usi;
-// typedef unsigned short int eUInt16Usi;
-// typedef unsigned int eUInt32Usi;
-// typedef float eFloat32Usi;
-// typedef double eFloat64Usi;
-
-// enum class tdmdatatype {
-//   eInt16Usi,
-//   eInt32Usi,
-//   eUInt8Usi,
-//   eUInt16Usi,
-//   eUInt32Usi,
-//   eFloat32Usi,
-//   eFloat64Usi
-// };
-
-// base class for all tdm datatypes
 class tdmdatatype
 {
 protected:
-  short int sint16_;
-  int sint32_;
-  unsigned char uint8_;
-  unsigned short int uint16_;
-  unsigned int uint32_;
-  float float32_;
-  double float64_;
+  eInt16Usi sint16_;    // 0
+  eInt32Usi sint32_;    // 1
+  eUInt8Usi uint8_;     // 2
+  eUInt16Usi uint16_;   // 3
+  eUInt32Usi uint32_;   // 4
+  eFloat32Usi float32_; // 5
+  eFloat64Usi float64_; // 6
+  short int dtidx_;     // \in \{0,...,6\}
 public:
   tdmdatatype(): sint16_(0), sint32_(0),
                  uint8_(0), uint16_(0), uint32_(0),
-                 float32_(0.0), float64_(0.0) {};
-  virtual ~tdmdatatype() = default;
+                 float32_(0.0), float64_(0.0),
+                 dtidx_(0) { std::cout<<"tdmdatatype constructor\n"; };
+  // every supported datatype get its own constructor
+  tdmdatatype(eInt16Usi num): sint16_(num), dtidx_(0) {};
+  tdmdatatype(eInt32Usi num): sint32_(num), dtidx_(1) {};
+  tdmdatatype(eUInt8Usi num): uint8_(num), dtidx_(2) {};
+  tdmdatatype(eUInt16Usi num): uint16_(num), dtidx_(3) {};
+  tdmdatatype(eUInt32Usi num): uint32_(num), dtidx_(4) {};
+  tdmdatatype(eFloat32Usi num): float32_(num), dtidx_(5) {};
+  tdmdatatype(eFloat64Usi num): float64_(num), dtidx_(6) {};
+
+  // overall assignment operator
+  tdmdatatype& operator=(const tdmdatatype &num)
+  {
+    if ( this != &num )
+    {
+      this->sint16_ = num.sint16_;
+      this->sint32_ = num.sint32_;
+      this->uint8_ = num.uint8_;
+      this->uint16_ = num.uint16_;
+      this->uint32_ = num.uint32_;
+      this->float32_ = num.float32_;
+      this->float64_ = num.float64_;
+    }
+
+		return *this;
+  }
+
+  // implement assignment operator for individual datatypes
+  tdmdatatype& operator=(const eInt16Usi &num)
+  {
+    this->sint16_ = num;
+    this->dtidx_ = 0;
+    return *this;
+  }
+  tdmdatatype& operator=(const eInt32Usi &num)
+  {
+    this->sint32_ = num;
+    this->dtidx_ = 1;
+    return *this;
+  }
+  tdmdatatype& operator=(const eUInt8Usi &num)
+  {
+    this->uint8_ = num;
+    this->dtidx_ = 2;
+    return *this;
+  }
+  tdmdatatype& operator=(const eUInt16Usi &num)
+  {
+    this->uint16_ = num;
+    this->dtidx_ = 3;
+    return *this;
+  }
+  tdmdatatype& operator=(const eUInt32Usi &num)
+  {
+    this->uint32_ = num;
+    this->dtidx_ = 4;
+    return *this;
+  }
+  tdmdatatype& operator=(const eFloat32Usi &num)
+  {
+    std::cout<<"tdmdatatype operator= for eFloat32Usi\n";
+    this->float32_ = num;
+    this->dtidx_ = 5;
+    return *this;
+  }
+  tdmdatatype& operator=(const eFloat64Usi &num)
+  {
+    std::cout<<"tdmdatatype operator= for eFloat64Usi\n";
+    this->float64_ = num;
+    this->dtidx_ = 6;
+    return *this;
+  }
+
+  // define custom stream operator to print the correct type
   friend std::ostream& operator<<(std::ostream& out, const tdmdatatype& num)
-  {
-    return num.print(out);
-  }
-  virtual std::ostream& print(std::ostream& out) const
-  {
-    out<<"tdmdatatype";
-    return out;
-  }
+   {
+     std::cout<<"operator<< dtidx_:"<<num.dtidx_<<"\n";
+          if ( num.dtidx_ == 0 ) out<<num.sint16_;
+     else if ( num.dtidx_ == 1 ) out<<num.sint32_;
+     else if ( num.dtidx_ == 2 ) out<<num.uint8_;
+     else if ( num.dtidx_ == 3 ) out<<num.uint16_;
+     else if ( num.dtidx_ == 4 ) out<<num.uint32_;
+     else if ( num.dtidx_ == 5 ) out<<num.float32_;
+     else if ( num.dtidx_ == 6 ) out<<num.float64_;
+     return out;
+   }
 };
 
-class eInt16Usi: public tdmdatatype
-{
-public:
-  eInt16Usi() { }
-  eInt16Usi(short int num) { sint16_ = num; }
-  // eInt16Usi& operator=(const eInt16Usi &num)
-  // {
-  //   // self-assignment check
-  //   if ( this != &num)
-  //   {
-  //     this->sint16_ = num.sint16_;
-  //   }
-	// 	return *this;
-  // }
-  friend std::ostream& operator<<(std::ostream& out, const eInt16Usi& num)
-  {
-    return num.print(out);
-  }
-  std::ostream& print(std::ostream& out) const override
-  {
-    out<<sint16_;
-    return out;
-  }
-};
+// // base class for all tdm datatypes
+// class tdmdatatype
+// {
+// protected:
+//   short int sint16_;
+//   int sint32_;
+//   unsigned char uint8_;
+//   unsigned short int uint16_;
+//   unsigned int uint32_;
+//   float float32_;
+//   double float64_;
+// public:
+//   tdmdatatype(): sint16_(0), sint32_(0),
+//                  uint8_(0), uint16_(0), uint32_(0),
+//                  float32_(0.0), float64_(0.0) {};
+//   virtual ~tdmdatatype() = default;
+//   friend std::ostream& operator<<(std::ostream& out, const tdmdatatype& num)
+//   {
+//     return num.print(out);
+//   }
+//   virtual std::ostream& print(std::ostream& out) const
+//   {
+//     out<<"tdmdatatype";
+//     return out;
+//   }
+// };
 
-class eInt32Usi: public tdmdatatype
-{
-public:
-  eInt32Usi() { }
-  eInt32Usi(int num) { sint32_ = num; }
-  friend std::ostream& operator<<(std::ostream& out, const eInt32Usi& num)
-  {
-    return num.print(out);
-  }
-  std::ostream& print(std::ostream& out) const override
-  {
-    out<<sint32_;
-    return out;
-  }
-};
-
-class eUInt8Usi: public tdmdatatype
-{
-public:
-  eUInt8Usi() { }
-  eUInt8Usi(int num) { uint8_ = num; }
-  friend std::ostream& operator<<(std::ostream& out, const eUInt8Usi& num)
-  {
-    return num.print(out);
-  }
-  std::ostream& print(std::ostream& out) const override
-  {
-    out<<uint8_;
-    return out;
-  }
-};
-
-class eUInt16Usi: public tdmdatatype
-{
-public:
-  eUInt16Usi() { }
-  eUInt16Usi(int num) { uint16_ = num; }
-  friend std::ostream& operator<<(std::ostream& out, const eUInt16Usi& num)
-  {
-    return num.print(out);
-  }
-  std::ostream& print(std::ostream& out) const override
-  {
-    out<<uint16_;
-    return out;
-  }
-};
-
-class eUInt32Usi: public tdmdatatype
-{
-public:
-  eUInt32Usi() { }
-  eUInt32Usi(int num) { uint32_ = num; }
-  friend std::ostream& operator<<(std::ostream& out, const eUInt32Usi& num)
-  {
-    return num.print(out);
-  }
-  std::ostream& print(std::ostream& out) const override
-  {
-    out<<uint32_;
-    return out;
-  }
-};
-
-class eFloat32Usi: public tdmdatatype
-{
-public:
-  eFloat32Usi() { }
-  eFloat32Usi(int num) { float32_ = num; }
-  friend std::ostream& operator<<(std::ostream& out, const eFloat32Usi& num)
-  {
-    return num.print(out);
-  }
-  std::ostream& print(std::ostream& out) const override
-  {
-    out<<float32_;
-    return out;
-  }
-};
-
-class eFloat64Usi: public tdmdatatype
-{
-public:
-  eFloat64Usi() { }
-  eFloat64Usi(int num) { float64_ = num; }
-  friend std::ostream& operator<<(std::ostream& out, const eFloat64Usi& num)
-  {
-    return num.print(out);
-  }
-  std::ostream& print(std::ostream& out) const override
-  {
-    out<<float64_;
-    return out;
-  }
-};
+// class eInt16Usi: public tdmdatatype
+// {
+// public:
+//   eInt16Usi() { }
+//   eInt16Usi(short int num) { sint16_ = num; }
+//   // eInt16Usi& operator=(const eInt16Usi &num)
+//   // {
+//   //   // self-assignment check
+//   //   if ( this != &num)
+//   //   {
+//   //     this->sint16_ = num.sint16_;
+//   //   }
+// 	// 	return *this;
+//   // }
+//   friend std::ostream& operator<<(std::ostream& out, const eInt16Usi& num)
+//   {
+//     return num.print(out);
+//   }
+//   std::ostream& print(std::ostream& out) const override
+//   {
+//     out<<sint16_;
+//     return out;
+//   }
+// };
+//
+// class eInt32Usi: public tdmdatatype
+// {
+// public:
+//   eInt32Usi() { }
+//   eInt32Usi(int num) { sint32_ = num; }
+//   friend std::ostream& operator<<(std::ostream& out, const eInt32Usi& num)
+//   {
+//     return num.print(out);
+//   }
+//   std::ostream& print(std::ostream& out) const override
+//   {
+//     out<<sint32_;
+//     return out;
+//   }
+// };
+//
+// class eUInt8Usi: public tdmdatatype
+// {
+// public:
+//   eUInt8Usi() { }
+//   eUInt8Usi(int num) { uint8_ = num; }
+//   friend std::ostream& operator<<(std::ostream& out, const eUInt8Usi& num)
+//   {
+//     return num.print(out);
+//   }
+//   std::ostream& print(std::ostream& out) const override
+//   {
+//     out<<uint8_;
+//     return out;
+//   }
+// };
+//
+// class eUInt16Usi: public tdmdatatype
+// {
+// public:
+//   eUInt16Usi() { }
+//   eUInt16Usi(int num) { uint16_ = num; }
+//   friend std::ostream& operator<<(std::ostream& out, const eUInt16Usi& num)
+//   {
+//     return num.print(out);
+//   }
+//   std::ostream& print(std::ostream& out) const override
+//   {
+//     out<<uint16_;
+//     return out;
+//   }
+// };
+//
+// class eUInt32Usi: public tdmdatatype
+// {
+// public:
+//   eUInt32Usi() { }
+//   eUInt32Usi(int num) { uint32_ = num; }
+//   friend std::ostream& operator<<(std::ostream& out, const eUInt32Usi& num)
+//   {
+//     return num.print(out);
+//   }
+//   std::ostream& print(std::ostream& out) const override
+//   {
+//     out<<uint32_;
+//     return out;
+//   }
+// };
+//
+// class eFloat32Usi: public tdmdatatype
+// {
+// public:
+//   eFloat32Usi() { }
+//   eFloat32Usi(int num) { float32_ = num; }
+//   friend std::ostream& operator<<(std::ostream& out, const eFloat32Usi& num)
+//   {
+//     return num.print(out);
+//   }
+//   std::ostream& print(std::ostream& out) const override
+//   {
+//     out<<float32_;
+//     return out;
+//   }
+// };
+//
+// class eFloat64Usi: public tdmdatatype
+// {
+// public:
+//   eFloat64Usi() { }
+//   eFloat64Usi(int num) { float64_ = num; }
+//   friend std::ostream& operator<<(std::ostream& out, const eFloat64Usi& num)
+//   {
+//     return num.print(out);
+//   }
+//   std::ostream& print(std::ostream& out) const override
+//   {
+//     out<<float64_;
+//     return out;
+//   }
+// };
 
 struct tdm_datatype {
 
