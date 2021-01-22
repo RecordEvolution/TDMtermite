@@ -157,9 +157,11 @@ public:
   // get block/submatrix/localcolumn overview
   template<typename tdmelement>
   std::string get_overview(format formatter);
+private:
   void summarize_member(submatrix sbm, std::string& summary, format& formatter);
   void summarize_member(localcolumn lcc, std::string& summary, format& formatter);
   void summarize_member(block blk, std::string& summary, format& formatter);
+public:
 
   // get list of channelgroup ids
   std::vector<std::string> get_channelgroup_ids()
@@ -184,7 +186,9 @@ public:
   // extract channel by id
   std::vector<tdmdatatype> get_channel(std::string& id);
 
-  void print_channel(std::string &id, const char* filename);
+  // dump a single channel/entire group (identified by id) to file
+  void print_channel(std::string &id, const char* filename, bool include_meta = true);
+  void print_group(std::string &id, const char* filename);
 
 private:
 

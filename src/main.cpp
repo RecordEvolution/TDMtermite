@@ -201,28 +201,19 @@ int main(int argc, char* argv[])
     std::cout<<jack.get_overview<localcolumn>(formatter)<<"\n";
     std::cout<<jack.get_overview<block>(formatter)<<"\n";
 
-    std::string chid("usi14");
-    std::vector<tdmdatatype> chdata = jack.get_channel(chid);
-
-    std::cout<<"channel size: "<<chdata.size()<<"\n";
-    for ( tdmdatatype el: chdata )
-    {
-      std::cout<<el<<":"<<el.dtype()<<"\n";
-    }
-
     // std::vector<std::string> chgrids = jack.get_channelgroup_ids();
-    // for ( auto el: chgrids ) std::cout<<el<<",";
-    // std::cout<<"\n";
-    // std::vector<std::string> chids = jack.get_channel_ids();
-    // for ( auto el: chids ) std::cout<<el<<",";
-    // std::cout<<"\n\n";
-
-
-    // for ( auto el: chids )
+    // for ( auto id: chgrids )
     // {
-    //   std::string chfile = std::string("channel_") +el +std::string(".csv");
-    //   jack.print_channel(el,chfile.c_str());
+    //
     // }
+
+    std::vector<std::string> chids = jack.get_channel_ids();
+    for ( auto id: chids )
+    {
+      std::string filenam = std::string("channel_") + id + std::string(".dat");
+      // std::vector<tdmdatatype> chdata = jack.get_channel(id);
+      jack.print_channel(id,filenam.c_str(),true);
+    }
 
     // print list of groups or channels to stdout
     // if ( listgroups ) jack.list_groups();

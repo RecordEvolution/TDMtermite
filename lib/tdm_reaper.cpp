@@ -544,7 +544,6 @@ void tdm_reaper::summarize_member(block blk, std::string& summary, format& forma
 // -------------------------------------------------------------------------- //
 
 // extract channel by id
-// template<typename tdmtype>
 std::vector<tdmdatatype> tdm_reaper::get_channel(std::string& id)
 {
   // check for existence of required channel id (=key)
@@ -625,14 +624,39 @@ std::vector<tdmdatatype> tdm_reaper::get_channel(std::string& id)
   }
 }
 
-void tdm_reaper::print_channel(std::string &id, const char* filename)
+// -------------------------------------------------------------------------- //
+
+void tdm_reaper::print_channel(std::string &id, const char* filename, bool include_meta)
 {
-  std::ofstream fou(filename);
+  // declare file stream
+  std::ofstream fou;
+  try {
+    fou.open(filename);
+  } catch ( const std::exception& e) {
+    throw std::runtime_error( std::string("failed to open file to dump channel")
+                              + e.what() );
+  }
 
-  std::vector<double> chn; // = this->get_channel(id);
+  // get channel object
+  tdm_channel chn = this->tdmchannels_.at(id);
+  if ( include_meta )
+  {
+    int width = 20;
+    fou<<std::setw(width)<<std::left<<"# channel-id:"<<chn.id_<<"\n";
+    fou<<std::setw(width)<<std::left<<"# name:"<<chn.name_<<"\n";
+    fou<<std::setw(width)<<std::left<<"# description:"<<chn.description_<<"\n";
+    fou<<std::setw(width)<<std::left<<"# unit_string:"<<chn.unit_string_<<"\n";
+    fou<<std::setw(width)<<std::left<<"# datatype:"<<chn.datatype_<<"\n";
+    fou<<std::setw(width)<<std::left<<"# minimum:"<<chn.minimum_<<"\n";
+    fou<<std::setw(width)<<std::left<<"# maximum:"<<chn.maximum_<<"\n";
+    fou<<std::setw(width)<<std::left<<"# group:"<<chn.group_<<"\n";
+  }
 
-  for ( auto el: chn ) fou<<el<<"\n";
+  // obtain channel data
+  std::vector<tdmdatatype> chndata = this->get_channel(id);
+  for ( auto el: chndata ) fou<<el<<"\n";
 
+  // close file
   fou.close();
 }
 
