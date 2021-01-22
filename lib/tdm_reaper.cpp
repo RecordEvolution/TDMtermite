@@ -567,7 +567,9 @@ std::string tdm_reaper::get_block_overview(format formatter)
 
 // -------------------------------------------------------------------------- //
 
-std::vector<double> tdm_reaper::get_channel(std::string &id)
+// extract channel by id
+template<typename tdmtype>
+std::vector<tdmtype> tdm_reaper::get_channel(std::string& id)
 {
   // check for existence of required channel id (=key)
   if ( tdmchannels_.count(id) == 1 )
@@ -576,38 +578,107 @@ std::vector<double> tdm_reaper::get_channel(std::string &id)
     tdm_channel chn = tdmchannels_.at(id);
 
     // extract (first) "localcolumn" for channel
+    if ( chn.local_columns_.size() != 1 )
+    {
+      throw std::runtime_error(std::string("invalid local_columns_ of channel: ") + id);
+    }
     localcolumn loccol = localcolumns_.at(chn.local_columns_[0]);
+
+    if ( loccol.sequence_representation_ != "explicit" )
+    {
+      throw std::runtime_error(std::string("unsupported sequence_representation: ")
+                                + loccol.sequence_representation_);
+    }
 
     // use "values" id to map to external block
     block blk = tdx_blocks_.at(loccol.external_id_);
-
-    // declare buffer covering the required range of "tdxbuffer_"
-    std::vector<unsigned char> blkbuff( tdxbuffer_.begin()+blk.byte_offset_,
-                                        tdxbuffer_.begin()+blk.byte_offset_
-                                         + blk.length_*sizeof(double)        );
-
-    std::vector<double> datvec(blk.length_);
-    this->convert_data_to_type<double>(blkbuff,datvec);
-
-    return datvec;
+    
+    // // distinguish numeric datatypes
+    // switch ( blk.value_type_ )
+    // {
+    //   case "eInt16Usi" :
+    //     break;
+    //   case "eInt32Usi" :
+    //     break;
+    //   case "eUInt8Usi" :
+    //     break;
+    //   case "eUInt16Usi" :
+    //     break;
+    //   case "eUInt32Usi" :
+    //     break;
+    //   case "eFloat32Usi" :
+    //     // declare buffer covering the required range of "tdxbuffer_"
+    //     std::vector<unsigned char> blkF32( tdxbuffer_.begin()+blk.byte_offset_,
+    //                                         tdxbuffer_.begin()+blk.byte_offset_
+    //                                          + blk.length_*sizeof(eFloat32Usi) );
+    //     std::vector<eFloat32Usi> datvecF32(blk.length_);
+    //     this->convert_data_to_type<eFloat32Usi>(blkF32,datvecF32);
+    //     return datvecF32;
+    //     break;
+    //   case "eFloat64Usi" :
+    //     // declare buffer covering the required range of "tdxbuffer_"
+    //     std::vector<unsigned char> blkF64( tdxbuffer_.begin()+blk.byte_offset_,
+    //                                         tdxbuffer_.begin()+blk.byte_offset_
+    //                                          + blk.length_*sizeof(eFloat64Usi) );
+    //     std::vector<eFloat64Usi> datvecF64(blk.length_);
+    //     this->convert_data_to_type<eFloat64Usi>(blkF64,datvecF64);
+    //     return datvecF64;
+    //     break;
+    //   case "eStringUsi" :
+    //     throw std::runtime_error("datatype 'eStringUsi' is not supported");
+    //     break;
+    // }
   }
   else
   {
     throw std::invalid_argument(std::string("channel id does not exist: ") + id);
   }
+
+  return std::vector<tdmtype>();
 }
+
+template std::vector<tdmdatatype> tdm_reaper::get_channel<tdmdatatype>(std::string& id);
+
+// std::vector<double> tdm_reaper::get_channel(std::string &id)
+// {
+//   // check for existence of required channel id (=key)
+//   if ( tdmchannels_.count(id) == 1 )
+//   {
+//     // retrieve full channel info
+//     tdm_channel chn = tdmchannels_.at(id);
+//
+//     // extract (first) "localcolumn" for channel
+//     localcolumn loccol = localcolumns_.at(chn.local_columns_[0]);
+//
+//     // use "values" id to map to external block
+//     block blk = tdx_blocks_.at(loccol.external_id_);
+//
+//     // declare buffer covering the required range of "tdxbuffer_"
+//     std::vector<unsigned char> blkbuff( tdxbuffer_.begin()+blk.byte_offset_,
+//                                         tdxbuffer_.begin()+blk.byte_offset_
+//                                          + blk.length_*sizeof(double)        );
+//
+//     std::vector<double> datvec(blk.length_);
+//     this->convert_data_to_type<double>(blkbuff,datvec);
+//
+//     return datvec;
+//   }
+//   else
+//   {
+//     throw std::invalid_argument(std::string("channel id does not exist: ") + id);
+//   }
+// }
 
 void tdm_reaper::print_channel(std::string &id, const char* filename)
 {
   std::ofstream fou(filename);
 
-  std::vector<double> chn = this->get_channel(id);
+  std::vector<double> chn; // = this->get_channel(id);
 
   for ( auto el: chn ) fou<<el<<"\n";
 
   fou.close();
 }
-
 
 // -------------------------------------------------------------------------- //
 

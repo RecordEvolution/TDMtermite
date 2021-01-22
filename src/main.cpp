@@ -204,6 +204,9 @@ int main(int argc, char* argv[])
     std::string chid("usi14");
     std::vector<tdmdatatype> chdata = jack.get_channel<tdmdatatype>(chid);
 
+    std::cout<<"channel size: "<<chdata.size()<<"\n";
+    for ( tdmdatatype el: chdata ) std::cout<<el<<"\n";
+
     // std::vector<std::string> chgrids = jack.get_channelgroup_ids();
     // for ( auto el: chgrids ) std::cout<<el<<",";
     // std::cout<<"\n";
