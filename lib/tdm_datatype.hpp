@@ -40,6 +40,9 @@ public:
   tdmdatatype(eFloat32Usi num): float32_(num), dtidx_(5) {};
   tdmdatatype(eFloat64Usi num): float64_(num), dtidx_(6) {};
 
+  // identify type
+  short int& dtype() { return dtidx_; }
+
   // overall assignment operator
   tdmdatatype& operator=(const tdmdatatype &num)
   {
@@ -90,14 +93,12 @@ public:
   }
   tdmdatatype& operator=(const eFloat32Usi &num)
   {
-    std::cout<<"tdmdatatype operator= for eFloat32Usi\n";
     this->float32_ = num;
     this->dtidx_ = 5;
     return *this;
   }
   tdmdatatype& operator=(const eFloat64Usi &num)
   {
-    std::cout<<"tdmdatatype operator= for eFloat64Usi\n";
     this->float64_ = num;
     this->dtidx_ = 6;
     return *this;
@@ -105,17 +106,17 @@ public:
 
   // define custom stream operator to print the correct type
   friend std::ostream& operator<<(std::ostream& out, const tdmdatatype& num)
-   {
-     std::cout<<"operator<< dtidx_:"<<num.dtidx_<<"\n";
-          if ( num.dtidx_ == 0 ) out<<num.sint16_;
-     else if ( num.dtidx_ == 1 ) out<<num.sint32_;
-     else if ( num.dtidx_ == 2 ) out<<num.uint8_;
-     else if ( num.dtidx_ == 3 ) out<<num.uint16_;
-     else if ( num.dtidx_ == 4 ) out<<num.uint32_;
-     else if ( num.dtidx_ == 5 ) out<<num.float32_;
-     else if ( num.dtidx_ == 6 ) out<<num.float64_;
-     return out;
-   }
+  {
+    if ( num.dtidx_ == 0 ) out<<num.sint16_;
+    else if ( num.dtidx_ == 1 ) out<<num.sint32_;
+    else if ( num.dtidx_ == 2 ) out<<num.uint8_;
+    else if ( num.dtidx_ == 3 ) out<<num.uint16_;
+    else if ( num.dtidx_ == 4 ) out<<num.uint32_;
+    else if ( num.dtidx_ == 5 ) out<<num.float32_;
+    else if ( num.dtidx_ == 6 ) out<<num.float64_;
+    return out;
+  }
+
 };
 
 // // base class for all tdm datatypes

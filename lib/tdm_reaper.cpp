@@ -568,8 +568,8 @@ std::string tdm_reaper::get_block_overview(format formatter)
 // -------------------------------------------------------------------------- //
 
 // extract channel by id
-template<typename tdmtype>
-std::vector<tdmtype> tdm_reaper::get_channel(std::string& id)
+// template<typename tdmtype>
+std::vector<tdmdatatype> tdm_reaper::get_channel(std::string& id)
 {
   // check for existence of required channel id (=key)
   if ( tdmchannels_.count(id) == 1 )
@@ -592,7 +592,7 @@ std::vector<tdmtype> tdm_reaper::get_channel(std::string& id)
 
     // use "values" id to map to external block
     block blk = tdx_blocks_.at(loccol.external_id_);
-    
+
     // // distinguish numeric datatypes
     // switch ( blk.value_type_ )
     // {
@@ -634,10 +634,14 @@ std::vector<tdmtype> tdm_reaper::get_channel(std::string& id)
     throw std::invalid_argument(std::string("channel id does not exist: ") + id);
   }
 
-  return std::vector<tdmtype>();
+  std::vector<tdmdatatype> data;
+  eFloat32Usi m(4);
+  data.push_back(m);
+  // std::vector<tdmdatatype>();
+  return data;
 }
 
-template std::vector<tdmdatatype> tdm_reaper::get_channel<tdmdatatype>(std::string& id);
+// template std::vector<tdmdatatype> tdm_reaper::get_channel<tdmdatatype>(std::string& id);
 
 // std::vector<double> tdm_reaper::get_channel(std::string &id)
 // {

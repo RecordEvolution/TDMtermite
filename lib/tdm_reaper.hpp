@@ -180,8 +180,8 @@ public:
   }
 
   // extract channel by id
-  template<typename tdmtype>
-  std::vector<tdmtype> get_channel(std::string& id);
+  // template<typename tdmtype>
+  std::vector<tdmdatatype> get_channel(std::string& id);
 
   // (TODO introduce template T to reference specific datatype instead of double in general)
   // std::vector<double> get_channel(std::string &id);
