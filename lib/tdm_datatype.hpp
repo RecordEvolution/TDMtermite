@@ -41,6 +41,7 @@ public:
   tdmdatatype(): sint16_(0), sint32_(0),
                  uint8_(0), uint16_(0), uint32_(0),
                  float32_(0.0), float64_(0.0) {};
+  virtual ~tdmdatatype() = default;
   friend std::ostream& operator<<(std::ostream& out, const tdmdatatype& num)
   {
     return num.print(out);

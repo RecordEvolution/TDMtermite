@@ -22,6 +22,9 @@ GHSH := $(shell git rev-parse HEAD | head -c8)
 # define install location
 INST := /usr/local/bin
 
+# platform
+OST := $(shell uname)
+
 # --------------------------------------------------------------------------- #
 # CLI tool
 
@@ -37,8 +40,14 @@ uninstall : $(INST)/$(EXE)
 # build main.cpp object file and include git version/commit tag
 main.o : src/main.cpp lib/$(SRC).hpp lib/tdm_datamodel.hpp
 	@cp $< $<.cpp
-	@sed -i 's/TAGSTRING/$(GTAG)/g' $<.cpp
-	@sed -i 's/HASHSTRING/$(GHSH)/g' $<.cpp
+	@if [ $(OST) = "Linux" ]; then\
+		sed -i 's/TAGSTRING/$(GTAG)/g' $<.cpp; \
+		sed -i 's/HASHSTRING/$(GHSH)/g' $<.cpp; \
+	fi
+	@if [ $(OST) = "Darwin" ]; then\
+		sed -i '' 's/TAGSTRING/$(GTAG)/g' $<.cpp; \
+		sed -i '' 's/HASHSTRING/$(GHSH)/g' $<.cpp; \
+	fi
 	$(CC) -c $(OPT) -I $(LIB) -I lib/ $<.cpp -o $@
 	@rm $<.cpp
 
@@ -46,7 +55,7 @@ $(SRC).o : lib/$(SRC).cpp lib/$(SRC).hpp lib/tdm_datamodel.hpp
 	$(CC) -c $(OPT) -I $(LIB) $< -o $@
 
 clean :
-	rm -f $(EXE) *.o
+	rm -f $(EXE) *.o src/main.cpp.cpp
 
 # --------------------------------------------------------------------------- #
 # check process
