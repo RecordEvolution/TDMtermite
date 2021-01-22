@@ -20,6 +20,7 @@
 
 #include "pugixml.hpp"
 #include "tdm_datamodel.hpp"
+#include "tdm_datatype.hpp"
 
 // -------------------------------------------------------------------------- //
 
