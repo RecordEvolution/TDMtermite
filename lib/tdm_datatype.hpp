@@ -302,7 +302,7 @@ const std::vector<tdm_datatype> tdm_datatypes = {
   {"eFloat32Usi","DT_FLOAT",3,"float_sequence",4,"32 bit float"},
   {"eFloat64Usi","DT_DOUBLE",7,"double_sequence",8,"64 bit double"},
 
-  {"eStringUsi","DT_STRING",1,"string_sequence",0,"text"}
+  // {"eStringUsi","DT_STRING",1,"string_sequence",0,"text"}
 
 };
 

@@ -197,9 +197,9 @@ int main(int argc, char* argv[])
 
     // get complete submatrix/localcolumns overview
     format formatter(18,false,false,' ');
-    std::cout<<jack.get_submatrix_overview(formatter)<<"\n";
-    std::cout<<jack.get_localcolumn_overview(formatter)<<"\n";
-    std::cout<<jack.get_block_overview(formatter)<<"\n";
+    std::cout<<jack.get_overview<submatrix>(formatter)<<"\n";
+    std::cout<<jack.get_overview<localcolumn>(formatter)<<"\n";
+    std::cout<<jack.get_overview<block>(formatter)<<"\n";
 
     std::string chid("usi14");
     std::vector<tdmdatatype> chdata = jack.get_channel(chid);

@@ -155,13 +155,11 @@ public:
   std::string get_channel_overview(format chformatter);
 
   // get block/submatrix/localcolumn overview
-  // template<typename tdmelement>
-  // std::string get_overview(format formatter);
-  // template<typename tdmelement>
-  // std::map<std::string,tdmelement> get_tdm_member(block blk);
-  std::string get_submatrix_overview(format formatter);
-  std::string get_localcolumn_overview(format formatter);
-  std::string get_block_overview(format formatter);
+  template<typename tdmelement>
+  std::string get_overview(format formatter);
+  void summarize_member(submatrix sbm, std::string& summary, format& formatter);
+  void summarize_member(localcolumn lcc, std::string& summary, format& formatter);
+  void summarize_member(block blk, std::string& summary, format& formatter);
 
   // get list of channelgroup ids
   std::vector<std::string> get_channelgroup_ids()
@@ -184,11 +182,7 @@ public:
   }
 
   // extract channel by id
-  // template<typename tdmtype>
   std::vector<tdmdatatype> get_channel(std::string& id);
-
-  // (TODO introduce template T to reference specific datatype instead of double in general)
-  // std::vector<double> get_channel(std::string &id);
 
   void print_channel(std::string &id, const char* filename);
 

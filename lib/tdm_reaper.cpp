@@ -408,10 +408,6 @@ void tdm_reaper::process_localcolumns(bool showlog)
       }
       std::string dt = tdmchannels_.at(locc.measurement_quantity_).datatype_;
       std::string sequence_type;
-      // for( auto itd = std::begin(tdm_datatypes); itd != std::end(tdm_datatypes); ++itd)
-      // {
-      //   if ( dt == itd->channel_datatype_ ) sequence_type = itd->value_sequence_;
-      // }
       if ( tdmdt_chan_.count(dt) != 1 )
       {
         throw std::runtime_error(std::string("datatype: ") + dt
@@ -484,37 +480,8 @@ std::string tdm_reaper::get_channel_overview(format chformatter)
   return channels_summary;
 }
 
-std::string tdm_reaper::get_submatrix_overview(format formatter)
-{
-  // summarize all output in single string
-  std::string submatrix_summary;
-
-  // set tabular mode of formatter
-  formatter.set_tabular(true);
-
-  // compose header
-  formatter.set_header(true);
-  submatrix sbm;
-  submatrix_summary += sbm.get_info(formatter);
-  std::string rule;
-  for ( unsigned long int i = 0; i < submatrix_summary.size(); i++ )
-  {
-    rule += std::string("-");
-  }
-  submatrix_summary += std::string("\n") + rule + std::string("\n");
-
-  formatter.set_header(false);
-  for (std::map<std::string,submatrix>::iterator it=submatrices_.begin();
-                                                 it!=submatrices_.end(); ++it)
-  {
-    submatrix_summary += it->second.get_info(formatter);
-    submatrix_summary += std::string("\n");
-  }
-
-  return submatrix_summary;
-}
-
-std::string tdm_reaper::get_localcolumn_overview(format formatter)
+template<typename tdmelement>
+std::string tdm_reaper::get_overview(format formatter)
 {
   // summarize all output in single string
   std::string summary;
@@ -524,8 +491,8 @@ std::string tdm_reaper::get_localcolumn_overview(format formatter)
 
   // compose header
   formatter.set_header(true);
-  localcolumn lc;
-  summary += lc.get_info(formatter);
+  tdmelement tdmel;
+  summary += tdmel.get_info(formatter);
   std::string rule;
   for ( unsigned long int i = 0; i < summary.size(); i++ )
   {
@@ -533,90 +500,46 @@ std::string tdm_reaper::get_localcolumn_overview(format formatter)
   }
   summary += std::string("\n") + rule + std::string("\n");
 
+  // write body of summary with data
   formatter.set_header(false);
-  for (std::map<std::string,localcolumn>::iterator it=localcolumns_.begin();
-                                                   it!=localcolumns_.end(); ++it)
-  {
-    summary += it->second.get_info(formatter);
-    summary += std::string("\n");
-  }
+  this->summarize_member(tdmel,summary,formatter);
 
   return summary;
 }
 
-std::string tdm_reaper::get_block_overview(format formatter)
+template std::string tdm_reaper::get_overview<submatrix>(format formatter);
+template std::string tdm_reaper::get_overview<localcolumn>(format formatter);
+template std::string tdm_reaper::get_overview<block>(format formatter);
+
+void tdm_reaper::summarize_member(submatrix sbm, std::string& summary, format& formatter)
 {
-  // summarize all output in single string
-  std::string summary;
-
-  // set tabular mode of formatter
-  formatter.set_tabular(true);
-
-  // compose header
-  formatter.set_header(true);
-  block blk;
-  summary += blk.get_info(formatter);
-  std::string rule;
-  for ( unsigned long int i = 0; i < summary.size(); i++ )
-  {
-    rule += std::string("-");
-  }
-  summary += std::string("\n") + rule + std::string("\n");
-
-  formatter.set_header(false);
-  for (std::map<std::string,block>::iterator it=tdx_blocks_.begin();
-                                             it!=tdx_blocks_.end(); ++it)
+  for ( std::map<std::string,submatrix>::iterator it=this->submatrices_.begin();
+                                                  it!=this->submatrices_.end(); ++it)
   {
     summary += it->second.get_info(formatter);
     summary += std::string("\n");
   }
-
-  return summary;
 }
 
-// template<typename tdmelement>
-// std::string tdm_reaper::get_overview(format formatter)
-// {
-//   // summarize all output in single string
-//   std::string summary;
-//
-//   // set tabular mode of formatter
-//   formatter.set_tabular(true);
-//
-//   // compose header
-//   formatter.set_header(true);
-//   tdmelement tdmel;
-//   summary += tdmel.get_info(formatter);
-//   std::string rule;
-//   for ( unsigned long int i = 0; i < summary.size(); i++ )
-//   {
-//     rule += std::string("-");
-//   }
-//   summary += std::string("\n") + rule + std::string("\n");
-//
-//   formatter.set_header(false);
-//   std::map<std::string,tdmelement> thedat = this->get_tdm_member<tdmelement>(tdmel);
-//   for ( std::map<std::string,tdmelement> el: thedat )
-//   {
-//     summary += el->second.get_info(formatter) + std::string("\n");
-//   }
-//   // for (std::map<std::string,tdmelement>::iterator it=thedat.begin();
-//   //                                                 it!=thedat.end(); ++it)
-//   // {
-//   //   summary += it->second.get_info(formatter);
-//   //   summary += std::string("\n");
-//   // }
-//
-//   return summary;
-// }
-//
-// template<typename tdmelement>
-// std::map<std::string,tdmelement> tdm_reaper::get_tdm_member(block blk)
-// {
-//   return this->tdx_blocks_;
-// }
-//
-// template std::string tdm_reaper::get_overview<block>(format formatter);
+void tdm_reaper::summarize_member(localcolumn lcc, std::string& summary, format& formatter)
+{
+  for ( std::map<std::string,localcolumn>::iterator it=this->localcolumns_.begin();
+                                                    it!=this->localcolumns_.end(); ++it)
+  {
+    summary += it->second.get_info(formatter);
+    summary += std::string("\n");
+  }
+}
+
+void tdm_reaper::summarize_member(block blk, std::string& summary, format& formatter)
+{
+  for ( std::map<std::string,block>::iterator it=this->tdx_blocks_.begin();
+                                              it!=this->tdx_blocks_.end(); ++it)
+  {
+    summary += it->second.get_info(formatter);
+    summary += std::string("\n");
+  }
+}
 
 // -------------------------------------------------------------------------- //
 
