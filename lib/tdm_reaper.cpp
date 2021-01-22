@@ -660,6 +660,107 @@ void tdm_reaper::print_channel(std::string &id, const char* filename, bool inclu
   fou.close();
 }
 
+void tdm_reaper::print_group(std::string &id, const char* filename, bool include_meta)
+{
+  // check for group id
+  if ( this->tdmchannelgroups_.count(id) != 1 )
+  {
+    throw std::invalid_argument(std::string("channelgroup id does not exist: ") + id);
+  }
+  else
+  {
+    // declare file stream
+    std::ofstream fou;
+    try {
+      fou.open(filename);
+    } catch ( const std::exception& e) {
+      throw std::runtime_error( std::string("failed to open file to dump group")
+                                + e.what() );
+    }
+
+    // get group object
+    tdm_channelgroup chngrp = this->tdmchannelgroups_.at(id);
+
+    int width = 25;
+
+    if ( include_meta )
+    {
+      // group meta data
+      fou<<"# "<<std::setw(width)<<std::left<<"group-id:"<<chngrp.id_<<"\n";
+      fou<<"# "<<std::setw(width)<<std::left<<"name:"<<chngrp.name_<<"\n";
+      fou<<"# "<<std::setw(width)<<std::left<<"description:"<<chngrp.description_<<"\n";
+      fou<<"# "<<std::setw(width)<<std::left<<"root:"<<chngrp.root_<<"\n";
+      fou<<"# "<<std::setw(width)<<std::left<<"channels:"<<join_strings(chngrp.channels_)<<"\n";
+      fou<<"# \n";
+
+      // print channels's meta data
+      std::vector<tdm_channel> grpschs;
+      for ( std::string chn: chngrp.channels_ )
+      {
+        if ( this->tdmchannels_.count(chn) == 1 )
+        {
+          grpschs.push_back(this->tdmchannels_.at(chn));
+        }
+        else
+        {
+          throw std::runtime_error("channel not found");
+        }
+      }
+
+      fou<<"# ";
+      for ( tdm_channel chn: grpschs ) fou<<std::setw(width)<<std::left<<std::string("channel-id:  "+chn.id_);
+      fou<<"\n";
+      fou<<"# ";
+      for ( tdm_channel chn: grpschs ) fou<<std::setw(width)<<std::left<<std::string("name:        "+chn.name_);
+      fou<<"\n";
+      fou<<"# ";
+      for ( tdm_channel chn: grpschs ) fou<<std::setw(width)<<std::left<<std::string("description: "+chn.description_);
+      fou<<"\n";
+      fou<<"# ";
+      for ( tdm_channel chn: grpschs ) fou<<std::setw(width)<<std::left<<std::string("unit_string: "+chn.unit_string_);
+      fou<<"\n";
+      fou<<"# ";
+      for ( tdm_channel chn: grpschs ) fou<<std::setw(width)<<std::left<<std::string("minimum:     "+std::to_string(chn.minimum_));
+      fou<<"\n";
+      fou<<"# ";
+      for ( tdm_channel chn: grpschs ) fou<<std::setw(width)<<std::left<<std::string("maximum:     "+std::to_string(chn.maximum_));
+      fou<<"\n";
+      fou<<"# ";
+      for ( tdm_channel chn: grpschs ) fou<<std::setw(width)<<std::left<<std::string("group-id:    "+chn.group_);
+      fou<<"\n";
+    }
+
+    // collect channel data
+    std::vector<std::vector<tdmdatatype>> allchns;
+    unsigned int maxrows = 0; // TODO use submatrix info to determine rows!!!
+    for ( std::string chn: chngrp.channels_ )
+    {
+      std::vector<tdmdatatype> chndat = this->get_channel(chn);
+      if ( chndat.size() > maxrows ) maxrows = chndat.size();
+      allchns.push_back(chndat);
+    }
+
+    for ( unsigned int row = 0; row < maxrows; row++ )
+    {
+      for ( unsigned int chi = 0; chi < chngrp.channels_.size(); chi++ )
+      {
+        if ( allchns.at(chi).size() > row )
+        {
+          fou<<std::setw(width)<<std::left<<allchns.at(chi).at(row);
+        }
+        else
+        {
+          fou<<std::setw(width)<<std::left<<"";
+        }
+      }
+      fou<<"\n";
+    }
+
+    // close file
+    fou.close();
+  }
+}
+
 // -------------------------------------------------------------------------- //
 
 template<typename datatype>

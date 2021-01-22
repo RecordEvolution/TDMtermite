@@ -201,11 +201,12 @@ int main(int argc, char* argv[])
     std::cout<<jack.get_overview<localcolumn>(formatter)<<"\n";
     std::cout<<jack.get_overview<block>(formatter)<<"\n";
 
-    // std::vector<std::string> chgrids = jack.get_channelgroup_ids();
-    // for ( auto id: chgrids )
-    // {
-    //
-    // }
+    std::vector<std::string> chgrids = jack.get_channelgroup_ids();
+    for ( auto id: chgrids )
+    {
+      std::string filenam = std::string("channelgroup_") + id + std::string(".dat");
+      jack.print_group(id,filenam.c_str(),true);
+    }
 
     std::vector<std::string> chids = jack.get_channel_ids();
     for ( auto id: chids )

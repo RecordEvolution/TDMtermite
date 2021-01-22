@@ -188,7 +188,7 @@ public:
 
   // dump a single channel/entire group (identified by id) to file
   void print_channel(std::string &id, const char* filename, bool include_meta = true);
-  void print_group(std::string &id, const char* filename);
+  void print_group(std::string &id, const char* filename, bool include_meta = true);
 
 private:
 
