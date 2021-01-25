@@ -160,6 +160,24 @@ public:
     return tdmroot_;
   }
 
+  // get channel/channelgroup meta object
+  tdm_channel& channel(std::string channelid)
+  {
+    if ( tdmchannels_.count(channelid) == 1 ) {
+      return tdmchannels_.at(channelid);
+    } else {
+      throw std::runtime_error(std::string("channel does not exist: ") + channelid);
+    }
+  }
+  tdm_channelgroup& channelgroup(std::string groupid)
+  {
+    if ( tdmchannelgroups_.count(groupid) == 1 ) {
+      return tdmchannelgroups_.at(groupid);
+    } else {
+      throw std::runtime_error(std::string("channelgroup does not exist: ") + groupid);
+    }
+  }
+
   // get full channel(group) overview
   std::string get_channel_overview(format chformatter);
 

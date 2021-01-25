@@ -53,6 +53,13 @@ void tdm_reaper::process_tdm(bool showlog)
       std::cout<<"encoding: "<<(pugi::xml_encoding)xml_result_.encoding<<"\n\n";
     }
 
+    // check XML parse result
+    if ( xml_result_.status != 0 )
+    {
+      throw std::runtime_error( std::string("failed to parse XML tree: " )
+                              + xml_result_.description() );
+    }
+
     // collect meta-data
     pugi::xml_node tdmdocu = xml_doc_.child("usi:tdm").child("usi:documentation");
     meta_data_.docu_expo_ = tdmdocu.child_value("usi:exporter");

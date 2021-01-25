@@ -41,7 +41,7 @@ void show_usage()
            <<"                         to their channelgroups (as long as the filenaming rule includes\n"
            <<"                         %G or %g) or written in separate files. For instance, to obtain\n"
            <<"                         files with only one channel each use '--f channel_%C_%c.csv'.\n"
-           <<"                         (default: '--filenames channelgroup_%G_%g.csv' )\n"
+           <<"                         (default: '--filenames channelgroup_%G.csv' )\n"
            <<" -s, --csvsep            separator character used in .csv files (default is comma '--csvsep ,')\n"
            <<" -i, --includemeta       include channel(-group) meta-data into files\n"
            <<" -h, --help              show this help message \n"
@@ -78,7 +78,7 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
     else if ( std::string(argv[1]) == std::string("--version")
            || std::string(argv[1]) == std::string("-v") )
     {
-      std::cout<<"tdmreaper "<<gittag<<"\n";
+      std::cout<<"tdmreaper "<<gittag<<"-g"<<githash<<"\n";
     }
     else
     {
@@ -162,26 +162,50 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
       else if ( std::string(argv[i]) == std::string("--output")
              || std::string(argv[i]) == std::string("-d") )
       {
-        prsdkeys.insert(std::pair<std::string,std::string>("output",argv[i+1]));
-        i += 1;
+        if ( argc > i+1 )
+        {
+          prsdkeys.insert(std::pair<std::string,std::string>("output",argv[i+1]));
+          i += 1;
+        }
+        else
+        {
+          std::cerr<<"missing argument for "<<argv[i]<<"\n";
+          prsdkeys.insert(std::pair<std::string,std::string>("invalidoption",""));
+        }
       }
       else if ( std::string(argv[i]) == std::string("--filenames")
              || std::string(argv[i]) == std::string("-f") )
       {
-        prsdkeys.insert(std::pair<std::string,std::string>("filenames",argv[i+1]));
-        i += 1;
+        if ( argc > i+1 )
+        {
+          prsdkeys.insert(std::pair<std::string,std::string>("filenames",argv[i+1]));
+          i += 1;
+        }
+        else
+        {
+          std::cerr<<"missing argument for "<<argv[i]<<"\n";
+          prsdkeys.insert(std::pair<std::string,std::string>("invalidoption",""));
+        }
       }
       else if ( std::string(argv[i]) == std::string("--csvsep")
              || std::string(argv[i]) == std::string("-s") )
       {
-        prsdkeys.insert(std::pair<std::string,std::string>("csvsep",argv[i+1]));
-        i += 1;
+        if ( argc > i+1 )
+        {
+          prsdkeys.insert(std::pair<std::string,std::string>("csvsep",argv[i+1]));
+          i += 1;
+        }
+        else
+        {
+          std::cerr<<"missing argument for "<<argv[i]<<"\n";
+          prsdkeys.insert(std::pair<std::string,std::string>("invalidoption",""));
+        }
       }
       //
       else if ( std::string(argv[i]) == std::string("--includemeta")
              || std::string(argv[i]) == std::string("-i") )
       {
-        prsdkeys.insert(std::pair<std::string,std::string>("includemeta",argv[i+1]));
+        prsdkeys.insert(std::pair<std::string,std::string>("includemeta","includemeta"));
       }
       else
       {
@@ -228,13 +252,13 @@ int main(int argc, char* argv[])
     bool listblocks = cfgopts.count("listblocks") == 1 ? true : false;
     bool listsubmatrices = cfgopts.count("listsubmatrices") == 1 ? true : false;
     bool listlocalcolumns = cfgopts.count("listlocalcolumns") == 1 ? true : false;
-    // bool includemeta = cfgopts.count("includemeta") == 1 ? true : false;
+    bool includemeta = cfgopts.count("includemeta") == 1 ? true : false;
 
     // set required option values
     std::string output = cfgopts.count("output") == 1 ? cfgopts.at("output")
                                                       : std::string("");
     std::string files = cfgopts.count("filenames") == 1 ? cfgopts.at("filenames")
-                                                      : std::string("channel_%G_%C.csv");
+                                                      : std::string("channelgroup_%G.csv");
     std::string csvsep = cfgopts.count("csvsep") == 1 ? cfgopts.at("csvsep")
                                                       : std::string(",");
 
@@ -272,7 +296,77 @@ int main(int argc, char* argv[])
       // check for given directory
       if ( std::filesystem::is_directory(pd) )
       {
+        // obtain channelgroup ids
+        std::vector<std::string> chgrids = jack.get_channelgroup_ids();
 
+        // check for any existing group-id in filenames rule
+        std::string slctgrp("");
+        for ( auto id: chgrids ) if ( files.find(id) != std::string::npos ) slctgrp = id;
+
+        // obtain list of channel ids
+        std::vector<std::string> chids = jack.get_channel_ids();
+
+        // check for any existing channel-id in filenames rule
+        std::string slctchn("");
+        for ( auto id: chids ) if ( files.find(id) != std::string::npos ) slctchn = id;
+
+        // write channels in files grouped by channelgroups
+        if ( files.find("%G") != std::string::npos || files.find("%g") != std::string::npos
+          || !slctgrp.empty() )
+        {
+          // iterate through channelgroup ids
+          for ( auto id: chgrids )
+          {
+            // write all channelgroups or single chosen one
+            if ( slctgrp.empty() || slctgrp == id )
+            {
+              // get and sanitize group name
+              tdm_channelgroup tdmgrp = jack.channelgroup(id);
+              std::string grpnm = tdmgrp.name_;
+              std::regex regg("([^A-Za-z0-9])");
+              std::string grpname = std::regex_replace(grpnm,regg,"");
+
+              // construct file name according to filenaming rule
+              std::string filenm = files;
+              filenm = std::regex_replace(filenm,std::regex("\\%G"),tdmgrp.id_);
+              filenm = std::regex_replace(filenm,std::regex("\\%g"),grpname);
+
+              // concat paths
+              std::filesystem::path outfile = pd / filenm;
+
+              // write entire channelgroup to file
+              jack.print_group(id,outfile.c_str(),includemeta);
+            }
+          }
+        }
+        // ...or write channels separately
+        else
+        {
+          // iterate through channel ids
+          for ( auto id: chids )
+          {
+            // write all channelgroups or single chosen one
+            if ( slctchn.empty() || slctchn == id )
+            {
+              // get and sanitize channel name
+              tdm_channel tdmchn = jack.channel(id);
+              std::string chnnm = tdmchn.name_;
+              std::regex regg("([^A-Za-z0-9])");
+              std::string chnname = std::regex_replace(chnnm,regg,"");
+
+              // construct file name according to filenaming rule
+              std::string filenm = files;
+              filenm = std::regex_replace(filenm,std::regex("\\%C"),tdmchn.id_);
+              filenm = std::regex_replace(filenm,std::regex("\\%c"),chnname);
+
+              // concat paths
+              std::filesystem::path outfile = pd / filenm;
+
+              // write entire channelgroup to file
+              jack.print_channel(id,outfile.c_str(),includemeta);
+            }
+          }
+        }
       }
       else
       {
@@ -282,79 +376,11 @@ int main(int argc, char* argv[])
     }
     else
     {
-      if ( cfgopts.size() == 2 ) std::cerr<<"no output directory given\n";
+      if ( cfgopts.count("showmeta") == 0 && cfgopts.count("showroot") == 0
+        && cfgopts.count("listgroups") == 0 && cfgopts.count("listchannels") == 0
+        && cfgopts.count("listblocks") == 0 && cfgopts.count("listsubmatrices") == 0
+        && cfgopts.count("listlocalcolumns") == 0 ) std::cerr<<"no output directory given\n";
     }
-
-    // std::vector<std::string> chgrids = jack.get_channelgroup_ids();
-    // for ( auto id: chgrids )
-    // {
-    //   std::string filenam = std::string("channelgroup_") + id + std::string(".dat");
-    //   jack.print_group(id,filenam.c_str(),true);
-    // }
-    //
-    // std::vector<std::string> chids = jack.get_channel_ids();
-    // for ( auto id: chids )
-    // {
-    //   std::string filenam = std::string("channel_") + id + std::string(".dat");
-    //   // std::vector<tdmdatatype> chdata = jack.get_channel(id);
-    //   jack.print_channel(id,filenam.c_str(),true);
-    // }
-
-    // print list of groups or channels to stdout
-    // if ( listgroups ) jack.list_groups();
-    // if ( listchannels ) jack.list_channels();
-
-    // // write data to filesystem
-    // if ( !listgroups && !listchannels )
-    // {
-    //   // declare filesystem path
-    //   std::filesystem::path pd = output;
-    //
-    //   // check for given directory
-    //   if ( std::filesystem::is_directory(pd) )
-    //   {
-    //     // print (group,channel) data
-    //     for ( int g = 0; g < jack.num_groups(); g++ )
-    //     {
-    //       // get and sanitize group name
-    //       std::string grpnm = jack.group_name(g);
-    //       std::regex regg("([^A-Za-z0-9])");
-    //       std::string grpname = std::regex_replace(grpnm,regg,"");
-    //
-    //       for ( int c = 0; c < jack.no_channels(g); c++ )
-    //       {
-    //         // get overall channel index/id
-    //         int chidx = jack.obtain_channel_id(g,c);
-    //
-    //         // get and sanitize channel name
-    //         std::string chnm = jack.channel_name(g,c);
-    //         std::regex regc("([^A-Za-z0-9])");
-    //         std::string chname = std::regex_replace(chnm,regc,"");
-    //
-    //         // construct file name according to filenaming rule
-    //         std::string filenm = files;
-    //         filenm = std::regex_replace(files,std::regex("\\%C"),std::to_string(c+1));
-    //         filenm = std::regex_replace(filenm,std::regex("\\%c"),chname);
-    //         filenm = std::regex_replace(filenm,std::regex("\\%G"),std::to_string(g+1));
-    //         filenm = std::regex_replace(filenm,std::regex("\\%g"),grpname);
-    //
-    //         // concat paths
-    //         std::filesystem::path outfile = pd / filenm;
-    //
-    //         // write channel to filesystem
-    //         jack.print_channel(chidx,outfile.c_str());
-    //       }
-    //     }
-    //
-    //     // print meta data
-    //     jack.print_meta((pd / "meta-data.log").c_str());
-    //   }
-    //   else
-    //   {
-    //     std::cerr<<std::string("directory '") + output
-    //              + std::string("' does not exist") + std::string("\n");
-    //   }
-    // }
   }
 
   //std::this_thread::sleep_for(std::chrono::milliseconds(10000));
