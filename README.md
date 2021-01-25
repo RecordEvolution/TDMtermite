@@ -127,7 +127,7 @@ The library can be used both as a _CLI_ based tool and as a _Python_ module.
 
 ### CLI tool
 
-To install the CLI tool _tdmripper_ do
+To install the CLI tool _tdmreaper_ do
 
 ```Shell
 make install
@@ -143,12 +143,12 @@ build the binary locally with `make` and install it in your preferred location.
 ## Usage
 
 The usage of the CLI tool is sufficiently clarified by its help message displayed
-by `tdmripper --help`. For instance, to extract the data decoded in the pair of
+by `tdmreaper --help`. For instance, to extract the data decoded in the pair of
 files `samples/SineData.tdm` and `samples/SineData.tdx` into the directory
 `/home/jack/data/`:
 
 ```Shell
-tdmripper --output /home/jack/data samples/SineData.tdm samples/SineData.tdx
+tdmreaper --output /home/jack/data samples/SineData.tdm samples/SineData.tdx
 ```
 
 ### CLI tool
