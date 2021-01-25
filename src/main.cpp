@@ -15,12 +15,12 @@ const std::string githash("HASHSTRING");
 void show_usage()
 {
   std::cout<<"\n"
-           <<"tdmripper ["<<gittag<<"-g"<<githash<<"] (github.com/RecordEvolution/tdm_ripper.git)"
+           <<"tdmreaper ["<<gittag<<"-g"<<githash<<"] (github.com/RecordEvolution/tdm_ripper.git)"
            <<"\n\n"
            <<"Decode TDM/TDX files and dump data as *.csv"
            <<"\n\n"
            <<"Usage:\n\n"
-           <<" tdmripper [options] <tdm-file> <tdx-file>"
+           <<" tdmreaper [options] <tdm-file> <tdx-file>"
            <<"\n\n"
            <<"Options:"
            <<"\n\n"
@@ -42,7 +42,7 @@ void show_usage()
 typedef std::map<std::string,std::string> optkeys;
 
 const std::string argmsg = std::string("both .tdm and .tdx file (and maybe any valid option) must be provided!");
-const std::string arguse = std::string("see $ tdmripper --help for usage");
+const std::string arguse = std::string("see $ tdmreaper --help for usage");
 
 optkeys parse_args(int argc, char* argv[], bool showargs = false)
 {
@@ -65,7 +65,7 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
     else if ( std::string(argv[1]) == std::string("--version")
            || std::string(argv[1]) == std::string("-v") )
     {
-      std::cout<<"tdmripper "<<gittag<<"\n";
+      std::cout<<"tdmreaper "<<gittag<<"\n";
     }
     else
     {
@@ -176,7 +176,7 @@ int main(int argc, char* argv[])
     // bool listgroups = cfgopts.count("listgroups") == 1 ? true : false;
     // bool listchannels = cfgopts.count("listchannels") == 1 ? true : false;
 
-    // declare and initialize tdm_ripper instance
+    // declare and initialize tdm_reaper instance
     tdm_reaper jack;
     try {
       jack.submit_files(cfgopts.at("tdm"),cfgopts.at("tdx"),false);
