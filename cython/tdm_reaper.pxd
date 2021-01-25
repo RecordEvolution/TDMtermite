@@ -6,10 +6,10 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp cimport bool
 
-cdef extern from "../lib/tdm_reaper.hpp":
-    cdef cppclass raw_eater:
+cdef extern from "tdm_reaper.hpp":
+    cdef cppclass tdmreaper:
         # constructor(s)
-        raw_eater() except +
+        tdmreaper() except +
         # set new file for decoding
         # void set_file(string)
         # # perform conversion (pass any C++ exceptions to Python)

@@ -55,7 +55,7 @@ main.o : src/main.cpp lib/$(SRC).hpp $(HPP)
 $(SRC).o : lib/$(SRC).cpp lib/$(SRC).hpp $(HPP)
 	$(CC) -c $(OPT) -I $(LIB) $< -o $@
 
-clean :
+clean-cpp :
 	rm -f $(EXE) *.o src/main.cpp.cpp
 
 # --------------------------------------------------------------------------- #
@@ -66,25 +66,27 @@ checkps :
 	@ps aux | grep $(EXE) | grep -v "grep"
 
 # --------------------------------------------------------------------------- #
-# python module
-#
-# pylib : setup.py pytdm_ripper.pyx tdm_ripper.pxd tdm_ripper.o
-# 	python3 setup.py build_ext --inplace
-#
-# install : setup.py pytdm_ripper.pyx tdm_ripper.pxd lib/tdm_ripper.cpp lib/tdm_ripper.hpp
-# 	python3 setup.py install
-#
-# install_osx : setup_osx.py pytdm_ripper.pyx tdm_ripper.pxd lib/tdm_ripper.cpp lib/tdm_ripper.hpp
-# 	python3 setup_osx.py install
-#
-# lib/libtdmripper.a :
-# 	make -C lib libtdmripper.a
-#
-# clean-lib :
-# 	rm -f lib/*.o lib/*.a
-# 	rm -f -r build
-# 	rm -f pytdm_ripper.cpp
-# 	rm -f *.so
+# python/cython module
 
+cython-help : cython/setup.py
+	python3 $< --help
+
+cython-list : cython/setup.py
+	python3 $< --name --description --author --author-email --url
+
+cython-build : cython/setup.py cython/tdm_reaper.pyx cython/tdm_reaper.pyx
+	python3 $< build_ext --inplace
+	# python3 $< build_ext
+
+cython-install : cython/setup.py cython/tdm_reaper.pyx cython/tdm_reaper.pyx
+	python3 $< install
+
+clean-cython :
+	rm -vf cython/tdm_reaper.cpp tdm_reaper.cpython-*.so
+	rm -r build
+
+# --------------------------------------------------------------------------- #
+
+clean : clean-cpp clean-cython
 
 # --------------------------------------------------------------------------- #

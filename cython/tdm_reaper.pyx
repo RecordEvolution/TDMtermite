@@ -4,14 +4,14 @@ import numpy as np
 import re
 import os
 
-cdef class tdmripper:
+cdef class tdm_reaper:
 
   # C++ instance of class => stack allocated (requires nullary constructor!)
-  cdef tdm_reaper tdminst
+  cdef tdm_reaper tdmrip
 
   # constructor
   def __cinit__(self):
-    self.tdminst = tdm_reaper()
+    self.tdmrip = tdm_reaper()
 
   # def set_file(self, string rawfile):
   #   if not os.path.isfile(rawfile) :
