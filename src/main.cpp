@@ -192,8 +192,16 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
       {
         if ( argc > i+1 )
         {
-          prsdkeys.insert(std::pair<std::string,std::string>("csvsep",argv[i+1]));
-          i += 1;
+          if ( std::string(argv[i+1]).size() == 1 )
+          {
+            prsdkeys.insert(std::pair<std::string,std::string>("csvsep",argv[i+1]));
+            i += 1;
+          }
+          else
+          {
+            std::cerr<<"invalid argument of --csvsep\n";
+            prsdkeys.insert(std::pair<std::string,std::string>("invalidoption",argv[i+1]));
+          }
         }
         else
         {
@@ -232,7 +240,7 @@ int main(int argc, char* argv[])
   optkeys cfgopts = parse_args(argc,argv);
 
   // show all CLI arguments
-  if ( false)
+  if ( false )
   {
     for ( optkeys::iterator it=cfgopts.begin(); it!=cfgopts.end(); ++it )
     {
@@ -335,7 +343,7 @@ int main(int argc, char* argv[])
               std::filesystem::path outfile = pd / filenm;
 
               // write entire channelgroup to file
-              jack.print_group(id,outfile.c_str(),includemeta);
+              jack.print_group(id,outfile.c_str(),includemeta,csvsep.at(0));
             }
           }
         }

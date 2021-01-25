@@ -673,7 +673,7 @@ void tdm_reaper::print_channel(std::string &id, const char* filename, bool inclu
   fou.close();
 }
 
-void tdm_reaper::print_group(std::string &id, const char* filename, bool include_meta)
+void tdm_reaper::print_group(std::string &id, const char* filename, bool include_meta, char sep)
 {
   // check for group id
   if ( this->tdmchannelgroups_.count(id) != 1 )
@@ -759,12 +759,22 @@ void tdm_reaper::print_group(std::string &id, const char* filename, bool include
       {
         if ( allchns.at(chi).size() > row )
         {
-          fou<<std::setw(width)<<std::left<<allchns.at(chi).at(row);
+          // use given csv separator token
+          if ( sep == ' ' )
+          {
+            fou<<std::setw(width)<<std::left<<allchns.at(chi).at(row);
+          }
+          else
+          {
+            fou<<allchns.at(chi).at(row);
+          }
         }
         else
         {
           fou<<std::setw(width)<<std::left<<"";
         }
+
+        if ( chi+1 < chngrp.channels_.size() ) fou<<sep;
       }
       fou<<"\n";
     }
