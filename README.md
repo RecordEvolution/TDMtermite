@@ -153,7 +153,7 @@ files `samples/SineData.tdm` and `samples/SineData.tdx` into the directory
 tdmreaper samples/SineData.tdm samples/SineData.tdx --output /home/jack/data
 ```
 
-The tool can also be used to list the available objects in TDM dataset, which
+The tool can also be used to list the available objects in the TDM dataset, which
 are i.a. _channels_, _channelgroups_ and TDX _blocks_. For instance, to list
 all channels and channelgroups (without writing any file output):
 
@@ -161,7 +161,7 @@ all channels and channelgroups (without writing any file output):
 tdmreaper samples/SineData.tdm samples/SineData.tdx --listgroups --listchannels
 ```
 
-The user may also submit a _filenaming rule_ to control names of the files the
+The user may also submit a _filenaming rule_ to control the names of the files the
 channel(-group)s are written to. To this end, the _magic flags_ `%G` `%g`, `%C`
 and `%c` representing the group id, group name, channel index and channel name
 are defined. The default filenaming option is
@@ -172,16 +172,16 @@ tdmreaper samples/SineData.tdm samples/SineData.tdx --output /home/jack/data --f
 
 which makes the tool write _all channels_ grouped into files according to their
 group association, while all channelgroup filenames obey the pattern `channelgroup_%G.csv`
-with `%G` being replaced by the group id. The filenaming rule enables the user
-to extract only single channelgroup or channel by providing a particular
-channel(-group) id in the filenaming flag. For example,
+with `%G` being replaced by the group id. The filenaming rule also enables the user
+to extract only a single channel(group) by providing a particular channel(-group)
+id in the filenaming flag. For example,
 
 ```Shell
 tdmreaper samples/SineData.tdm samples/SineData.tdx --output /home/jack/data -f channel_usi16_%c.csv --includemeta
 ```
 
-will write the single channel with id `usi16` (including its meta data as header)
-to the file `/home/jack/data/channel_usi16_A4.csv`.
+will write the single channel with id `usi16` to the file
+`/home/jack/data/channel_usi16_A4.csv` including its meta-data as a file header.
 
 ### Python
 
