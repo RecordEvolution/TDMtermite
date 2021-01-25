@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
     // declare and initialize tdm_reaper instance
     tdm_reaper jack;
     try {
-      jack.submit_files(cfgopts.at("tdm"),cfgopts.at("tdx"),false);
+      jack.submit_files(cfgopts.at("tdm"),cfgopts.at("tdx"),true);
     } catch (const std::exception& e) {
       throw std::runtime_error( std::string("failed to load/parse tdm/tdx files: ")
                               + e.what() );

@@ -18,6 +18,38 @@
 #include "tdm_format.hpp"
 
 // -------------------------------------------------------------------------- //
+// tdm meta data
+
+struct tdm_meta {
+
+  // usi:documentation
+  std::string docu_expo_, docu_expover_;
+
+  // usi:model
+  std::string model_name_, model_version_;
+  std::string model_include_uri_;
+
+  // usi:include
+  std::string byte_order_;  // little versus big endian
+  std::string file_url_;    // path/URL of corresponding .tdx file
+
+  const std::string get_info() { return get_info(defformat); }
+  const std::string get_info(format& formatter)
+  {
+    formatter.set_columns({ std::make_pair("exporter",docu_expo_),
+                            std::make_pair("exporterVersion",docu_expover_),
+                            std::make_pair("modelName",model_name_),
+                            std::make_pair("modelVersion",model_version_),
+                            std::make_pair("modelnsURI",model_include_uri_),
+                            std::make_pair("byteOrder",byte_order_),
+                            std::make_pair("fileURL",file_url_) } );
+
+    return formatter.get_info();
+  }
+
+};
+
+// -------------------------------------------------------------------------- //
 // block of data
 
 struct block {

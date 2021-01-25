@@ -49,18 +49,24 @@ void tdm_reaper::process_tdm(bool showlog)
 
     if ( showlog )
     {
-      std::cout<<"\nloading "<<tdmfile_<<": "<<xml_result_.description()<<"\n\n";
-      std::cout<<"encoding: "<<(pugi::xml_encoding)xml_result_.encoding<<"\n";
-
-      pugi::xml_node tdmdocu = xml_doc_.child("usi:tdm").child("usi:documentation");
-      std::cout<<tdmdocu.child_value("usi:exporter")<<"\n"
-               <<tdmdocu.child_value("usi:exporterVersion")<<"\n";
-
-      pugi::xml_node tdmmodel = xml_doc_.child("usi:tdm").child("usi:model");
-      std::cout<<tdmmodel.attribute("modelName").value()<<"\n";
-      std::cout<<tdmmodel.child("usi:include").attribute("nsUri").value()
-               <<tdmmodel.child("usi:include").attribute("modelVersion").value()<<"\n";
+      std::cout<<"\nloading "<<tdmfile_<<": "<<xml_result_.description()<<"\n";
+      std::cout<<"encoding: "<<(pugi::xml_encoding)xml_result_.encoding<<"\n\n";
     }
+
+    // collect meta-data
+    pugi::xml_node tdmdocu = xml_doc_.child("usi:tdm").child("usi:documentation");
+    meta_data_.docu_expo_ = tdmdocu.child_value("usi:exporter");
+    meta_data_.docu_expover_ = tdmdocu.child_value("usi:exporterVersion");
+    pugi::xml_node tdmmodel = xml_doc_.child("usi:tdm").child("usi:model");
+    meta_data_.model_name_ = tdmmodel.attribute("modelName").value();
+    meta_data_.model_version_ = tdmmodel.attribute("modelVersion").value();
+    meta_data_.model_include_uri_ = tdmmodel.child("usi:include").attribute("nsUri").value();
+    //
+    pugi::xml_node tdmincl = xml_doc_.child("usi:tdm").child("usi:include");
+    meta_data_.byte_order_ = tdmincl.child("file").attribute("byteOrder").value();
+    meta_data_.file_url_ = tdmincl.child("file").attribute("url").value();
+
+    if ( showlog ) std::cout<<meta_data_.get_info()<<"\n";
 
   } catch (const std::exception& e) {
     throw std::runtime_error(std::string("failed to load tdm file: ") + e.what());
@@ -143,21 +149,10 @@ void tdm_reaper::process_include(bool showlog)
   std::string endianness(tdmincl.child("file").attribute("byteOrder").value());
   endianness_ = endianness.compare("littleEndian") == 0 ? true : false;
 
-  // check referenced .tdx file
-  std::string urltdx(tdmincl.child("file").attribute("url").value());
-
   // obtain machine's endianness
   int num = 1;
   machine_endianness_ = ( *(char*)&num == 1 );
   if ( machine_endianness_ != endianness_ ) throw std::runtime_error("endianness mismatch");
-
-  if ( showlog )
-  {
-    std::cout<<"\n";
-    std::cout<<"endianness:         "<<(endianness_?"little":"big")<<"\n"
-             <<"machine endianness: "<<(machine_endianness_?"little":"big")<<"\n"
-             <<"url:                "<<urltdx<<"\n\n";
-  }
 
   // list block of massdata
   for (pugi::xml_node anode: tdmincl.child("file").children())

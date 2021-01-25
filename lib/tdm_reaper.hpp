@@ -40,6 +40,9 @@ class tdm_reaper
   // endianness (true = little, false = big)
   bool endianness_, machine_endianness_;
 
+  // tdm meta-data
+  tdm_meta meta_data_;
+
   // blocks of data in .tdx file
   std::map<std::string,block> tdx_blocks_;
 
