@@ -148,6 +148,12 @@ public:
   void process_submatrices(bool showlog);
   void process_localcolumns(bool showlog);
 
+  // get meta-data
+  tdm_meta get_meta()
+  {
+    return meta_data_;
+  }
+
   // get root element
   tdm_root get_root()
   {
@@ -161,6 +167,7 @@ public:
   template<typename tdmelement>
   std::string get_overview(format formatter);
 private:
+  void summarize_member(tdm_channelgroup chp, std::string& summary, format& formatter);
   void summarize_member(submatrix sbm, std::string& summary, format& formatter);
   void summarize_member(localcolumn lcc, std::string& summary, format& formatter);
   void summarize_member(block blk, std::string& summary, format& formatter);

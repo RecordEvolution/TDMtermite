@@ -502,9 +502,20 @@ std::string tdm_reaper::get_overview(format formatter)
   return summary;
 }
 
+template std::string tdm_reaper::get_overview<tdm_channelgroup>(format formatter);
 template std::string tdm_reaper::get_overview<submatrix>(format formatter);
 template std::string tdm_reaper::get_overview<localcolumn>(format formatter);
 template std::string tdm_reaper::get_overview<block>(format formatter);
+
+void tdm_reaper::summarize_member(tdm_channelgroup chp, std::string& summary, format& formatter)
+{
+  for ( std::map<std::string,tdm_channelgroup>::iterator it=this->tdmchannelgroups_.begin();
+                                                         it!=this->tdmchannelgroups_.end(); ++it)
+  {
+    summary += it->second.get_info(formatter);
+    summary += std::string("\n");
+  }
+}
 
 void tdm_reaper::summarize_member(submatrix sbm, std::string& summary, format& formatter)
 {
