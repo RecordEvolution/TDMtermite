@@ -230,8 +230,44 @@ grpids = jack.get_channelgroup_ids()
 chnids = jack.get_channel_ids()
 ```
 
-For a full example and to see how the actual data is extracted see the example
-`python/usage.py`.
+As a use case, we have look at listing the ids of all channelgroups and printing
+their data to separate files:
+
+```Python
+import tdm_reaper
+import re
+
+# create 'tdm_reaper' instance object
+try :
+    jack = tdm_reaper.tdmreaper(b'samples/SineData.tdm',b'samples/SineData.tdx')
+except RuntimeError as e :
+    print("failed to load/decode TDM files: " + str(e))
+
+# list ids of channelgroups
+grpids = jack.get_channelgroup_ids()
+grpids = [x.decode() for x in grpids]
+print("list of channelgroups: ",grpids)
+
+for grp in grpids :
+
+    # obtain meta data of channelgroups
+    grpinfo = jack.get_channelgroup_info(grp.encode())
+    print( json.dumps(grpinfo,sort_keys=False,indent=4) )
+
+    # write this channelgroup to file
+    try :
+        grpname = re.sub('[^A-Za-z0-9]','',grpinfo['name'])
+        grpfile = "channelgroup_" + str(grp) + "_" + str(grpname) + ".csv"
+        jack.print_channelgroup(grp.encode(),      # id of group to be printed
+                                grpfile.encode(),  # filename
+                                True,              # include metadata as fileheader
+                                ord(' ')           # delimiter char
+                                )
+    except RuntimeError as e :
+        print("failed to print channelgroup: " + str(grp) + " : " + str(e))
+```
+
+For a full example including more details see `python/usage.py`.
 
 ## References
 

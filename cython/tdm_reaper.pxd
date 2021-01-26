@@ -23,20 +23,6 @@ cdef extern from "tdm_reaper.hpp":
     # get meta-data
     string get_channelgroup_info(string id) except+
     string get_channel_info(string id) except+
-
-        # void set_file(string)
-        # # perform conversion (pass any C++ exceptions to Python)
-        # void setup_and_conversion() except +
-        # # get validity of data format
-        # bool get_valid()
-        # # get channel name and unit
-        # string get_name()
-        # string get_unit()
-        # # get time step and time unit
-        # double get_dt()
-        # string get_temp_unit()
-        # # get data array of time and measured quantity's channel
-        # vector[double] get_time()
-        # vector[double] get_data()
-        # # dump all data to .csv
-        # void write_table(const char*,char delimiter)
+    # print a channel(-group)
+    void print_group(string id, const char* filename, bool include_meta, char delimiter)
+    void print_channel(string id, const char* filename, bool include_meta)
