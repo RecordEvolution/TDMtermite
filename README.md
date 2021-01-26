@@ -314,6 +314,7 @@ wrapper.
 - https://zone.ni.com/reference/en-XX/help/371361R-01/lvhowto/ni_test_data_exchange/
 - https://www.ni.com/de-de/support/documentation/supplemental/06/the-ni-tdms-file-format.html
 - https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_headerfile/
+- https://www.ni.com/content/dam/web/product-documentation/c_dll_tdm.zip
 
 ### IEEE Standard and datatypes
 
@@ -321,9 +322,8 @@ wrapper.
 - https://www.ias.ac.in/public/Volumes/reso/021/01/0011-0030.pdf
 - https://en.cppreference.com/w/cpp/language/types
 
-### Code example
-- https://www.ni.com/content/dam/web/product-documentation/c_dll_tdm.zip
+### Implementation
 
-### Cython
-
+- https://pugixml.org/
+- https://github.com/zeux/pugixml
 - https://cython.readthedocs.io/en/latest/src/userguide/wrapping_CPlusPlus.html
