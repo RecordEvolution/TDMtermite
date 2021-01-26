@@ -200,110 +200,38 @@ will write the single channel with id `usi16` to the file
 
 ### Python
 
-...tbc...
+To be able to use the Python module _tdm_reaper_ it first has to be build locally
+or installed on the system. In the Python interpreter simply do:
 
-
-## !!! Deprecated !!!
-
-The makefile provides targets for using the library both as native C++ extension
-and as Python module. The package supports usage on Linux and MacOSX.
-The tdm_ripper module is built on these platforms by
-
-```Shell
-# Linux
-pip install Cython
-make install
+```Python
+import tdm_reaper
 ```
 
-and
+to import the module. The TDM files are provided by creating an instance of
+the _tdm_reaper_ class:
 
-```Shell
-# macOS
-pip install Cython
-make install_osx
+```Python
+# create 'tdm_reaper' instance object
+try :
+    jack = tdm_reaper.tdmreaper(b'samples/SineData.tdm',b'samples/SineData.tdx')
+except RuntimeError as e:
+    print("failed to load/decode TDM files: " + str(e))
 ```
 
-## Usage
+After initializing the _tdm_reaper_ object it can be used to extract any of the
+available data. For instance, to list the included channelgroups and channels:
 
-Although the package is built upon a C++ core, which decodes the data, it may be
-used as a Python module, as well, by interfacing the C++ library with a Cython
-wrapper.
+```Python
+# list ids of channelgroups
+grpids = jack.get_channelgroup_ids()
 
-### C++ core
 
-- In order to parse the XML tree of the .tdm file, the library employs pugixml:
-  https://pugixml.org/ and https://github.com/zeux/pugixml
-- The package currently supports the following datatypes:
-  - eInt8Usi: 8 byte
-  - eInt16Usi: 16 byte
-  - eInt32Usi: 32 byte
-  - eInt64Usi: 64 byte
-  - eUInt8Usi: 8 byte
-  - eUInt16Usi: 16 byte
-  - eUInt32Usi: 32 byte
-  - eUInt64Usi: 64 byte
-  - eFloat32Usi: 32 byte
-  - eFloat64Usi: 64 byte
-- The core of the library takes care of the decoding by reinterpretation of the
-  binary in the buffer as the required datatype implemented by
+# list ids of channels
+chnids = jack.get_channel_ids()
+```
 
-  ```C++
-  uint8_t *dfcast = reinterpret_cast<uint8_t*>(&df);
-
-  for ( int i = 0; i < (int)sizeof(double); i++ )
-  {
-    dfcast[i] = (int)bych[i];
-  }
-  ```
-
-  where for instance df is the resulting float and bych contains the binary
-  data as an array of chars.
-- main.cpp contains an example of how the C++ library might be used to provide
-  the channels and groups of the dataset. It is simply build by
-
-  ```Shell
-  make
-  ```
-
-- extract_all.cpp takes the .tdm, the .tdx file and some output directory as arguments
-  to provide all given information in .csv format without any logging. To build:
-
-  ```Shell
-  make extall
-  ```
-
-  For instance, the executable accepts the following arguments:
-
-  ```Shell
-  ./extract_all samples/SineData.tdm samples/SineData.tdx data/
-  ```
-
-### Python module
-
-- The library may also be used as a Python module and supports the use of
-  group channels in NumPy arrays as shown in example.py .
-- To extract all available information and data in the TDM files without any
-  further interaction, the use of extract_all.py is recommended. To exhibit the
-  required arguments:
-
-  ```Shell
-  python extract_all.py --help
-  ```
-- The same functionality may be obtained from an existing python script by
-  importing the tdm_ripper module and calling the extract_all function. For
-  instance
-
-  ```Python
-  import tdm_ripper as td
-
-  files = td.extract_all(b"samples/SineData.tdm",b"samples/SineData.tdx",b"data/",b"my_tdm")
-  ```
-
-  where the arguments "data/" and "my_tdm" are optional. "data/" specifies the
-  directory where all .csv output is dumped while "my_tdm" represents a name
-  prefix for all csv. files.
-  Note, that all string arguments must be converted to bytes before passing to
-  the argument list by prepending "b".
+For a full example and to see how the actual data is extracted see the example
+`python/usage.py`.
 
 ## References
 
