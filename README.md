@@ -144,7 +144,7 @@ available, which may be installed via `python3 -m pip install cython` .
 Furthermore, the [Numpy](https://numpy.org) package is recommended to be able
 to pass arrays of data from the C++ kernel to Python. The _makefile_ provides
 the target `make cython-requirements` to install all required Python modules.
-Finally, to build the Python extension _TDMReaper_ either locally or install
+Finally, to build the Python extension _tdm_reaper_ either locally or install
 it the targets `make cython-build` and `make cython-install` are provided.
 Hence, to install the Python module on the system simply do
 
