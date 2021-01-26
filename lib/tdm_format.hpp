@@ -100,6 +100,20 @@ static std::string join_strings(std::vector<std::string> &thestring, const char*
   return joined;
 }
 
+// join a list of numbers
+template<class numtype>
+static std::string join(std::vector<numtype> &thevec, const char* sep = " ")
+{
+  std::string joined;
+  for ( unsigned int i = 0; i < thevec.size(); i++ )
+  {
+    joined += std::to_string(thevec.at(i));
+    if ( i+1 < thevec.size() ) joined += std::string(sep);
+  }
+
+  return joined;
+}
+
 #endif
 
 // -------------------------------------------------------------------------- //

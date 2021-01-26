@@ -80,6 +80,37 @@ class tdm_reaper
     return listofids;
   }
 
+  // split string into substrings by delimiting string
+  std::vector<std::string> split(std::string fullstring, std::string delstr)
+  {
+    // declare array of resulting strings
+    std::vector<std::string> splitstrings(0);
+
+    // parse input string for substring
+    while ( fullstring.find(delstr) != std::string::npos )
+    {
+      // find first occurence of delimiting string in 'mystring'
+      std::size_t delpos = fullstring.find(delstr);
+
+      // extract substring
+      std::string stringel = fullstring.substr(0,delpos);
+
+      // append first word to array
+      if ( !stringel.empty() )
+      {
+        splitstrings.push_back(stringel);
+      }
+
+      // remove first word from 'fullstring'
+      fullstring = fullstring.substr(delpos+delstr.size(),fullstring.size());
+    }
+
+    // append last word to array
+    splitstrings.push_back(fullstring);
+
+    return splitstrings;
+  }
+
 public:
 
   // encoding

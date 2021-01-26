@@ -352,8 +352,22 @@ void tdm_reaper::process_localcolumns(bool showlog, pugi::xml_document& xml_doc)
     lcmax = lcmax.empty() ? std::string("0.0") : lcmax;
     locc.maximum_ = std::stod(lcmax);
     locc.sequence_representation_ = loccol.child_value("sequence_representation");
-    // TODO
-    // .... loccal.child_value("generation_parameters");
+    std::string genpar = loccol.child_value("generation_parameters");
+    // check for any given generation parameters (applies to 'implicit_linear' channels only)
+    if ( !genpar.empty() )
+    {
+      // check for two floats
+      std::vector<std::string> params = this->split(genpar,std::string(" "));
+      if ( params.size() == 2 )
+      {
+        // remove default elements and insert new numbers
+        locc.generation_parameters_.clear();
+        for ( std::string el: params )
+        {
+          locc.generation_parameters_.push_back(std::stod(el));
+        }
+      }
+    }
 
     std::vector<std::string> vl = this->extract_ids(loccol.child_value("values"));
     if ( vl.size() == 1 )
@@ -541,10 +555,13 @@ std::vector<tdmdatatype> tdm_reaper::get_channel(std::string& id)
     }
     localcolumn loccol = localcolumns_.at(chn.local_columns_[0]);
 
-    if ( loccol.sequence_representation_ != "explicit" )
+    // check sequence_representation
+    if ( loccol.sequence_representation_ != "explicit"
+      && loccol.sequence_representation_ != "implicit_linear"
+      && loccol.sequence_representation_ != "raw_linear" )
     {
       throw std::runtime_error(std::string("unsupported sequence_representation: ")
-                                + loccol.sequence_representation_);
+                                + loccol.sequence_representation_ );
     }
 
     // use "values" id to map to external block
@@ -596,6 +613,26 @@ std::vector<tdmdatatype> tdm_reaper::get_channel(std::string& id)
     else
     {
       throw std::runtime_error(std::string("unsupported/unknown datatype") + blk.value_type_);
+    }
+
+    // apply offset and factor for implicit_linear and raw_linear representation
+    if ( loccol.sequence_representation_ == "implicit_linear"
+      || loccol.sequence_representation_ == "raw_linear" )
+    {
+      // datatype has to be 'DT_DOUBLE' for these representations
+      if ( chn.datatype_ != std::string("DT_DOUBLE") )
+      {
+        throw std::runtime_error( std::string("inconsistent sequence_representation and datatype: ")
+                                  + chn.id_ + std::string(",") + loccol.sequence_representation_
+                                  + std::string(",") + chn.datatype_ );
+      }
+
+      // scale and shift channel
+      for ( auto &el: datavec )
+      {
+        el = loccol.generation_parameters_[0]
+             + el.as_double()*loccol.generation_parameters_[1];
+      }
     }
 
     return datavec;
@@ -754,7 +791,14 @@ void tdm_reaper::print_group(std::string &id, const char* filename, bool include
         }
         else
         {
-          fou<<std::setw(width)<<std::left<<"";
+          if ( sep == ' ' )
+          {
+            fou<<std::setw(width)<<std::left<<"";
+          }
+          else
+          {
+            fou<<sep;
+          }
         }
 
         if ( chi+1 < chngrp.channels_.size() ) fou<<sep;

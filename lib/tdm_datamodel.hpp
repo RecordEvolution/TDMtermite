@@ -302,6 +302,22 @@ struct localcolumn {
   std::string values_;                        // -> refers to usi:data -> _sequence
   std::string external_id_;
 
+  localcolumn () {
+    id_ = std::string("");
+    name_ = std::string("");
+    description_ = std::string("");
+    measurement_quantity_ = std::string("");
+    submatrix_ = std::string("");
+    global_flag_ = 15;
+    independent_ = 0;
+    minimum_ = 0.0;
+    maximum_ = 0.0;
+    sequence_representation_ = std::string("explicit");
+    generation_parameters_ = { 0.0, 1.0 };
+    values_ = std::string("");
+    external_id_ = std::string("");
+  }
+
   const std::string get_info() { return get_info(defformat); }
   const std::string get_info(format& formatter)
   {
@@ -313,6 +329,7 @@ struct localcolumn {
                             std::make_pair("minimum",std::to_string(minimum_)),
                             std::make_pair("maximum",std::to_string(maximum_)),
                             std::make_pair("sequence_representation",sequence_representation_),
+                            std::make_pair("generation_parameters",join<double>(generation_parameters_)),
                             std::make_pair("values",values_),
                             std::make_pair("external",external_id_) });
 

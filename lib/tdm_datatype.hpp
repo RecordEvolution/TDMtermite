@@ -107,7 +107,7 @@ public:
   // obtain number as double
   double as_double()
   {
-    double num;
+    double num = 0.0;
     if ( dtidx_ == 0 ) num = (double)sint16_;
     else if ( dtidx_ == 1 ) num = (double)sint32_;
     else if ( dtidx_ == 2 ) num = (double)uint8_;
