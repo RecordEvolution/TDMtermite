@@ -2,7 +2,7 @@
 
 from tdm_reaper cimport tdm_reaper
 import json as jn
-import numpy as np
+# import numpy as np
 
 cdef class tdmreaper:
 
