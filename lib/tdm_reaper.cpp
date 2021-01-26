@@ -610,6 +610,9 @@ std::vector<tdmdatatype> tdm_reaper::get_channel(std::string& id)
 
 void tdm_reaper::print_channel(std::string &id, const char* filename, bool include_meta)
 {
+  // check required path
+  this->check_filename_path(filename);
+
   // check for channel id
   if ( this->tdmchannels_.count(id) != 1 )
   {
@@ -652,6 +655,9 @@ void tdm_reaper::print_channel(std::string &id, const char* filename, bool inclu
 
 void tdm_reaper::print_group(std::string &id, const char* filename, bool include_meta, char sep)
 {
+  // check required path
+  this->check_filename_path(filename);
+
   // check for group id
   if ( this->tdmchannelgroups_.count(id) != 1 )
   {
@@ -758,6 +764,20 @@ void tdm_reaper::print_group(std::string &id, const char* filename, bool include
 
     // close file
     fou.close();
+  }
+}
+
+void tdm_reaper::check_filename_path(const char* filename)
+{
+  // declare filesystem path instance from filename
+  std::filesystem::path pt(filename);
+
+  // get pure directory path
+  pt.remove_filename();
+
+  if ( !std::filesystem::is_directory(pt) )
+  {
+    throw std::runtime_error(std::string("directory does not exist: ") + pt.c_str() );
   }
 }
 

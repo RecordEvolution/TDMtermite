@@ -24,5 +24,5 @@ cdef extern from "tdm_reaper.hpp":
     string get_channelgroup_info(string id) except+
     string get_channel_info(string id) except+
     # print a channel(-group)
-    void print_group(string id, const char* filename, bool include_meta, char delimiter)
-    void print_channel(string id, const char* filename, bool include_meta)
+    void print_group(string id, const char* filename, bool include_meta, char delimiter) except+
+    void print_channel(string id, const char* filename, bool include_meta) except+

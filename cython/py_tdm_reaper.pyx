@@ -42,3 +42,10 @@ cdef class tdmreaper:
   def print_channel(self, string id, const char* filename,
                           bool include_meta):
     self.cpp_tdm.print_channel(id,filename,include_meta)
+
+  # print all data grouped by channelgroups
+  def write_all(self, string outputdir) :
+    grpids = self.cpp_tdm.get_channelgroup_ids()
+    for id in grpids :
+      grpfile = outputdir.decode() + "/channelgroup_" + id.decode() + ".csv"
+      self.cpp_tdm.print_group(id,grpfile.encode(),True,ord(','))
