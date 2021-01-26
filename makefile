@@ -68,6 +68,9 @@ checkps :
 # --------------------------------------------------------------------------- #
 # python/cython module
 
+cython-requirements: cython/requirements.txt
+	python3 -m pip install -r $<
+
 cython-help : cython/setup.py
 	python3 $< --help
 

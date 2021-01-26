@@ -9,6 +9,5 @@ data/
 tdmripper
 *.csv
 *.log
-*.txt
 tdmreaper
 cython/*.cpp

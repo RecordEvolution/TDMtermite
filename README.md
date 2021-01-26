@@ -138,7 +138,22 @@ build the binary locally with `make` and install it in your preferred location.
 
 ### Python
 
-...tbc...
+In order to build a _Python module_ from the _C++_ code base the
+[Cython](https://cython.readthedocs.io/en/latest/index.html) package must be
+available, which may be installed via `python3 -m pip install cython` .
+Furthermore, the [Numpy](https://numpy.org) package is recommended to be able
+to pass arrays of data from the C++ kernel to Python. The _makefile_ provides
+the target `make cython-requirements` to install all required Python modules.
+Finally, to build the Python extension _TDMReaper_ either locally or install
+it the targets `make cython-build` and `make cython-install` are provided.
+Hence, to install the Python module on the system simply do
+
+```Shell
+make cython-requirements
+make cython-install
+```
+
+that makes the module available to be imported as `import tdm_reaper` .
 
 ## Usage
 
@@ -308,3 +323,7 @@ wrapper.
 
 ### Code example
 - https://www.ni.com/content/dam/web/product-documentation/c_dll_tdm.zip
+
+### Cython
+
+- https://cython.readthedocs.io/en/latest/src/userguide/wrapping_CPlusPlus.html
