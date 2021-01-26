@@ -177,6 +177,34 @@ public:
   // extract channel by id
   std::vector<tdmdatatype> get_channel(std::string& id);
 
+  // additional methods for Cython/Python compatibiliy
+  //
+  // extract and return any channel as datatype double
+  std::vector<double> get_channel_as_double(std::string id)
+  {
+    std::vector<tdmdatatype> tdmchn = this->get_channel(id);
+    std::vector<double> chn;
+    for ( tdmdatatype el: tdmchn ) chn.push_back(el.as_double());
+    return chn;
+  }
+  // get channel(-group) meta-data
+  std::string get_channelgroup_info(std::string id)
+  {
+    if ( tdmchannelgroups_.count(id) == 1 ) {
+      return tdmchannelgroups_.at(id).get_json();
+    } else {
+      throw std::runtime_error(std::string("channelgroup does not exist: ") + id);
+    }
+  }
+  std::string get_channel_info(std::string id)
+  {
+    if ( tdmchannels_.count(id) == 1 ) {
+      return tdmchannels_.at(id).get_json();
+    } else {
+      throw std::runtime_error(std::string("channel does not exist: ") + id);
+    }
+  }
+
   // dump a single channel/entire group (identified by id) to file
   void print_channel(std::string &id, const char* filename, bool include_meta = true);
   void print_group(std::string &id, const char* filename, bool include_meta = true, char sep = ' ');

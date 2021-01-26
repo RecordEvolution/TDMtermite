@@ -160,6 +160,17 @@ struct tdm_channelgroup {
     return formatter.get_info();
   }
 
+  const std::string get_json()
+  {
+    std::stringstream ss;
+    ss<<"{"<<"\"group-id\":\""<<id_
+           <<"\",\"name\":\""<<name_
+           <<"\",\"description\":\""<<description_
+           <<"\",\"root\":\""<<root_
+           <<"\",\"channels\":\""<<join_strings(channels_)<<"\"}";
+    return ss.str();
+  }
+
 };
 
 // -------------------------------------------------------------------------- //
@@ -214,6 +225,20 @@ struct tdm_channel {
                             std::make_pair("local_columns",join_strings(local_columns_)) });
 
     return formatter.get_info();
+  }
+
+  const std::string get_json()
+  {
+    std::stringstream ss;
+    ss<<"{"<<"\"channel-id\":\""<<id_
+           <<"\",\"name\":\""<<name_
+           <<"\",\"description\":\""<<description_
+           <<"\",\"unit_string\":\""<<unit_string_
+           <<"\",\"datatype\":\""<<datatype_
+           <<"\",\"minimum\":\""<<minimum_
+           <<"\",\"maximum\":\""<<maximum_
+           <<"\",\"group\":\""<<group_<<"\"}";
+    return ss.str();
   }
 
 };

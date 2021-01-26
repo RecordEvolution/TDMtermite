@@ -1,7 +1,8 @@
 # distutils: language = c++
 
 from tdm_reaper cimport tdm_reaper
-# import numpy as np
+import json as jsn
+import numpy as np
 # import re
 # import os
 
@@ -13,6 +14,26 @@ cdef class tdmreaper:
   # constructor
   def __cinit__(self, string tdmfile, string tdxfile):
     self.cpp_tdm = tdm_reaper(tdmfile,tdxfile)
+
+  # provide TDM files
+  def submit_files(self,string tdmfile, string tdxfile):
+    self.cpp_tdm.submit_files(tdmfile,tdxfile)
+
+  # get list of channel(-group) ids
+  def get_channelgroup_ids(self):
+    return self.cpp_tdm.get_channelgroup_ids()
+  def get_channel_ids(self):
+    return self.cpp_tdm.get_channel_ids()
+
+  # get data of specific channel
+  def get_channel(self, string id):
+    return self.cpp_tdm.get_channel_as_double(id)
+
+  # get meta-data of channel(-group)
+  def get_channelgroup_info(self, string id):
+    return self.cpp_tdm.get_channelgroup_info(id)
+  def get_channel_info(self, string id):
+    return self.cpp_tdm.get_channel_info(id)
 
   # def set_file(self, string rawfile):
   #   if not os.path.isfile(rawfile) :

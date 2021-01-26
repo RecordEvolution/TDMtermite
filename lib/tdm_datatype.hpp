@@ -104,6 +104,20 @@ public:
     return *this;
   }
 
+  // obtain number as double
+  double as_double()
+  {
+    double num;
+    if ( dtidx_ == 0 ) num = (double)sint16_;
+    else if ( dtidx_ == 1 ) num = (double)sint32_;
+    else if ( dtidx_ == 2 ) num = (double)uint8_;
+    else if ( dtidx_ == 3 ) num = (double)uint16_;
+    else if ( dtidx_ == 4 ) num = (double)uint32_;
+    else if ( dtidx_ == 5 ) num = (double)float32_;
+    else if ( dtidx_ == 6 ) num = (double)float64_;
+    return num;
+  }
+
   // define custom stream operator to print the correct type
   friend std::ostream& operator<<(std::ostream& out, const tdmdatatype& num)
   {
