@@ -17,7 +17,7 @@ OPT = -O3 -Wall -Werror -Wunused-variable -Wsign-compare
 LIB = pugixml/
 
 # determine git version/commit tag
-GTAG := $(shell git tag | head -n1)
+GTAG := $(shell git tag | tail -n1)
 GHSH := $(shell git rev-parse HEAD | head -c8)
 
 # define install location
