@@ -1,15 +1,18 @@
 # cython: language_level = 3
-# distutils: language = c++
 
 # use some C++ STL libraries
 from libcpp.string cimport string
-from libcpp.vector cimport vector
-from libcpp cimport bool
+# from libcpp.vector cimport vector
+# from libcpp cimport bool
+
+cdef extern from "tdm_reaper.cpp":
+  pass
 
 cdef extern from "tdm_reaper.hpp":
-    cdef cppclass tdmreaper:
-        # constructor(s)
-        tdmreaper() except +
+  cdef cppclass tdm_reaper:
+    # constructor(s)
+    tdm_reaper() except +
+    tdm_reaper(string tdmfile, string tdxfile) except +
         # set new file for decoding
         # void set_file(string)
         # # perform conversion (pass any C++ exceptions to Python)

@@ -1,17 +1,18 @@
+# distutils: language = c++
 
-from tdm_reaper cimport tdmreaper
-import numpy as np
-import re
-import os
+from tdm_reaper cimport tdm_reaper
+# import numpy as np
+# import re
+# import os
 
-cdef class tdm_reaper:
+cdef class tdmreaper:
 
   # C++ instance of class => stack allocated (requires nullary constructor!)
-  cdef tdm_reaper tdmrip
+  cdef tdm_reaper cpp_tdm
 
   # constructor
-  def __cinit__(self):
-    self.tdmrip = tdm_reaper()
+  def __cinit__(self, string tdmfile, string tdxfile):
+    self.cpp_tdm = tdm_reaper(tdmfile,tdxfile)
 
   # def set_file(self, string rawfile):
   #   if not os.path.isfile(rawfile) :

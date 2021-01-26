@@ -40,93 +40,62 @@ void tdm_reaper::process_tdm(bool showlog)
   }
 
   // set up xml-parser and load tdm-file
+  pugi::xml_document xml_doc;
+  pugi::xml_parse_result xml_result;
   try {
     // load XML document from stream
     std::ifstream fin(tdmfile_.c_str());
-    xml_result_ = xml_doc_.load(fin);
+    xml_result = xml_doc.load(fin);
     fin.close();
-    // xml_result_ = xml_doc_.load_file(tdmfile_.c_str());
+    // xml_result = xml_doc_.load_file(tdmfile_.c_str());
 
     if ( showlog )
     {
-      std::cout<<"\nloading "<<tdmfile_<<": "<<xml_result_.description()<<"\n";
-      std::cout<<"encoding: "<<(pugi::xml_encoding)xml_result_.encoding<<"\n\n";
+      std::cout<<"\nloading "<<tdmfile_<<": "<<xml_result.description()<<"\n";
+      std::cout<<"encoding: "<<(pugi::xml_encoding)xml_result.encoding<<"\n\n";
     }
 
     // check XML parse result
-    if ( xml_result_.status != 0 )
+    if ( xml_result.status != 0 )
     {
       throw std::runtime_error( std::string("failed to parse XML tree: " )
-                              + xml_result_.description() );
+                              + xml_result.description() );
     }
+  } catch (const std::exception& e) {
+    throw std::runtime_error(std::string("failed to load tdm file: ") + e.what());
+  }
 
     // collect meta-data
-    pugi::xml_node tdmdocu = xml_doc_.child("usi:tdm").child("usi:documentation");
+    pugi::xml_node tdmdocu = xml_doc.child("usi:tdm").child("usi:documentation");
     meta_data_.docu_expo_ = tdmdocu.child_value("usi:exporter");
     meta_data_.docu_expover_ = tdmdocu.child_value("usi:exporterVersion");
-    pugi::xml_node tdmmodel = xml_doc_.child("usi:tdm").child("usi:model");
+    pugi::xml_node tdmmodel = xml_doc.child("usi:tdm").child("usi:model");
     meta_data_.model_name_ = tdmmodel.attribute("modelName").value();
     meta_data_.model_version_ = tdmmodel.attribute("modelVersion").value();
     meta_data_.model_include_uri_ = tdmmodel.child("usi:include").attribute("nsUri").value();
     //
-    pugi::xml_node tdmincl = xml_doc_.child("usi:tdm").child("usi:include");
+    pugi::xml_node tdmincl = xml_doc.child("usi:tdm").child("usi:include");
     meta_data_.byte_order_ = tdmincl.child("file").attribute("byteOrder").value();
     meta_data_.file_url_ = tdmincl.child("file").attribute("url").value();
 
     if ( showlog ) std::cout<<meta_data_.get_info()<<"\n";
 
-  } catch (const std::exception& e) {
-    throw std::runtime_error(std::string("failed to load tdm file: ") + e.what());
-  }
-
   // check datatype consistency, i.e. "local" representation of datatypes
   // and build map(s) for "tdm_datatypes"
+  this->check_datatype_consistency();
   for ( tdm_datatype el: tdm_datatypes )
   {
-    if ( el.name_ == "eInt16Usi" )
-    {
-      if ( el.size_ != sizeof(eInt16Usi) ) throw std::logic_error("invalid representation of eInt16Usi");
-    }
-    else if ( el.name_ == "eInt32Usi" )
-    {
-      if ( el.size_ != sizeof(eInt32Usi) ) throw std::logic_error("invalid representation of eInt32Usi");
-    }
-    else if ( el.name_ == "eUInt8Usi" )
-    {
-      if ( el.size_ != sizeof(eUInt8Usi) ) throw std::logic_error("invalid representation of eUInt8Usi");
-    }
-    else if ( el.name_ == "eUInt16Usi" )
-    {
-      if ( el.size_ != sizeof(eUInt16Usi) ) throw std::logic_error("invalid representation of eUInt16Usi");
-    }
-    else if ( el.name_ == "eUInt32Usi" )
-    {
-      if ( el.size_ != sizeof(eUInt32Usi) ) throw std::logic_error("invalid representation of eUInt32Usi");
-    }
-    else if ( el.name_ == "eFloat32Usi" )
-    {
-      if ( el.size_ != sizeof(eFloat32Usi) ) throw std::logic_error("invalid representation of eFloat32Usi");
-    }
-    else if ( el.name_ == "eFloat64Usi" )
-    {
-      if ( el.size_ != sizeof(eFloat64Usi) ) throw std::logic_error("invalid representation of eFloat64Usi");
-    }
-    else
-    {
-      throw std::logic_error("missing datatype validation");
-    }
-
     tdmdt_name_.insert(std::pair<std::string,tdm_datatype>(el.name_,el));
     tdmdt_chan_.insert(std::pair<std::string,tdm_datatype>(el.channel_datatype_,el));
   }
 
   // process elements of XML
-  this->process_include(showlog);
-  this->process_root(showlog);
-  this->process_channelgroups(showlog);
-  this->process_channels(showlog);
-  this->process_submatrices(showlog);
-  this->process_localcolumns(showlog);
+  this->process_include(showlog,xml_doc);
+  this->process_root(showlog,xml_doc);
+  this->process_channelgroups(showlog,xml_doc);
+  this->process_channels(showlog,xml_doc);
+  this->process_submatrices(showlog,xml_doc);
+  this->process_localcolumns(showlog,xml_doc);
 
   // open .tdx and stream all binary data into buffer
   try {
@@ -147,10 +116,10 @@ void tdm_reaper::process_tdm(bool showlog)
   }
 }
 
-void tdm_reaper::process_include(bool showlog)
+void tdm_reaper::process_include(bool showlog, pugi::xml_document& xml_doc)
 {
   // get XML node
-  pugi::xml_node tdmincl = xml_doc_.child("usi:tdm").child("usi:include");
+  pugi::xml_node tdmincl = xml_doc.child("usi:tdm").child("usi:include");
 
   // check endianness
   std::string endianness(tdmincl.child("file").attribute("byteOrder").value());
@@ -201,11 +170,11 @@ void tdm_reaper::process_include(bool showlog)
   if ( showlog ) std::cout<<"number of blocks: "<<tdx_blocks_.size()<<"\n\n";
 }
 
-void tdm_reaper::process_root(bool showlog)
+void tdm_reaper::process_root(bool showlog, pugi::xml_document& xml_doc)
 {
   // get XML node
-  pugi::xml_node tdmdataroot = xml_doc_.child("usi:tdm").child("usi:data")
-                                                        .child("tdm_root");
+  pugi::xml_node tdmdataroot = xml_doc.child("usi:tdm").child("usi:data")
+                                                       .child("tdm_root");
 
   // extract properties
   tdmroot_.id_ = tdmdataroot.attribute("id").value();
@@ -221,10 +190,10 @@ void tdm_reaper::process_root(bool showlog)
   if ( showlog ) std::cout<<tdmroot_.get_info()<<"\n";
 }
 
-void tdm_reaper::process_channelgroups(bool showlog)
+void tdm_reaper::process_channelgroups(bool showlog, pugi::xml_document& xml_doc)
 {
   // get XML node <usi:data>
-  pugi::xml_node tdmdata = xml_doc_.child("usi:tdm").child("usi:data");
+  pugi::xml_node tdmdata = xml_doc.child("usi:tdm").child("usi:data");
 
   // find all its <tdm_channelgroup> elements
   for ( pugi::xml_node group = tdmdata.child("tdm_channelgroup"); group;
@@ -259,10 +228,10 @@ void tdm_reaper::process_channelgroups(bool showlog)
   if ( showlog ) std::cout<<"number of channelgroups: "<<tdmchannelgroups_.size()<<"\n\n";
 }
 
-void tdm_reaper::process_channels(bool showlog)
+void tdm_reaper::process_channels(bool showlog, pugi::xml_document& xml_doc)
 {
   // get XML node <usi:data>
-  pugi::xml_node tdmdata = xml_doc_.child("usi:tdm").child("usi:data");
+  pugi::xml_node tdmdata = xml_doc.child("usi:tdm").child("usi:data");
 
   // find all its <tdm_channel> elements
   for ( pugi::xml_node channel = tdmdata.child("tdm_channel"); channel;
@@ -303,10 +272,10 @@ void tdm_reaper::process_channels(bool showlog)
   if ( showlog ) std::cout<<"number of channels: "<<tdmchannels_.size()<<"\n\n";
 }
 
-void tdm_reaper::process_submatrices(bool showlog)
+void tdm_reaper::process_submatrices(bool showlog, pugi::xml_document& xml_doc)
 {
   // get XML node <usi:data>
-  pugi::xml_node tdmdata = xml_doc_.child("usi:tdm").child("usi:data");
+  pugi::xml_node tdmdata = xml_doc.child("usi:tdm").child("usi:data");
 
   // find all its <submatrix> elements
   for ( pugi::xml_node subm = tdmdata.child("submatrix"); subm;
@@ -342,10 +311,10 @@ void tdm_reaper::process_submatrices(bool showlog)
   if ( showlog ) std::cout<<"number of submatrices: "<<submatrices_.size()<<"\n\n";
 }
 
-void tdm_reaper::process_localcolumns(bool showlog)
+void tdm_reaper::process_localcolumns(bool showlog, pugi::xml_document& xml_doc)
 {
   // get XML node <usi:data>
-  pugi::xml_node tdmdata = xml_doc_.child("usi:tdm").child("usi:data");
+  pugi::xml_node tdmdata = xml_doc.child("usi:tdm").child("usi:data");
 
   // find all its <localcolumn> elements
   for ( pugi::xml_node loccol = tdmdata.child("localcolumn"); loccol;
@@ -781,6 +750,79 @@ void tdm_reaper::print_group(std::string &id, const char* filename, bool include
 
     // close file
     fou.close();
+  }
+}
+
+// -------------------------------------------------------------------------- //
+
+void tdm_reaper::check_local_datatypes()
+{
+  std::cout<<"\nmachine's C++ datatypes:\n";
+  std::cout<<std::setw(25)<<std::left<<"char:"
+           <<std::setw(5)<<std::left<<sizeof(char)<<"byte(s)\n"
+           <<std::setw(25)<<std::left<<"uint8_t:"
+           <<std::setw(5)<<std::left<<sizeof(uint8_t)<<"byte(s)\n"
+
+           <<std::setw(25)<<std::left<<"short int:"
+           <<std::setw(5)<<std::left<<sizeof(short int)<<"byte(s)\n"
+           <<std::setw(25)<<std::left<<"unsigned short int:"
+           <<std::setw(5)<<std::left<<sizeof(unsigned short int)<<"byte(s)\n"
+
+           <<std::setw(25)<<std::left<<"int:"
+           <<std::setw(5)<<std::left<<sizeof(int)<<"byte(s)\n"
+           <<std::setw(25)<<std::left<<"unsigned int:"
+           <<std::setw(5)<<std::left<<sizeof(unsigned int)<<"byte(s)\n"
+
+           <<std::setw(25)<<std::left<<"long int:"
+           <<std::setw(5)<<std::left<<sizeof(long int)<<"byte(s)\n"
+           <<std::setw(25)<<std::left<<"unsigned long int:"
+           <<std::setw(5)<<std::left<<sizeof(unsigned long int)<<"byte(s)\n"
+
+           <<std::setw(25)<<std::left<<"float:"
+           <<std::setw(5)<<std::left<<sizeof(float)<<"byte(s)\n"
+           <<std::setw(25)<<std::left<<"double:"
+           <<std::setw(5)<<std::left<<sizeof(double)<<"byte(s)\n"
+           <<std::setw(25)<<std::left<<"long double:"
+           <<std::setw(5)<<std::left<<sizeof(long double)<<"byte(s)\n\n";
+}
+
+void tdm_reaper::check_datatype_consistency()
+{
+  // check datatype consistency, i.e. "local" representation of datatypes
+  for ( tdm_datatype el: tdm_datatypes )
+  {
+    if ( el.name_ == "eInt16Usi" )
+    {
+      if ( el.size_ != sizeof(eInt16Usi) ) throw std::logic_error("invalid representation of eInt16Usi");
+    }
+    else if ( el.name_ == "eInt32Usi" )
+    {
+      if ( el.size_ != sizeof(eInt32Usi) ) throw std::logic_error("invalid representation of eInt32Usi");
+    }
+    else if ( el.name_ == "eUInt8Usi" )
+    {
+      if ( el.size_ != sizeof(eUInt8Usi) ) throw std::logic_error("invalid representation of eUInt8Usi");
+    }
+    else if ( el.name_ == "eUInt16Usi" )
+    {
+      if ( el.size_ != sizeof(eUInt16Usi) ) throw std::logic_error("invalid representation of eUInt16Usi");
+    }
+    else if ( el.name_ == "eUInt32Usi" )
+    {
+      if ( el.size_ != sizeof(eUInt32Usi) ) throw std::logic_error("invalid representation of eUInt32Usi");
+    }
+    else if ( el.name_ == "eFloat32Usi" )
+    {
+      if ( el.size_ != sizeof(eFloat32Usi) ) throw std::logic_error("invalid representation of eFloat32Usi");
+    }
+    else if ( el.name_ == "eFloat64Usi" )
+    {
+      if ( el.size_ != sizeof(eFloat64Usi) ) throw std::logic_error("invalid representation of eFloat64Usi");
+    }
+    else
+    {
+      throw std::logic_error("missing datatype validation");
+    }
   }
 }
 

@@ -74,7 +74,7 @@ cython-help : cython/setup.py
 cython-list : cython/setup.py
 	python3 $< --name --description --author --author-email --url
 
-cython-build : cython/setup.py cython/tdm_reaper.pyx cython/tdm_reaper.pyx
+cython-build : cython/setup.py cython/tdm_reaper.pxd cython/py_tdm_reaper.pyx $(HPP) lib/tdm_reaper.cpp
 	python3 $< build_ext --inplace
 	# python3 $< build_ext
 
@@ -82,8 +82,8 @@ cython-install : cython/setup.py cython/tdm_reaper.pyx cython/tdm_reaper.pyx
 	python3 $< install
 
 clean-cython :
-	rm -vf cython/tdm_reaper.cpp tdm_reaper.cpython-*.so
-	rm -r build
+	rm -vf cython/py_tdm_reaper.cpp tdm_reaper.cpython-*.so
+	rm -rf build
 
 # --------------------------------------------------------------------------- #
 

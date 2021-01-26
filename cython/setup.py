@@ -4,7 +4,7 @@ from Cython.Build import cythonize
 
 extensions = Extension(
     name="tdm_reaper",
-    sources=["cython/tdm_reaper.pyx"],
+    sources=["cython/py_tdm_reaper.pyx"],
     # libraries=[""],
     # library_dirs=["lib"],
     include_dirs=["lib","pugixml"],

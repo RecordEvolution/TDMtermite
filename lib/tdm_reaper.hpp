@@ -33,10 +33,6 @@ class tdm_reaper
   // set of .csv files (encoding mode)
   std::vector<std::string> csvfile_;
 
-  // XML parser
-  pugi::xml_document xml_doc_;
-  pugi::xml_parse_result xml_result_;
-
   // endianness (true = little, false = big)
   bool endianness_, machine_endianness_;
 
@@ -86,67 +82,34 @@ class tdm_reaper
 
 public:
 
-  // check machine's datatypes
-  // https://en.cppreference.com/w/cpp/language/types
-  void check_local_datatypes()
-  {
-    std::cout<<"\nmachine's C++ datatypes:\n";
-    std::cout<<std::setw(25)<<std::left<<"char:"
-             <<std::setw(5)<<std::left<<sizeof(char)<<"byte(s)\n"
-             <<std::setw(25)<<std::left<<"uint8_t:"
-             <<std::setw(5)<<std::left<<sizeof(uint8_t)<<"byte(s)\n"
-
-             <<std::setw(25)<<std::left<<"short int:"
-             <<std::setw(5)<<std::left<<sizeof(short int)<<"byte(s)\n"
-             <<std::setw(25)<<std::left<<"unsigned short int:"
-             <<std::setw(5)<<std::left<<sizeof(unsigned short int)<<"byte(s)\n"
-
-             <<std::setw(25)<<std::left<<"int:"
-             <<std::setw(5)<<std::left<<sizeof(int)<<"byte(s)\n"
-             <<std::setw(25)<<std::left<<"unsigned int:"
-             <<std::setw(5)<<std::left<<sizeof(unsigned int)<<"byte(s)\n"
-
-             <<std::setw(25)<<std::left<<"long int:"
-             <<std::setw(5)<<std::left<<sizeof(long int)<<"byte(s)\n"
-             <<std::setw(25)<<std::left<<"unsigned long int:"
-             <<std::setw(5)<<std::left<<sizeof(unsigned long int)<<"byte(s)\n"
-
-             <<std::setw(25)<<std::left<<"float:"
-             <<std::setw(5)<<std::left<<sizeof(float)<<"byte(s)\n"
-             <<std::setw(25)<<std::left<<"double:"
-             <<std::setw(5)<<std::left<<sizeof(double)<<"byte(s)\n"
-             <<std::setw(25)<<std::left<<"long double:"
-             <<std::setw(5)<<std::left<<sizeof(long double)<<"byte(s)\n\n";
-  }
-
-public:
-
   // encoding
-  tdm_reaper(std::vector<std::string> csvfile);
+  // tdm_reaper(std::vector<std::string> csvfile);
 
   // decoding
   tdm_reaper();
-  tdm_reaper(std::string tdmfile, std::string tdxfile = std::string(""), bool showlog = false);
+  tdm_reaper(std::string tdmfile, std::string tdxfile = std::string(""),
+             bool showlog = false);
 
   // provide (tdm,tdx) files
-  void submit_files(std::string tdmfile, std::string tdxfile = std::string(""), bool showlog = false);
+  void submit_files(std::string tdmfile, std::string tdxfile = std::string(""),
+                    bool showlog = false);
 
   // process TDM data model in tdm file
   void process_tdm(bool showlog);
 
   // process <usi:include> element
-  void process_include(bool showlog);
+  void process_include(bool showlog, pugi::xml_document& xml_doc);
 
   // extract tdm_root
-  void process_root(bool showlog);
+  void process_root(bool showlog, pugi::xml_document& xml_doc);
 
   // process/list all channels and groups
-  void process_channelgroups(bool showlog);
-  void process_channels(bool showlog);
+  void process_channelgroups(bool showlog, pugi::xml_document& xml_doc);
+  void process_channels(bool showlog, pugi::xml_document& xml_doc);
 
   // process submatrices and localcolumns
-  void process_submatrices(bool showlog);
-  void process_localcolumns(bool showlog);
+  void process_submatrices(bool showlog, pugi::xml_document& xml_doc);
+  void process_localcolumns(bool showlog, pugi::xml_document& xml_doc);
 
   // get meta-data
   tdm_meta get_meta()
@@ -218,11 +181,18 @@ public:
   void print_channel(std::string &id, const char* filename, bool include_meta = true);
   void print_group(std::string &id, const char* filename, bool include_meta = true, char sep = ' ');
 
+  // check machine's datatypes
+  // https://en.cppreference.com/w/cpp/language/types
+  void check_local_datatypes();
+
 private:
 
   template<typename datatype>
   void convert_data_to_type(std::vector<unsigned char> &buffer,
                             std::vector<tdmdatatype> &channel);
+
+  // check consistency of mapped datatypes between C++ and TDM datatypes
+  void check_datatype_consistency();
 
 };
 
