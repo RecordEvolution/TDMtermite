@@ -16,7 +16,12 @@ _technical data management_ data model. The TDM format was introduced by
 [LabVIEW](https://www.ni.com/de-de/shop/labview.html), LabWindows™/CVI™,
 Measurement Studio, SignalExpress, and [DIAdem](https://www.ni.com/de-de/shop/data-acquisition-and-control/application-software-for-data-acquisition-and-control-category/what-is-diadem.html).
 
-## Data Format
+* [TDM file format](#Dataformat)
+* [Build and Installation](#Installation)
+* [Usage and Examples](#Usage)
+* [References](#References)
+
+## Dataformat
 
 Datasets encoded in the TDM/TDX format come along in pairs comprised of a
 .tdm (header) and a .tdx (data) file. While the .tdm file is a human-readable
