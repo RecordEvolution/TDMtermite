@@ -279,8 +279,8 @@ jack.write_all(b"./my_tdm_data_directory/")
 ```
 
 The interface allows to construct customized file/column headers from any
-meta-data and provide these headers for usage in file output (for an example
-see [customized filehader](python/custom.py)).
+meta-data and provide these headers for usage in file output (see the
+[example](python/custom.py)).
 
 ## References
 
