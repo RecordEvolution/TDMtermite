@@ -54,6 +54,7 @@ class tdm_reaper
 
   // tdm channels
   std::map<std::string,tdm_channel> tdmchannels_;
+  std::map<std::string,std::vector<tdm_datatype>> tdmchannels_data_;
 
   // submatrices and local_columns
   std::map<std::string,submatrix> submatrices_;

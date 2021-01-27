@@ -797,19 +797,8 @@ void tdm_reaper::print_group(std::string &id, const char* filename, bool include
             fou<<allchns.at(chi).at(row);
           }
         }
-        else
-        {
-          if ( sep == ' ' )
-          {
-            fou<<std::setw(width)<<std::left<<"";
-          }
-          else
-          {
-            fou<<sep;
-          }
-        }
 
-        if ( chi+1 < chngrp.channels_.size() ) fou<<sep;
+        if ( chi+1 < chngrp.channels_.size() && sep != ' ' ) fou<<sep;
       }
       fou<<"\n";
     }
