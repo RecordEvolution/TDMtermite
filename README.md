@@ -20,7 +20,7 @@ Measurement Studio, SignalExpress, and [DIAdem](https://www.ni.com/de-de/shop/da
 
 * [TDM file format](#Dataformat)
 * [Build and Installation](#Installation)
-* [Usage and Examples](#Usage and Examples)
+* [Usage and Examples](#Usage)
 * [References](#References)
 
 ## Dataformat
@@ -162,7 +162,7 @@ make cython-install
 
 that makes the module available to be imported as `import tdm_reaper` .
 
-## Usage and Examples
+## Usage
 
 ### CLI tool
 
