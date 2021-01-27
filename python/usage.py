@@ -24,8 +24,8 @@ for grp in grpids[0:2] :
     # write channelgroup to file
     try :
         grpname = re.sub('[^A-Za-z0-9]','',grpinfo['name'])
-        grpfile = "channelgroup_" + str(grp) + "_" + str(grpname) + ".csv"
-        jack.print_channelgroup(grp.encode(),grpfile.encode(),True,ord(' '))
+        grpfile = "./channelgroup_" + str(grp) + "_" + str(grpname) + ".csv"
+        jack.print_channelgroup(grp.encode(),grpfile.encode(),True,ord(' '),b'')
     except RuntimeError as e :
         print("failed to print channelgroup: " + str(grp) + " : " + str(e))
 
@@ -49,7 +49,7 @@ for chn in chnids[0:2] :
     print(str(chndata[0:6]) + " ...")
 
     # write channel to file
-    chnfile = "channel_" + str(chn) + ".csv"
+    chnfile = "./channel_" + str(chn) + ".csv"
     try :
         jack.print_channel(chn.encode(),chnfile.encode(),True)
     except RuntimeError as e :

@@ -275,8 +275,12 @@ to simply extract all data of the TDM datatset and dump it to files in a given
 ```Python
 import tdm_reaper
 jack = tdm_reaper.tdmreaper(b'samples/SineData.tdm',b'samples/SineData.tdx')
-jack.write_all(b"./my_tdm_data/")
+jack.write_all(b"./my_tdm_data_directory/")
 ```
+
+The interface allows to construct customized file/column headers from any
+meta-data and provide these headers for usage in file output (for an example
+see [customized filehader](python/custom.py)).
 
 ## References
 

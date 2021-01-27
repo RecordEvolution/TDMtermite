@@ -36,9 +36,9 @@ cdef class tdmreaper:
     return jn.loads(chnstr.decode())
 
   # print a channel(-group)
-  def print_channelgroup(self, string id, const char* filename,
-                               bool include_meta, char delimiter):
-    self.cpp_tdm.print_group(id,filename,include_meta,delimiter)
+  def print_channelgroup(self, string id, const char* filename, bool include_meta,
+                               char delimiter, string column_header):
+    self.cpp_tdm.print_group(id,filename,include_meta,delimiter,column_header)
   def print_channel(self, string id, const char* filename,
                           bool include_meta):
     self.cpp_tdm.print_channel(id,filename,include_meta)
@@ -48,4 +48,4 @@ cdef class tdmreaper:
     grpids = self.cpp_tdm.get_channelgroup_ids()
     for id in grpids :
       grpfile = outputdir.decode() + "/channelgroup_" + id.decode() + ".csv"
-      self.cpp_tdm.print_group(id,grpfile.encode(),True,ord(','))
+      self.cpp_tdm.print_group(id,grpfile.encode(),True,ord(','),"".encode())

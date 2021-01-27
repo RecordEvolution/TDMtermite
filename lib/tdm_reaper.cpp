@@ -698,7 +698,8 @@ void tdm_reaper::print_channel(std::string &id, const char* filename, bool inclu
   }
 }
 
-void tdm_reaper::print_group(std::string &id, const char* filename, bool include_meta, char sep)
+void tdm_reaper::print_group(std::string &id, const char* filename, bool include_meta,
+                             char sep, std::string column_header)
 {
   // check required path
   this->check_filename_path(filename);
@@ -724,6 +725,7 @@ void tdm_reaper::print_group(std::string &id, const char* filename, bool include
 
     int width = 25;
 
+    // file header
     if ( include_meta )
     {
       // group meta data
@@ -781,6 +783,30 @@ void tdm_reaper::print_group(std::string &id, const char* filename, bool include
       allchns.push_back(chndat);
     }
 
+    // provide column header (with channel ids)
+    if ( column_header.empty() )
+    {
+      for ( std::string chn: chngrp.channels_ )
+      {
+        // use given csv separator token
+        if ( sep == ' ' )
+        {
+          fou<<std::setw(width)<<std::left<<chn;
+        }
+        else
+        {
+          fou<<chn;
+        }
+        if ( chn != chngrp.channels_.back() && sep != ' ' ) fou<<sep;
+      }
+    }
+    else
+    {
+      fou<<column_header;
+    }
+    fou<<"\n";
+
+    // write data
     for ( unsigned int row = 0; row < maxrows; row++ )
     {
       for ( unsigned int chi = 0; chi < chngrp.channels_.size(); chi++ )
