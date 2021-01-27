@@ -39,12 +39,12 @@ class tdm_reaper
   // tdm meta-data
   tdm_meta meta_data_;
 
-  // blocks of data in .tdx file
-  std::map<std::string,block> tdx_blocks_;
-
   // resconstruct "tdm_datatype.hpp: tdm_datatypes" as map to quickly map
   // "valueType"/"channel_datatype" to full datatype
   std::map<std::string,tdm_datatype> tdmdt_name_, tdmdt_chan_;
+
+  // blocks of data in .tdx file
+  std::map<std::string,block> tdx_blocks_;
 
   // tdm root
   tdm_root tdmroot_;

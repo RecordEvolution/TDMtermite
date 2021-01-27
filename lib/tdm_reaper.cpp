@@ -22,6 +22,14 @@ void tdm_reaper::submit_files(std::string tdmfile, std::string tdxfile, bool sho
   tdmfile_ = tdmfile;
   tdxfile_ = tdxfile;
 
+  // reset and clear all members
+  tdx_blocks_.clear();
+  tdmchannelgroups_.clear();
+  tdmchannels_.clear();
+  submatrices_.clear();
+  localcolumns_.clear();
+  tdxbuffer_.clear();
+
   // start processing tdm data model
   this->process_tdm(showlog);
 }
