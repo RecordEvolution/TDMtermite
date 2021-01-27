@@ -20,7 +20,7 @@ Measurement Studio, SignalExpress, and [DIAdem](https://www.ni.com/de-de/shop/da
 
 * [TDM file format](#Dataformat)
 * [Build and Installation](#Installation)
-* [Usage and Examples](#Usage)
+* [Usage and Examples](#Usage and Examples)
 * [References](#References)
 
 ## Dataformat
