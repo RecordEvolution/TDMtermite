@@ -16,6 +16,8 @@ _technical data management_ data model. The TDM format was introduced by
 [LabVIEW](https://www.ni.com/de-de/shop/labview.html), LabWindows™/CVI™,
 Measurement Studio, SignalExpress, and [DIAdem](https://www.ni.com/de-de/shop/data-acquisition-and-control/application-software-for-data-acquisition-and-control-category/what-is-diadem.html).
 
+## Overview
+
 * [TDM file format](#Dataformat)
 * [Build and Installation](#Installation)
 * [Usage and Examples](#Usage)
@@ -160,7 +162,7 @@ make cython-install
 
 that makes the module available to be imported as `import tdm_reaper` .
 
-## Usage
+## Usage and Examples
 
 ### CLI tool
 
