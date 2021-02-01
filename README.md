@@ -274,7 +274,7 @@ for grp in grpids :
         print("failed to print channelgroup: " + str(grp) + " : " + str(e))
 ```
 
-For a full example including more details see [python/usage.py](python/usage.py)
+For a full example including more details see the [extensive example](python/usage.py)
 and the absolute minimal example [minimal usage](python/minimal.py). In order
 to simply extract all data of the TDM datatset and dump it to files in a given
 (existing!) directory, do
