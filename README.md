@@ -237,7 +237,7 @@ grpids = jack.get_channelgroup_ids()
 chnids = jack.get_channel_ids()
 ```
 
-As a use case, we have look at listing the ids of all channelgroups and printing
+As a use case, we have a look at listing the ids of all channelgroups and printing
 their data to separate files:
 
 ```Python
