@@ -1,7 +1,7 @@
 // ------------------------------------------------------------------------- //
 
-#ifndef TDM_REAPER
-#define TDM_REAPER
+#ifndef TDM_TERMITE
+#define TDM_TERMITE
 
 #include <iostream>
 #include <fstream>
@@ -24,7 +24,7 @@
 
 // -------------------------------------------------------------------------- //
 
-class tdm_reaper
+class tdm_termite
 {
   // .tdm and .tdx paths/filenames
   std::string tdmfile_;
@@ -115,11 +115,11 @@ class tdm_reaper
 public:
 
   // encoding
-  // tdm_reaper(std::vector<std::string> csvfile);
+  // tdm_termite(std::vector<std::string> csvfile);
 
   // decoding
-  tdm_reaper();
-  tdm_reaper(std::string tdmfile, std::string tdxfile = std::string(""),
+  tdm_termite();
+  tdm_termite(std::string tdmfile, std::string tdxfile = std::string(""),
              bool showlog = false);
 
   // provide (tdm,tdx) files

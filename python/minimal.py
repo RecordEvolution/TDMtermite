@@ -1,9 +1,9 @@
 
-import tdm_reaper
+import tdm_termite
 
-# create 'tdm_reaper' instance object
+# create 'tdm_termite' instance object
 try :
-    jack = tdm_reaper.tdmreaper(b'samples/SineData.tdm',b'samples/SineData.tdx')
+    jack = tdm_termite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
     # list ids of channelgroups
     grpids = jack.get_channelgroup_ids()
     # iterate through groups

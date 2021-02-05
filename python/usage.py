@@ -1,12 +1,12 @@
 
-import tdm_reaper
+import tdm_termite
 # import numpy as np
 import json
 import re
 
-# create 'tdm_reaper' instance object
+# create 'tdm_termite' instance object
 try :
-    jack = tdm_reaper.tdmreaper(b'samples/SineData.tdm',b'samples/SineData.tdx')
+    jack = tdm_termite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
 except RuntimeError as e :
     print("failed to load/decode TDM files: " + str(e))
 

@@ -2,14 +2,14 @@
 <p align="center">
   <a href="https://github.com/RecordEvolution/tdm_ripper.git">
     <img
-      alt="tdmreaper.svg"
-      src="assets/tdmreaper.svg"
+      alt="tdmtermite.svg"
+      src="assets/tdmtermite.svg"
       width="400"
     />
   </a>
 </p>
 
-The _tdm_reaper_ is a C++ based library that decodes (encodes) the proprietary
+_TDMtermite_ is a C++ based library that decodes (encodes) the proprietary
 file format _TDM/TDX_ for measurement data, which relies upon the
 _technical data management_ data model. The TDM format was introduced by
 [National Instruments](https://www.ni.com) and is employed by
@@ -134,7 +134,7 @@ The library can be used both as a _CLI_ based tool and as a _Python_ module.
 
 ### CLI tool
 
-To install the CLI tool _tdmreaper_ do
+To install the CLI tool _tdmtermite_ do
 
 ```Shell
 make install
@@ -151,7 +151,7 @@ available, which may be installed via `python3 -m pip install cython` .
 Furthermore, the [Numpy](https://numpy.org) package is recommended to be able
 to pass arrays of data from the C++ kernel to Python. The _makefile_ provides
 the target `make cython-requirements` to install all required Python modules.
-Finally, to build the Python extension _tdm_reaper_ either locally or install
+Finally, to build the Python extension _tdm_termite_ either locally or install
 it the targets `make cython-build` and `make cython-install` are provided.
 Hence, to install the Python module on the system simply do
 
@@ -160,19 +160,19 @@ make cython-requirements
 make cython-install
 ```
 
-that makes the module available to be imported as `import tdm_reaper` .
+that makes the module available to be imported as `import tdm_termite` .
 
 ## Usage
 
 ### CLI tool
 
 The usage of the CLI tool is sufficiently clarified by its help message displayed
-by `tdmreaper --help`. For instance, to extract the data decoded in the pair of
+by `tdmtermite --help`. For instance, to extract the data decoded in the pair of
 files `samples/SineData.tdm` and `samples/SineData.tdx` into the directory
 `/home/jack/data/`:
 
 ```Shell
-tdmreaper samples/SineData.tdm samples/SineData.tdx --output /home/jack/data
+tdmtermite samples/SineData.tdm samples/SineData.tdx --output /home/jack/data
 ```
 
 The tool can also be used to list the available objects in the TDM dataset, which
@@ -180,7 +180,7 @@ are i.a. _channels_, _channelgroups_ and TDX _blocks_. For instance, to list
 all channels and channelgroups (without writing any file output):
 
 ```Shell
-tdmreaper samples/SineData.tdm samples/SineData.tdx --listgroups --listchannels
+tdmtermite samples/SineData.tdm samples/SineData.tdx --listgroups --listchannels
 ```
 
 The user may also submit a _filenaming rule_ to control the names of the files the
@@ -189,7 +189,7 @@ and `%c` representing the group id, group name, channel index and channel name
 are defined. The default filenaming option is
 
 ```Shell
-tdmreaper samples/SineData.tdm samples/SineData.tdx --output /home/jack/data --filenames channelgroup_%G.csv
+tdmtermite samples/SineData.tdm samples/SineData.tdx --output /home/jack/data --filenames channelgroup_%G.csv
 ```
 
 which makes the tool write _all channels_ grouped into files according to their
@@ -199,7 +199,7 @@ to extract only a single channel(group) by providing a particular channel(-group
 id in the filenaming flag. For example,
 
 ```Shell
-tdmreaper samples/SineData.tdm samples/SineData.tdx --output /home/jack/data -f channel_usi16_%c.csv --includemeta
+tdmtermite samples/SineData.tdm samples/SineData.tdx --output /home/jack/data -f channel_usi16_%c.csv --includemeta
 ```
 
 will write the single channel with id `usi16` to the file
@@ -207,25 +207,25 @@ will write the single channel with id `usi16` to the file
 
 ### Python
 
-To be able to use the Python module _tdm_reaper_ it first has to be build locally
+To be able to use the Python module _tdm_termite_ it first has to be build locally
 or installed on the system. In the Python interpreter simply do:
 
 ```Python
-import tdm_reaper
+import tdm_termite
 ```
 
 to import the module. The TDM files are provided by creating an instance of
-the _tdm_reaper_ class:
+the _tdm_termite_ class:
 
 ```Python
-# create 'tdm_reaper' instance object
+# create 'tdm_termite' instance object
 try :
-    jack = tdm_reaper.tdmreaper(b'samples/SineData.tdm',b'samples/SineData.tdx')
+    jack = tdm_termite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
 except RuntimeError as e:
     print("failed to load/decode TDM files: " + str(e))
 ```
 
-After initializing the _tdm_reaper_ object it can be used to extract any of the
+After initializing the _tdm_termite_ object it can be used to extract any of the
 available data. For instance, to list the included channelgroups and channels:
 
 ```Python
@@ -241,12 +241,12 @@ As a use case, we have look at listing the ids of all channelgroups and printing
 their data to separate files:
 
 ```Python
-import tdm_reaper
+import tdm_termite
 import re
 
-# create 'tdm_reaper' instance object
+# create 'tdm_termite' instance object
 try :
-    jack = tdm_reaper.tdmreaper(b'samples/SineData.tdm',b'samples/SineData.tdx')
+    jack = tdm_termite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
 except RuntimeError as e :
     print("failed to load/decode TDM files: " + str(e))
 
@@ -280,8 +280,8 @@ to simply extract all data of the TDM datatset and dump it to files in a given
 (existing!) directory, do
 
 ```Python
-import tdm_reaper
-jack = tdm_reaper.tdmreaper(b'samples/SineData.tdm',b'samples/SineData.tdx')
+import tdm_termite
+jack = tdm_termite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
 jack.write_all(b"./my_tdm_data_directory/")
 ```
 

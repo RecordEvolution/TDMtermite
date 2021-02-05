@@ -3,8 +3,8 @@ from distutils.extension import Extension
 from Cython.Build import cythonize
 
 extensions = Extension(
-    name="tdm_reaper",
-    sources=["cython/py_tdm_reaper.pyx"],
+    name="tdm_termite",
+    sources=["cython/py_tdm_termite.pyx"],
     # libraries=[""],
     # library_dirs=["lib"],
     include_dirs=["lib","pugixml"],
@@ -15,10 +15,10 @@ extensions = Extension(
 
 setup(
     version='0.1',
-    description='TDMReaper cython extension',
+    description='TDMtermite cython extension',
     author='Record Evolution GmbH',
     author_email='mario.fink@record-evolution.de',
     url='https://github.com/RecordEvolution/tdm_ripper.git',
-    name="tdm_reaper",
+    name="tdm_termite",
     ext_modules=cythonize(extensions)
 )

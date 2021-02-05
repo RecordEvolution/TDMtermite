@@ -1,22 +1,22 @@
 // -------------------------------------------------------------------------- //
 
-#include "tdm_reaper.hpp"
+#include "tdm_termite.hpp"
 
 // -------------------------------------------------------------------------- //
 
-tdm_reaper::tdm_reaper()
+tdm_termite::tdm_termite()
 {
 
 }
 
-tdm_reaper::tdm_reaper(std::string tdmfile, std::string tdxfile, bool showlog):
+tdm_termite::tdm_termite(std::string tdmfile, std::string tdxfile, bool showlog):
   tdmfile_(tdmfile), tdxfile_(tdxfile)
 {
   // start processing tdm data model
   this->process_tdm(showlog);
 }
 
-void tdm_reaper::submit_files(std::string tdmfile, std::string tdxfile, bool showlog)
+void tdm_termite::submit_files(std::string tdmfile, std::string tdxfile, bool showlog)
 {
   // save files
   tdmfile_ = tdmfile;
@@ -34,7 +34,7 @@ void tdm_reaper::submit_files(std::string tdmfile, std::string tdxfile, bool sho
   this->process_tdm(showlog);
 }
 
-void tdm_reaper::process_tdm(bool showlog)
+void tdm_termite::process_tdm(bool showlog)
 {
   // check both tdm, tdx files
   std::filesystem::path ptdm(tdmfile_), ptdx(tdxfile_);
@@ -124,7 +124,7 @@ void tdm_reaper::process_tdm(bool showlog)
   }
 }
 
-void tdm_reaper::process_include(bool showlog, pugi::xml_document& xml_doc)
+void tdm_termite::process_include(bool showlog, pugi::xml_document& xml_doc)
 {
   // get XML node
   pugi::xml_node tdmincl = xml_doc.child("usi:tdm").child("usi:include");
@@ -178,7 +178,7 @@ void tdm_reaper::process_include(bool showlog, pugi::xml_document& xml_doc)
   if ( showlog ) std::cout<<"number of blocks: "<<tdx_blocks_.size()<<"\n\n";
 }
 
-void tdm_reaper::process_root(bool showlog, pugi::xml_document& xml_doc)
+void tdm_termite::process_root(bool showlog, pugi::xml_document& xml_doc)
 {
   // get XML node
   pugi::xml_node tdmdataroot = xml_doc.child("usi:tdm").child("usi:data")
@@ -198,7 +198,7 @@ void tdm_reaper::process_root(bool showlog, pugi::xml_document& xml_doc)
   if ( showlog ) std::cout<<tdmroot_.get_info()<<"\n";
 }
 
-void tdm_reaper::process_channelgroups(bool showlog, pugi::xml_document& xml_doc)
+void tdm_termite::process_channelgroups(bool showlog, pugi::xml_document& xml_doc)
 {
   // get XML node <usi:data>
   pugi::xml_node tdmdata = xml_doc.child("usi:tdm").child("usi:data");
@@ -236,7 +236,7 @@ void tdm_reaper::process_channelgroups(bool showlog, pugi::xml_document& xml_doc
   if ( showlog ) std::cout<<"number of channelgroups: "<<tdmchannelgroups_.size()<<"\n\n";
 }
 
-void tdm_reaper::process_channels(bool showlog, pugi::xml_document& xml_doc)
+void tdm_termite::process_channels(bool showlog, pugi::xml_document& xml_doc)
 {
   // get XML node <usi:data>
   pugi::xml_node tdmdata = xml_doc.child("usi:tdm").child("usi:data");
@@ -280,7 +280,7 @@ void tdm_reaper::process_channels(bool showlog, pugi::xml_document& xml_doc)
   if ( showlog ) std::cout<<"number of channels: "<<tdmchannels_.size()<<"\n\n";
 }
 
-void tdm_reaper::process_submatrices(bool showlog, pugi::xml_document& xml_doc)
+void tdm_termite::process_submatrices(bool showlog, pugi::xml_document& xml_doc)
 {
   // get XML node <usi:data>
   pugi::xml_node tdmdata = xml_doc.child("usi:tdm").child("usi:data");
@@ -319,7 +319,7 @@ void tdm_reaper::process_submatrices(bool showlog, pugi::xml_document& xml_doc)
   if ( showlog ) std::cout<<"number of submatrices: "<<submatrices_.size()<<"\n\n";
 }
 
-void tdm_reaper::process_localcolumns(bool showlog, pugi::xml_document& xml_doc)
+void tdm_termite::process_localcolumns(bool showlog, pugi::xml_document& xml_doc)
 {
   // get XML node <usi:data>
   pugi::xml_node tdmdata = xml_doc.child("usi:tdm").child("usi:data");
@@ -435,7 +435,7 @@ void tdm_reaper::process_localcolumns(bool showlog, pugi::xml_document& xml_doc)
 
 // -------------------------------------------------------------------------- //
 
-std::string tdm_reaper::get_channel_overview(format chformatter)
+std::string tdm_termite::get_channel_overview(format chformatter)
 {
   // summarize all output in single string
   std::string channels_summary;
@@ -474,7 +474,7 @@ std::string tdm_reaper::get_channel_overview(format chformatter)
 }
 
 template<typename tdmelement>
-std::string tdm_reaper::get_overview(format formatter)
+std::string tdm_termite::get_overview(format formatter)
 {
   // summarize all output in single string
   std::string summary;
@@ -500,12 +500,12 @@ std::string tdm_reaper::get_overview(format formatter)
   return summary;
 }
 
-template std::string tdm_reaper::get_overview<tdm_channelgroup>(format formatter);
-template std::string tdm_reaper::get_overview<submatrix>(format formatter);
-template std::string tdm_reaper::get_overview<localcolumn>(format formatter);
-template std::string tdm_reaper::get_overview<block>(format formatter);
+template std::string tdm_termite::get_overview<tdm_channelgroup>(format formatter);
+template std::string tdm_termite::get_overview<submatrix>(format formatter);
+template std::string tdm_termite::get_overview<localcolumn>(format formatter);
+template std::string tdm_termite::get_overview<block>(format formatter);
 
-void tdm_reaper::summarize_member(tdm_channelgroup chp, std::string& summary, format& formatter)
+void tdm_termite::summarize_member(tdm_channelgroup chp, std::string& summary, format& formatter)
 {
   for ( std::map<std::string,tdm_channelgroup>::iterator it=this->tdmchannelgroups_.begin();
                                                          it!=this->tdmchannelgroups_.end(); ++it)
@@ -515,7 +515,7 @@ void tdm_reaper::summarize_member(tdm_channelgroup chp, std::string& summary, fo
   }
 }
 
-void tdm_reaper::summarize_member(submatrix sbm, std::string& summary, format& formatter)
+void tdm_termite::summarize_member(submatrix sbm, std::string& summary, format& formatter)
 {
   for ( std::map<std::string,submatrix>::iterator it=this->submatrices_.begin();
                                                   it!=this->submatrices_.end(); ++it)
@@ -525,7 +525,7 @@ void tdm_reaper::summarize_member(submatrix sbm, std::string& summary, format& f
   }
 }
 
-void tdm_reaper::summarize_member(localcolumn lcc, std::string& summary, format& formatter)
+void tdm_termite::summarize_member(localcolumn lcc, std::string& summary, format& formatter)
 {
   for ( std::map<std::string,localcolumn>::iterator it=this->localcolumns_.begin();
                                                     it!=this->localcolumns_.end(); ++it)
@@ -535,7 +535,7 @@ void tdm_reaper::summarize_member(localcolumn lcc, std::string& summary, format&
   }
 }
 
-void tdm_reaper::summarize_member(block blk, std::string& summary, format& formatter)
+void tdm_termite::summarize_member(block blk, std::string& summary, format& formatter)
 {
   for ( std::map<std::string,block>::iterator it=this->tdx_blocks_.begin();
                                               it!=this->tdx_blocks_.end(); ++it)
@@ -548,7 +548,7 @@ void tdm_reaper::summarize_member(block blk, std::string& summary, format& forma
 // -------------------------------------------------------------------------- //
 
 // extract channel by id
-std::vector<tdmdatatype> tdm_reaper::get_channel(std::string& id)
+std::vector<tdmdatatype> tdm_termite::get_channel(std::string& id)
 {
   // check for existence of required channel id (=key)
   if ( tdmchannels_.count(id) == 1 )
@@ -653,7 +653,7 @@ std::vector<tdmdatatype> tdm_reaper::get_channel(std::string& id)
 
 // -------------------------------------------------------------------------- //
 
-void tdm_reaper::print_channel(std::string &id, const char* filename, bool include_meta)
+void tdm_termite::print_channel(std::string &id, const char* filename, bool include_meta)
 {
   // check required path
   this->check_filename_path(filename);
@@ -698,7 +698,7 @@ void tdm_reaper::print_channel(std::string &id, const char* filename, bool inclu
   }
 }
 
-void tdm_reaper::print_group(std::string &id, const char* filename, bool include_meta,
+void tdm_termite::print_group(std::string &id, const char* filename, bool include_meta,
                              char sep, std::string column_header)
 {
   // check required path
@@ -834,7 +834,7 @@ void tdm_reaper::print_group(std::string &id, const char* filename, bool include
   }
 }
 
-void tdm_reaper::check_filename_path(const char* filename)
+void tdm_termite::check_filename_path(const char* filename)
 {
   // declare filesystem path instance from filename
   std::filesystem::path pt(filename);
@@ -850,7 +850,7 @@ void tdm_reaper::check_filename_path(const char* filename)
 
 // -------------------------------------------------------------------------- //
 
-void tdm_reaper::check_local_datatypes()
+void tdm_termite::check_local_datatypes()
 {
   std::cout<<"\nmachine's C++ datatypes:\n";
   std::cout<<std::setw(25)<<std::left<<"char:"
@@ -881,7 +881,7 @@ void tdm_reaper::check_local_datatypes()
            <<std::setw(5)<<std::left<<sizeof(long double)<<"byte(s)\n\n";
 }
 
-void tdm_reaper::check_datatype_consistency()
+void tdm_termite::check_datatype_consistency()
 {
   // check datatype consistency, i.e. "local" representation of datatypes
   for ( tdm_datatype el: tdm_datatypes )
@@ -924,7 +924,7 @@ void tdm_reaper::check_datatype_consistency()
 // -------------------------------------------------------------------------- //
 
 template<typename datatype>
-void tdm_reaper::convert_data_to_type(std::vector<unsigned char> &buffer,
+void tdm_termite::convert_data_to_type(std::vector<unsigned char> &buffer,
                                       std::vector<tdmdatatype> &channel)
 {
   // check number of elements of type "datatype" in buffer

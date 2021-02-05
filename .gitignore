@@ -11,3 +11,4 @@ tdmripper
 *.log
 tdmreaper
 cython/*.cpp
+tdmtermite

@@ -5,14 +5,14 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 from libcpp cimport bool
 
-cdef extern from "tdm_reaper.cpp":
+cdef extern from "tdm_termite.cpp":
   pass
 
-cdef extern from "tdm_reaper.hpp":
-  cdef cppclass tdm_reaper:
+cdef extern from "tdm_termite.hpp":
+  cdef cppclass tdm_termite:
     # constructor(s)
-    tdm_reaper() except +
-    tdm_reaper(string tdmfile, string tdxfile) except +
+    tdm_termite() except +
+    tdm_termite(string tdmfile, string tdxfile) except +
     # provide TDM files
     void submit_files(string tdmfile, string tdxfile) except+
     # get list of channel(-group) ids

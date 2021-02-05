@@ -1,10 +1,10 @@
 # --------------------------------------------------------------------------- #
 
 # declare name of executable
-EXE = tdmreaper
+EXE = tdmtermite
 
 # sources and headers
-SRC := tdm_reaper
+SRC := tdm_termite
 HPP = $(wildcard lib/*.hpp)
 
 # compiler and C++ standard
@@ -77,16 +77,16 @@ cython-help : cython/setup.py
 cython-list : cython/setup.py
 	python3 $< --name --description --author --author-email --url
 
-cython-build : cython/setup.py cython/tdm_reaper.pxd cython/py_tdm_reaper.pyx $(HPP) lib/tdm_reaper.cpp
+cython-build : cython/setup.py cython/tdm_termite.pxd cython/py_tdm_termite.pyx $(HPP) lib/tdm_termite.cpp
 	python3 $< build_ext --inplace
-	cp -v tdm_reaper.cpython-*.so python/
+	cp -v tdm_termite.cpython-*.so python/
 
-cython-install : cython/setup.py cython/tdm_reaper.pxd cython/py_tdm_reaper.pyx $(HPP) lib/tdm_reaper.cpp
+cython-install : cython/setup.py cython/tdm_termite.pxd cython/py_tdm_termite.pyx $(HPP) lib/tdm_termite.cpp
 	python3 $< install
 
 clean-cython :
-	rm -vf cython/py_tdm_reaper.cpp
-	rm -vf tdm_reaper.cpython-*.so python/tdm_reaper.cpython-*.so
+	rm -vf cython/py_tdm_termite.cpp
+	rm -vf tdm_termite.cpython-*.so python/tdm_termite.cpython-*.so
 	rm -rf build
 
 # --------------------------------------------------------------------------- #

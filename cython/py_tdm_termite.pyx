@@ -1,17 +1,17 @@
 # distutils: language = c++
 
-from tdm_reaper cimport tdm_reaper
+from tdm_termite cimport tdm_termite
 import json as jn
 # import numpy as np
 
-cdef class tdmreaper:
+cdef class tdmtermite:
 
   # C++ instance of class => stack allocated (requires nullary constructor!)
-  cdef tdm_reaper cpp_tdm
+  cdef tdm_termite cpp_tdm
 
   # constructor
   def __cinit__(self, string tdmfile, string tdxfile):
-    self.cpp_tdm = tdm_reaper(tdmfile,tdxfile)
+    self.cpp_tdm = tdm_termite(tdmfile,tdxfile)
 
   # provide TDM files
   def submit_files(self,string tdmfile, string tdxfile):
