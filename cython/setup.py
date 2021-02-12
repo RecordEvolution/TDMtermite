@@ -18,7 +18,7 @@ setup(
     description='TDMtermite cython extension',
     author='Record Evolution GmbH',
     author_email='mario.fink@record-evolution.de',
-    url='https://github.com/RecordEvolution/tdm_ripper.git',
+    url='https://github.com/RecordEvolution/TDMtermite.git',
     name="tdm_termite",
     ext_modules=cythonize(extensions)
 )
