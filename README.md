@@ -10,9 +10,9 @@
 </p>
 
 _TDMtermite_ is a C++ based library that decodes (encodes) the proprietary
-file format _TDM/TDX_ for measurement data, which relies upon the
-_technical data management_ data model. The TDM format was introduced by
-[National Instruments](https://www.ni.com) and is employed by
+file format _TDM/TDX_ for measurement data. First introduced by
+[National Instruments](https://www.ni.com), the TDM format relies on the
+_technical data management_ data model and is employed by
 [LabVIEW](https://www.ni.com/de-de/shop/labview.html), LabWindows™/CVI™,
 Measurement Studio, SignalExpress, and [DIAdem](https://www.ni.com/de-de/shop/data-acquisition-and-control/application-software-for-data-acquisition-and-control-category/what-is-diadem.html).
 
@@ -25,18 +25,18 @@ Measurement Studio, SignalExpress, and [DIAdem](https://www.ni.com/de-de/shop/da
 
 ## Dataformat
 
-Datasets encoded in the TDM/TDX format come along in pairs comprised of a
-.tdm (header) and a .tdx (data) file. While the .tdm file is a human-readable
-file providing meta information about the data set, the .tdx is a binary
+Datasets encoded in the TDM/TDX format come in pairs comprised of a
+.tdm (header) file and a .tdx (data) file. While the .tdm file is a human-readable
+file providing meta information about the dataset, the .tdx file is a binary file
 containing the actual data. The .tdm based on the _technical data management_
-model is an XML file and basically describes what data the .tdx contains and how
+model is an XML file. It describes what data the .tdx file contains and how
 to read it. The
 [TDM data model](https://www.ni.com/de-de/support/documentation/supplemental/10/ni-tdm-data-model.html)
-structures the data hierarchically with respect to _file_, (channel) _groups_ and
-_channels_. The file level XML may contain any number of (channel) groups each
+structures the data hierarchically with respect to _file_, _(channel)_ _groups_ and
+_channels_. The file-level XML may contain any number of (channel) groups, each
 of which is made up of an arbitrary number of channels. Thus, the XML tree in
 the [TDM header file](https://zone.ni.com/reference/de-XX/help/370858P-0113/tdmdatamodel/tdmdatamodel/tdm_headerfile/)
-looks basically like this:
+looks like this:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
@@ -67,14 +67,14 @@ looks basically like this:
 </usi:tdm>
 ```
 
-and is comprised of _four_ main XML elements: `usi:documentation`, `usi:model`,
+The XML tree is comprised of _four_ main XML elements: `usi:documentation`, `usi:model`,
 `usi:include` and `usi:data`. The element `usi:include` references the data file
 `example.tdx` and reveals one of _two_ possible orderings of the mass data (.tdx):
 
-1. either _channel wise_ (`<block>`) - all values of a specific channel follow subsequently -
-1. or _block wise_ (`<block_bm>`) - all values of a specific measurement time follow subsequently -
+1. either _channel-wise_ (`<block>`) - all values of a specific channel follow subsequently
+1. or _block-wise_ (`<block_bm>`) - all values of a specific measurement time follow subsequently.
 
-ordering. The supported _numerical data types_ are
+The supported _numerical data types_ are:
 
 | datatype    | channel datatype | numeric | value sequence  | size  | description             |
 |-------------|------------------|---------|-----------------|-------|-------------------------|
@@ -87,10 +87,10 @@ ordering. The supported _numerical data types_ are
 | eFloat64Usi | DT_DOUBLE        | 7       | double_sequence | 8byte | 64 Bit double           |
 | eStringUsi  | DT_STRING        | 1       | string_sequence |       | text                    |
 
-The XML element `<usi:data>` is basically comprised of _five_ different types of
+The XML element `<usi:data>` is comprised of _five_ different types of
 elements that are `<tdm_root>`, `<tdm_channelgroup>`, `<tdm_channel>`, `<localcolumn>`
 and `<submatrix>`. The root element `<tdm_root>` describes the general properties
-of the dataset and lists the _id's_ of all channel groups that belong to
+of the dataset and lists the _ids_ of all channel groups that belong to
 the dataset. The element `<tdm_channelgroup>` divides the _channels_ into groups
 and has a unique _id_ that is referenced by its root element. The `<channels>`
 element in `<tdm_channelgroup>` lists the unique ids of all channels that belong
@@ -110,7 +110,7 @@ actual data including its datatype. The remaining element types are
 </localcolumn>
 ```
 
-with a unique id, the `<measurement_quantity>` refering to one specific channel,
+with a unique id, the `<measurement_quantity>` referring to one specific channel,
 the `<submatrix>` and its id respectively, the type of representation in
 `<sequence_representation>` - being one of _explicit_, _implicit linear_ or
 _rawlinear_ - and the `<values>` element, which refers to one _value sequence_,
@@ -125,49 +125,49 @@ and the element `<submatrix>`
 </submatrix>
 ```
 
-that references the channel group in `<measurement>` it belongs to and provides
+that references the channel group in `<measurement>` to which it belongs and provides
 the _number of rows_ in the channels listed in `<local_columns>`.
 
 ## Installation
 
-The library can be used both as a _CLI_ based tool and as a _Python_ module.
+The library can be used both as a _CLI_-based tool and as a _Python_ module.
 
 ### CLI tool
 
-To install the CLI tool _tdmtermite_ do
+To install the CLI tool _TDMtermite_, do
 
 ```Shell
 make install
 ```
 
-which uses `/usr/local/bin` as installation directory. On _macOSX_ please first
+which uses `/usr/local/bin` as an installation directory. On _macOSX_, please first
 build the binary locally with `make` and install it in your preferred location.
 
 ### Python
 
-In order to build a _Python module_ from the _C++_ code base the
+In order to build a _Python module_ from the _C++_ code base, the
 [Cython](https://cython.readthedocs.io/en/latest/index.html) package must be
-available, which may be installed via `python3 -m pip install cython` .
-Furthermore, the [Numpy](https://numpy.org) package is recommended to be able
+available. It may be installed via `python3 -m pip install cython` .
+The [Numpy](https://numpy.org) package is recommended
 to pass arrays of data from the C++ kernel to Python. The _makefile_ provides
 the target `make cython-requirements` to install all required Python modules.
-Finally, to build the Python extension _tdm_termite_ either locally or install
-it the targets `make cython-build` and `make cython-install` are provided.
-Hence, to install the Python module on the system simply do
+Finally, to build the Python extension _tdm_termite_ locally or install
+it, the targets `make cython-build` and `make cython-install` are provided.
+To install the Python module on the system, simply do
 
 ```Shell
 make cython-requirements
 make cython-install
 ```
 
-that makes the module available to be imported as `import tdm_termite` .
+That makes the module available for import as a `import tdm_termite` .
 
 ## Usage
 
 ### CLI tool
 
 The usage of the CLI tool is sufficiently clarified by its help message displayed
-by `tdmtermite --help`. For instance, to extract the data decoded in the pair of
+by `tdmtermite --help`. To extract the data decoded in the pair of
 files `samples/SineData.tdm` and `samples/SineData.tdx` into the directory
 `/home/jack/data/`:
 
@@ -176,7 +176,7 @@ tdmtermite samples/SineData.tdm samples/SineData.tdx --output /home/jack/data
 ```
 
 The tool can also be used to list the available objects in the TDM dataset, which
-are i.a. _channels_, _channelgroups_ and TDX _blocks_. For instance, to list
+are i.a. _channels_, _channelgroups_ and TDX _blocks_. To list
 all channels and channelgroups (without writing any file output):
 
 ```Shell
@@ -184,37 +184,37 @@ tdmtermite samples/SineData.tdm samples/SineData.tdx --listgroups --listchannels
 ```
 
 The user may also submit a _filenaming rule_ to control the names of the files the
-channel(-group)s are written to. To this end, the _magic flags_ `%G` `%g`, `%C`
+channel(group)s are written to. To this end, the _magic flags_ `%G` `%g`, `%C`
 and `%c` representing the group id, group name, channel index and channel name
-are defined. The default filenaming option is
+are defined. The default filenaming option is:
 
 ```Shell
 tdmtermite samples/SineData.tdm samples/SineData.tdx --output /home/jack/data --filenames channelgroup_%G.csv
 ```
 
-which makes the tool write _all channels_ grouped into files according to their
-group association, while all channelgroup filenames obey the pattern `channelgroup_%G.csv`
+This makes the tool write _all channels_ grouped into files according to their
+group association, while all channelgroup filenames obey the pattern `channelgroup_%G.csv`,
 with `%G` being replaced by the group id. The filenaming rule also enables the user
-to extract only a single channel(group) by providing a particular channel(-group)
+to extract only a single channel(group) by providing a particular channel(group)
 id in the filenaming flag. For example,
 
 ```Shell
 tdmtermite samples/SineData.tdm samples/SineData.tdx --output /home/jack/data -f channel_usi16_%c.csv --includemeta
 ```
 
-will write the single channel with id `usi16` to the file
-`/home/jack/data/channel_usi16_A4.csv` including its meta-data as a file header.
+This will write the single channel with the id `usi16` to the file
+`/home/jack/data/channel_usi16_A4.csv`, including its meta-data as a file header.
 
 ### Python
 
-To be able to use the Python module _tdm_termite_ it first has to be build locally
-or installed on the system. In the Python interpreter simply do:
+To be able to use the Python module _tdm_termite_, it first has to be built locally
+or installed on the system. In the Python interpreter, simply do:
 
 ```Python
 import tdm_termite
 ```
 
-to import the module. The TDM files are provided by creating an instance of
+This will import the module. The TDM files are provided by creating an instance of
 the _tdm_termite_ class:
 
 ```Python
@@ -225,7 +225,7 @@ except RuntimeError as e:
     print("failed to load/decode TDM files: " + str(e))
 ```
 
-After initializing the _tdm_termite_ object it can be used to extract any of the
+After initializing the _tdm_termite_ object, it can be used to extract any of the
 available data. For instance, to list the included channelgroups and channels:
 
 ```Python
@@ -274,7 +274,7 @@ for grp in grpids :
         print("failed to print channelgroup: " + str(grp) + " : " + str(e))
 ```
 
-For a full example including more details see the [extensive example](python/usage.py)
+For details, see this [extensive example](python/usage.py)
 and the absolute minimal example [minimal usage](python/minimal.py). In order
 to simply extract all data of the TDM datatset and dump it to files in a given
 (existing!) directory, do
@@ -285,8 +285,8 @@ jack = tdm_termite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
 jack.write_all(b"./my_tdm_data_directory/")
 ```
 
-The interface allows to construct customized file/column headers from any
-meta-data and provide these headers for usage in file output (see the
+The interface allows you to construct customized file/column headers from any
+meta-data and provide these headers for usage in file output (see this
 [example](python/custom.py)).
 
 ## References
