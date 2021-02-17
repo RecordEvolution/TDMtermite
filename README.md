@@ -9,7 +9,7 @@
   </a>
 </p>
 
-_TDMtermite_ is a C++ based library that decodes (encodes) the proprietary
+_TDMtermite_ is a C++ based library that decodes the proprietary
 file format _TDM/TDX_ for measurement data. First introduced by
 [National Instruments](https://www.ni.com), the TDM format relies on the
 _technical data management_ data model and is employed by
