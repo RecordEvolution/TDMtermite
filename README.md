@@ -16,6 +16,8 @@ _technical data management_ data model and is employed by
 [LabVIEW](https://www.ni.com/de-de/shop/labview.html), LabWindows™/CVI™,
 Measurement Studio, SignalExpress, and [DIAdem](https://www.ni.com/de-de/shop/data-acquisition-and-control/application-software-for-data-acquisition-and-control-category/what-is-diadem.html).
 
+The [Record Evolution Platform](https://www.record-evolution.de/en/home-en/) uses TDMtermite to integrate measurement data into ETL processes. The TDMtermite library is available both as a command line tool and as a Python module. The Python module of TDMtermite enables data scientists to conveniently include TDM formats in their existing data pipelines by providing access to both raw data and metadata in terms of native Python objects.    
+
 ## Overview
 
 * [TDM file format](#Dataformat)
