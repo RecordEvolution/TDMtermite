@@ -1,5 +1,7 @@
 # --------------------------------------------------------------------------- #
 
+SHELL := /bin/bash
+
 # declare name of executable
 EXE = tdmtermite
 
@@ -23,8 +25,9 @@ GHSH := $(shell git rev-parse HEAD | head -c8)
 # define install location
 INST := /usr/local/bin
 
-# platform
+# platform and current working directory
 OST := $(shell uname)
+CWD := $(shell pwd)
 
 # --------------------------------------------------------------------------- #
 # CLI tool
@@ -88,6 +91,16 @@ clean-cython :
 	rm -vf cython/py_tdm_termite.cpp
 	rm -vf tdm_termite.cpython-*.so python/tdm_termite.cpython-*.so
 	rm -rf build
+
+# --------------------------------------------------------------------------- #
+# docker
+
+docker-build:
+	docker build . --tag tdmtermite:latest
+
+docker-run:
+	mkdir -pv data/{input,output}
+	docker run -it --rm --volume $(CWD)/data:/home/data tdmtermite:latest /bin/bash
 
 # --------------------------------------------------------------------------- #
 

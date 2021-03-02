@@ -1,20 +1,30 @@
 
-FROM debian:bullseye-20210111
+FROM debian:bullseye 
 
-USER root
-
-RUN apt-get update && apt-get install -y \
-    build-essential git \
+# install requirements
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
+    build-essential \
+    g++ make git \
     python3 python3-pip
 
-RUN g++ -v
+# check compiler and current user
+RUN g++ -v && whoami
 
-COPY ./ /tdm_ripper/
+# use /home as working directory
+WORKDIR /home
+
+# get the public TDMtermite repository
+RUN git clone https://github.com/RecordEvolution/TDMtermite.git
 
 # install CLI tool
-RUN cd /tdm_ripper && ls -lh && make install && ls -lh /usr/local/bin/tdmreaper
+RUN cd ./TDMtermite && ls -lh && make install && ls -lh /usr/local/bin/tdmtermite
 
 # install Python module
-RUN cd /tdm_ripper && ls -lh && make cython-requirements && make cython-install
+RUN cd ./TDMtermite && ls -lh && make cython-requirements && make cython-list && make cython-install
+
+# create directory for data exchange
+#RUN [ "/bin/bash", "-c", "mkdir -pv data/{input,output}" ]
+RUN mkdir -pv data
 
 CMD ["sleep","inifity"]
+
