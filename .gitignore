@@ -12,3 +12,5 @@ tdmripper
 tdmreaper
 cython/*.cpp
 tdmtermite
+dist/
+*.egg-info/

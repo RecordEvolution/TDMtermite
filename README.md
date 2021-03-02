@@ -313,3 +313,16 @@ meta-data and provide these headers for usage in file output (see this
 - https://pugixml.org/
 - https://github.com/zeux/pugixml
 - https://cython.readthedocs.io/en/latest/src/userguide/wrapping_CPlusPlus.html
+
+### Packaging
+
+- https://packaging.python.org/tutorials/packaging-projects/
+- https://medium.com/swlh/distributing-python-packages-protected-with-cython-40fc29d84caf
+- https://levelup.gitconnected.com/how-to-deploy-a-cython-package-to-pypi-8217a6581f09
+- https://setuptools.readthedocs.io/en/latest/userguide/declarative_config.html
+- https://test.pypi.org/account/register/
+- https://malramsay.com/post/perils-of-packaging/
+- https://github.com/pypa/auditwheel
+- https://github.com/pypa/python-manylinux-demo
+- https://github.com/pypa/manylinux
+- https://github.com/neuronsimulator/nrn/issues/329
