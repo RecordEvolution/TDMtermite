@@ -1,6 +1,8 @@
 # --------------------------------------------------------------------------- #
 
-pip-sdist:
+pip-publish: pip-sdist pip-upload pip-clean
+
+pip-sdist: ../cython/py_tdm_termite.pyx ../cython/tdm_termite.pxd ../cython/py_tdm_termite.cpp
 	cp -v ../cython/py_tdm_termite.pyx ../cython/tdm_termite.pxd ./
 	cp -v ../cython/py_tdm_termite.cpp ./
 	cp -v ../lib/*.hpp ../lib/*.cpp ./
@@ -38,6 +40,10 @@ pip-upload:
 pip-test-install:
 	python3 -m pip install --index-url https://test.pypi.org/simple --no-deps TDMtermite-RecordEvolution
 	# python3 -m pip install -i https://test.pypi.org/simple/ TDMtermite-RecordEvolution==0.5
+
+pip-test:
+	docker build . --tag tdmtermite-piptest
+	docker run -it --rm tdmtermite-piptest
 
 pip-clean:
 	rm -rvf dist/
