@@ -325,6 +325,10 @@ meta-data and provide these headers for usage in file output (see this
 - https://github.com/pypa/python-manylinux-demo
 - https://github.com/pypa/manylinux
 
+#### C/C++ Extensions
+
+- https://docs.python.org/3/extending/building.html
+
 #### Articles
 
 - https://martinsosic.com/development/2016/02/08/wrapping-c-library-as-python-module.html
