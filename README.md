@@ -316,13 +316,19 @@ meta-data and provide these headers for usage in file output (see this
 
 ### Packaging
 
+#### Documentation
+
 - https://packaging.python.org/tutorials/packaging-projects/
-- https://medium.com/swlh/distributing-python-packages-protected-with-cython-40fc29d84caf
-- https://levelup.gitconnected.com/how-to-deploy-a-cython-package-to-pypi-8217a6581f09
 - https://setuptools.readthedocs.io/en/latest/userguide/declarative_config.html
 - https://test.pypi.org/account/register/
-- https://malramsay.com/post/perils-of-packaging/
 - https://github.com/pypa/auditwheel
 - https://github.com/pypa/python-manylinux-demo
 - https://github.com/pypa/manylinux
+
+#### Articles
+
+- https://martinsosic.com/development/2016/02/08/wrapping-c-library-as-python-module.html
+- https://malramsay.com/post/perils-of-packaging/
 - https://github.com/neuronsimulator/nrn/issues/329
+- https://levelup.gitconnected.com/how-to-deploy-a-cython-package-to-pypi-8217a6581f09
+- https://medium.com/swlh/distributing-python-packages-protected-with-cython-40fc29d84caf

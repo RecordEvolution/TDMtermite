@@ -7,7 +7,7 @@ extensions = Extension(
     sources=["cython/py_tdm_termite.pyx"],
     # libraries=[""],
     # library_dirs=["lib"],
-    include_dirs=["lib","pugixml"],
+    include_dirs=["lib","3rdparty/pugixml"],
     language='c++',
     extra_compile_args=['-std=c++17','-Wno-unused-variable'],
     extra_link_args=['-std=c++17'],
