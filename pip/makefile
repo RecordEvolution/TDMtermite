@@ -1,6 +1,6 @@
 # --------------------------------------------------------------------------- #
 
-pip-publish: pip-sdist pip-upload pip-clean
+pip-publish: pip-sdist pip-upload
 
 pip-sdist: ../cython/py_tdm_termite.pyx ../cython/tdm_termite.pxd ../cython/py_tdm_termite.cpp
 	cp -v ../cython/py_tdm_termite.pyx ../cython/tdm_termite.pxd ./
