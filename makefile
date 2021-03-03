@@ -15,8 +15,9 @@ CC = g++ -std=c++17
 # compiler options and optimization flags
 OPT = -O3 -Wall -Werror -Wunused-variable -Wsign-compare
 
-# include library path
-LIB = pugixml/
+# include 3rd party libraries paths
+LIBB := 3rdparty/
+LIB := $(foreach dir,$(shell ls $(LIBB)),-I $(LIBB)$(dir))
 
 # determine git version/commit tag
 GTAG := $(shell git tag | tail -n1)
@@ -52,11 +53,11 @@ main.o : src/main.cpp lib/$(SRC).hpp $(HPP)
 		sed -i '' 's/TAGSTRING/$(GTAG)/g' $<.cpp; \
 		sed -i '' 's/HASHSTRING/$(GHSH)/g' $<.cpp; \
 	fi
-	$(CC) -c $(OPT) -I $(LIB) -I lib/ $<.cpp -o $@
+	$(CC) -c $(OPT) $(LIB) -I lib/ $<.cpp -o $@
 	@rm $<.cpp
 
 $(SRC).o : lib/$(SRC).cpp lib/$(SRC).hpp $(HPP)
-	$(CC) -c $(OPT) -I $(LIB) $< -o $@
+	$(CC) -c $(OPT) $(LIB) $< -o $@
 
 cpp-clean :
 	rm -f $(EXE) *.o src/main.cpp.cpp
