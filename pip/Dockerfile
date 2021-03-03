@@ -7,8 +7,9 @@ RUN DEBIAN_FRONTEND=noninteractive \
   python3-pip \
   python3-setuptools
 
-RUN python3 -m pip install -i https://test.pypi.org/simple/ TDMtermite-RecordEvolution==0.6.7 && \
-  python3 -m pip install --upgrade TDMtermite-RecordEvolution
+# RUN python3 -m pip install -i https://test.pypi.org/simple/ TDMtermite-RecordEvolution==0.6.7 && \
+#   python3 -m pip install --upgrade TDMtermite-RecordEvolution
+RUN python3 -m pip install TDMtermite
 
 # CMD ["sleep","3600"]
 CMD ["python3","-m","pip","freeze"]

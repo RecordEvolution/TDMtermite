@@ -108,7 +108,17 @@ docker-clean:
 	docker image remove tdmtermite
 
 # --------------------------------------------------------------------------- #
+# pip
+
+pip-publish: cython-build
+	cd pip/ && make pip-publish
+
+pip-test:
+	cd pip/ && make pip-test
+
+# --------------------------------------------------------------------------- #
 
 clean : cpp-clean cython-clean
+	cd pip/ && make pip-clean
 
 # --------------------------------------------------------------------------- #

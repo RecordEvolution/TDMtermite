@@ -7,7 +7,8 @@ pip-sdist: ../cython/py_tdm_termite.pyx ../cython/tdm_termite.pxd ../cython/py_t
 	cp -v ../cython/py_tdm_termite.cpp ./
 	cp -v ../lib/*.hpp ../lib/*.cpp ./
 	cp -v ../3rdparty/pugixml/* ./
-	cp -v ../README.md ./
+	cat ../README.md | head -n316 | tail -n306 > ./README.md
+	cp -v ../LICENSE ./
 	# cython py_tdm_termite.pyx -o py_tdm_termite.cpp
 	python3 setup.py sdist
 
@@ -34,8 +35,11 @@ pip-audit:
 # username: __token__
 # password: API-token including "pypi-"
 # !! RUN AS ROOT!! (only for bdist_wheel + auditwheel)
-pip-upload:
+pip-upload-test:
 	python3 -m twine upload --repository testpypi dist/$(shell ls -t dist/ | head -n1)
+
+pip-upload:
+	python3 -m twine upload dist/$(shell ls -t dist/ | head -n1)
 
 pip-test-install:
 	python3 -m pip install --index-url https://test.pypi.org/simple --no-deps TDMtermite-RecordEvolution
@@ -53,6 +57,6 @@ pip-clean:
 	rm -rvf wheelhouse/
 	rm -vf *.pyx *.pxd
 	rm -vf *.cpp *.c *.hpp
-	rm -vf README.md
+	rm -vf README.md LICENSE
 
 # --------------------------------------------------------------------------- #

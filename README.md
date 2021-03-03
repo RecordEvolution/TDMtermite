@@ -1,6 +1,6 @@
 
 <p align="center">
-  <a href="https://github.com/RecordEvolution/tdm_ripper.git">
+  <a href="https://github.com/RecordEvolution/TDMtermite.git">
     <img
       alt="tdmtermite.svg"
       src="assets/tdmtermite.svg"

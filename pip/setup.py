@@ -6,8 +6,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="TDMtermite-RecordEvolution",
-    version="0.6.7", #version,
+    name="TDMtermite",
+    version="0.5.0", #version,
     author="Record Evolution GmbH",
     author_email="mario.fink@record-evolution.de",
     maintainer="Record Evolution GmbH",
