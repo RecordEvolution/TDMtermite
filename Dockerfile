@@ -26,5 +26,5 @@ RUN cd ./TDMtermite && ls -lh && make cython-requirements && make cython-list &&
 #RUN [ "/bin/bash", "-c", "mkdir -pv data/{input,output}" ]
 RUN mkdir -pv data
 
-CMD ["sleep","inifity"]
+CMD ["sleep","infinity"]
 
