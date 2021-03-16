@@ -18,7 +18,10 @@ os.system("git tag > gittags.log")
 with open ("gittags.log","r") as gt:
     taglst = gt.readlines()
 os.remove("gittags.log")
-version = taglst[-1].replace('\n','').replace('v','')
+if len(taglst) > 0 :
+    version = taglst[-1].replace('\n','').replace('v','')
+else:
+    version = 'unkown'
 print("building version: "+version)
 
 setup(
