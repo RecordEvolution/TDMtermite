@@ -31,6 +31,14 @@ OST := $(shell uname)
 CWD := $(shell pwd)
 
 # --------------------------------------------------------------------------- #
+
+tdmtest : tdmtest.o
+		$(CC) $(OPT) $^ -o $@
+
+tdmtest.o : src/test.cpp lib/$(SRC).hpp $(HPP)
+	$(CC) -c $(OPT) $(LIB) -I lib/ $< -o $@
+
+# --------------------------------------------------------------------------- #
 # CLI tool
 
 $(EXE) : main.o $(SRC).o
@@ -60,7 +68,7 @@ $(SRC).o : lib/$(SRC).cpp lib/$(SRC).hpp $(HPP)
 	$(CC) -c $(OPT) $(LIB) $< -o $@
 
 cpp-clean :
-	rm -f $(EXE) *.o src/main.cpp.cpp
+	rm -f $(EXE) *.o src/main.cpp.cpp tdmtest
 
 # --------------------------------------------------------------------------- #
 # check process
