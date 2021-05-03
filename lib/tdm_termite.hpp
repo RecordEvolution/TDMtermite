@@ -60,8 +60,9 @@ class tdm_termite
   std::map<std::string,submatrix> submatrices_;
   std::map<std::string,localcolumn> localcolumns_;
 
-  // binary data container
+  // binary data container/file stream
   std::vector<unsigned char> tdxbuffer_;
+  std::ifstream tdx_ifstream_;
 
   // extract list of identifiers from e.g. "#xpointer(id("usi12") id("usi13"))"
   std::vector<std::string> extract_ids(std::string idstring)
@@ -121,6 +122,7 @@ public:
   tdm_termite();
   tdm_termite(std::string tdmfile, std::string tdxfile = std::string(""),
              bool showlog = false);
+  ~tdm_termite();
 
   // provide (tdm,tdx) files
   void submit_files(std::string tdmfile, std::string tdxfile = std::string(""),

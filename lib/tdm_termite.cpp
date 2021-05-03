@@ -16,6 +16,12 @@ tdm_termite::tdm_termite(std::string tdmfile, std::string tdxfile, bool showlog)
   this->process_tdm(showlog);
 }
 
+tdm_termite::~tdm_termite()
+{
+  // close tdx-file stream
+  tdx_ifstream_.close();
+}
+
 void tdm_termite::submit_files(std::string tdmfile, std::string tdxfile, bool showlog)
 {
   // save files
@@ -106,20 +112,26 @@ void tdm_termite::process_tdm(bool showlog)
   this->process_localcolumns(showlog,xml_doc);
 
   // open .tdx and stream all binary data into buffer
+  // try {
+  //   std::ifstream fin(tdxfile_.c_str(),std::ifstream::binary);
+  //   // if ( !fin.good() ) std::cerr<<"failed to open .tdx-file\n";
+  //
+  //   std::vector<unsigned char> tdxbuf((std::istreambuf_iterator<char>(fin)),
+  //                                     (std::istreambuf_iterator<char>()));
+  //   tdxbuffer_ = tdxbuf;
+  //
+  //   if ( showlog ) std::cout<<"size of .tdx buffer (bytes): "<<tdxbuffer_.size()<<"\n\n";
+  //
+  //   // close .tdx file
+  //   fin.close();
+  // } catch (const std::exception& e ) {
+  //   throw std::runtime_error( std::string("failed to open .tdx and stream data to buffer: ")
+  //                             + e.what() );
+  // }
   try {
-    std::ifstream fin(tdxfile_.c_str(),std::ifstream::binary);
-    // if ( !fin.good() ) std::cerr<<"failed to open .tdx-file\n";
-
-    std::vector<unsigned char> tdxbuf((std::istreambuf_iterator<char>(fin)),
-                                      (std::istreambuf_iterator<char>()));
-    tdxbuffer_ = tdxbuf;
-
-    if ( showlog ) std::cout<<"size of .tdx buffer (bytes): "<<tdxbuffer_.size()<<"\n\n";
-
-    // close .tdx file
-    fin.close();
-  } catch (const std::exception& e ) {
-    throw std::runtime_error( std::string("failed to open .tdx and stream data to buffer: ")
+    tdx_ifstream_.open(tdxfile_.c_str(),std::ifstream::binary);
+  } catch (const std::exception& e) {
+    throw std::runtime_error( std::string("failed to open .tdx file in ifstream: ")
                               + e.what() );
   }
 }
@@ -584,10 +596,20 @@ std::vector<tdmdatatype> tdm_termite::get_channel(std::string& id)
     // declare buffer covering the required range of "tdxbuffer_"
     // (consider both channel-wise and block-wise ordering)
     unsigned long int strtidx = blk.block_offset_*blk.block_size_
-                              + blk.byte_offset_,
-                      fnshidx = strtidx + blk.length_*dtyp.size_;
-    std::vector<unsigned char> tdxblk( tdxbuffer_.begin()+strtidx,
-                                       tdxbuffer_.begin()+fnshidx );
+                              + blk.byte_offset_;
+                      // fnshidx = strtidx + blk.length_*dtyp.size_;
+    // std::vector<unsigned char> tdxblk( tdxbuffer_.begin()+strtidx,
+    //                                    tdxbuffer_.begin()+fnshidx );
+    char* blkbuf = new char[blk.length_*dtyp.size_];
+    try {
+      tdx_ifstream_.seekg(strtidx);
+      tdx_ifstream_.read(blkbuf,blk.length_*dtyp.size_);
+    } catch (const std::exception& e) {
+      throw std::runtime_error( std::string("failed to read block from tdx_ifstream_: ")
+                                + e.what() );
+    }
+    std::vector<unsigned char> tdxblk(blkbuf,blkbuf+blk.length_*dtyp.size_);
+    delete []blkbuf;
 
     // distinguish numeric datatypes included in "tdmdatatype"
     if ( blk.value_type_ == std::string("eInt16Usi") )
