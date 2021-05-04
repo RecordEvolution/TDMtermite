@@ -6,20 +6,71 @@
 
 tdm_termite::tdm_termite()
 {
-
+  tdx_ifstream_ = new std::ifstream;
 }
 
 tdm_termite::tdm_termite(std::string tdmfile, std::string tdxfile, bool showlog):
   tdmfile_(tdmfile), tdxfile_(tdxfile)
 {
+  tdx_ifstream_ = new std::ifstream;
+
   // start processing tdm data model
   this->process_tdm(showlog);
 }
 
 tdm_termite::~tdm_termite()
 {
-  // close tdx-file stream
-  tdx_ifstream_.close();
+  // close tdx-file stream and free memory
+  if ( tdx_ifstream_->is_open() ) tdx_ifstream_->close();
+  delete tdx_ifstream_;
+}
+
+tdm_termite::tdm_termite(const tdm_termite& other):
+  tdmfile_(other.tdmfile_), tdxfile_(other.tdxfile_), csvfile_(other.csvfile_),
+  endianness_(other.endianness_), machine_endianness_(other.machine_endianness_),
+  meta_data_(other.meta_data_), tdmdt_name_(other.tdmdt_name_),
+  tdmdt_chan_(other.tdmdt_chan_),
+  tdx_blocks_(other.tdx_blocks_), tdmroot_(other.tdmroot_),
+  tdmchannelgroups_(other.tdmchannelgroups_), tdmchannels_(other.tdmchannels_),
+  tdmchannels_data_(other.tdmchannels_data_), submatrices_(other.submatrices_),
+  localcolumns_(other.localcolumns_), tdxbuffer_(other.tdxbuffer_)
+{
+  tdx_ifstream_ = new std::ifstream;
+  if ( other.tdx_ifstream_->is_open() )
+  {
+    tdx_ifstream_->open(tdxfile_.c_str(),std::ifstream::binary);
+    tdx_ifstream_->seekg(other.tdx_ifstream_->tellg());
+  }
+}
+
+tdm_termite& tdm_termite::operator=(const tdm_termite& other)
+{
+  if ( this != &other )
+  {
+    tdmfile_ = other.tdmfile_;
+    tdxfile_ = other.tdxfile_;
+    csvfile_ = other.csvfile_;
+    endianness_ = other.endianness_;
+    machine_endianness_ = other.machine_endianness_;
+    meta_data_ = other.meta_data_;
+    tdmdt_name_ = other.tdmdt_name_;
+    tdmdt_chan_= other.tdmdt_chan_;
+    tdx_blocks_ = other.tdx_blocks_;
+    tdmroot_ = other.tdmroot_;
+    tdmchannelgroups_ = other.tdmchannelgroups_;
+    tdmchannels_ = other.tdmchannels_;
+    tdmchannels_data_ = other.tdmchannels_data_;
+    submatrices_ = other.submatrices_;
+    localcolumns_ = other.localcolumns_;
+    tdxbuffer_ = other.tdxbuffer_;
+    if ( other.tdx_ifstream_->is_open() )
+    {
+      tdx_ifstream_->open(tdxfile_.c_str(),std::ifstream::binary);
+      tdx_ifstream_->seekg(other.tdx_ifstream_->tellg());
+    }
+  }
+
+  return *this;
 }
 
 void tdm_termite::submit_files(std::string tdmfile, std::string tdxfile, bool showlog)
@@ -129,7 +180,7 @@ void tdm_termite::process_tdm(bool showlog)
   //                             + e.what() );
   // }
   try {
-    tdx_ifstream_.open(tdxfile_.c_str(),std::ifstream::binary);
+    tdx_ifstream_->open(tdxfile_.c_str(),std::ifstream::binary);
   } catch (const std::exception& e) {
     throw std::runtime_error( std::string("failed to open .tdx file in ifstream: ")
                               + e.what() );
@@ -602,8 +653,8 @@ std::vector<tdmdatatype> tdm_termite::get_channel(std::string& id)
     //                                    tdxbuffer_.begin()+fnshidx );
     char* blkbuf = new char[blk.length_*dtyp.size_];
     try {
-      tdx_ifstream_.seekg(strtidx);
-      tdx_ifstream_.read(blkbuf,blk.length_*dtyp.size_);
+      tdx_ifstream_->seekg(strtidx);
+      tdx_ifstream_->read(blkbuf,blk.length_*dtyp.size_);
     } catch (const std::exception& e) {
       throw std::runtime_error( std::string("failed to read block from tdx_ifstream_: ")
                                 + e.what() );
