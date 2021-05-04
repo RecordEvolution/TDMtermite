@@ -17,3 +17,9 @@ dist/
 output/
 monitor-process.sh
 tdmtest
+pip/*.hpp
+pip/*.md
+pip/*.cpp
+pip/*.pyx
+pip/*.pxd
+pip/LICENSE
