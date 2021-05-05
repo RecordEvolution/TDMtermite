@@ -184,10 +184,10 @@ public:
   template<typename tdmelement>
   std::string get_overview(format formatter);
 private:
-  void summarize_member(tdm_channelgroup chp, std::string& summary, format& formatter);
-  void summarize_member(submatrix sbm, std::string& summary, format& formatter);
-  void summarize_member(localcolumn lcc, std::string& summary, format& formatter);
-  void summarize_member(block blk, std::string& summary, format& formatter);
+  void summarize_member(tdm_channelgroup &chp, std::string& summary, format& formatter);
+  void summarize_member(submatrix &sbm, std::string& summary, format& formatter);
+  void summarize_member(localcolumn &lcc, std::string& summary, format& formatter);
+  void summarize_member(block &blk, std::string& summary, format& formatter);
 public:
 
   // get list of channelgroup ids

@@ -17,6 +17,7 @@ typedef double eFloat64Usi;
 
 class tdmdatatype
 {
+
 protected:
   eInt16Usi sint16_;    // 0
   eInt32Usi sint32_;    // 1
@@ -26,6 +27,7 @@ protected:
   eFloat32Usi float32_; // 5
   eFloat64Usi float64_; // 6
   short int dtidx_;     // \in \{0,...,6\}
+
 public:
   tdmdatatype(): sint16_(0), sint32_(0),
                  uint8_(0), uint16_(0), uint32_(0),
@@ -43,6 +45,19 @@ public:
   // identify type
   short int& dtype() { return dtidx_; }
 
+  // copy constructor
+  tdmdatatype(const tdmdatatype &num)
+  {
+    this->sint16_ = num.sint16_;
+    this->sint32_ = num.sint32_;
+    this->uint8_ = num.uint8_;
+    this->uint16_ = num.uint16_;
+    this->uint32_ = num.uint32_;
+    this->float32_ = num.float32_;
+    this->float64_ = num.float64_;
+    this->dtidx_ = num.dtidx_;
+  }
+
   // overall assignment operator
   tdmdatatype& operator=(const tdmdatatype &num)
   {
@@ -55,9 +70,10 @@ public:
       this->uint32_ = num.uint32_;
       this->float32_ = num.float32_;
       this->float64_ = num.float64_;
+      this->dtidx_ = num.dtidx_;
     }
 
-		return *this;
+    return *this;
   }
 
   // implement assignment operator for individual datatypes

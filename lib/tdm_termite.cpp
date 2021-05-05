@@ -568,7 +568,7 @@ template std::string tdm_termite::get_overview<submatrix>(format formatter);
 template std::string tdm_termite::get_overview<localcolumn>(format formatter);
 template std::string tdm_termite::get_overview<block>(format formatter);
 
-void tdm_termite::summarize_member(tdm_channelgroup chp, std::string& summary, format& formatter)
+void tdm_termite::summarize_member(tdm_channelgroup &chp, std::string& summary, format& formatter)
 {
   for ( std::map<std::string,tdm_channelgroup>::iterator it=this->tdmchannelgroups_.begin();
                                                          it!=this->tdmchannelgroups_.end(); ++it)
@@ -578,7 +578,7 @@ void tdm_termite::summarize_member(tdm_channelgroup chp, std::string& summary, f
   }
 }
 
-void tdm_termite::summarize_member(submatrix sbm, std::string& summary, format& formatter)
+void tdm_termite::summarize_member(submatrix &sbm, std::string& summary, format& formatter)
 {
   for ( std::map<std::string,submatrix>::iterator it=this->submatrices_.begin();
                                                   it!=this->submatrices_.end(); ++it)
@@ -588,7 +588,7 @@ void tdm_termite::summarize_member(submatrix sbm, std::string& summary, format& 
   }
 }
 
-void tdm_termite::summarize_member(localcolumn lcc, std::string& summary, format& formatter)
+void tdm_termite::summarize_member(localcolumn &lcc, std::string& summary, format& formatter)
 {
   for ( std::map<std::string,localcolumn>::iterator it=this->localcolumns_.begin();
                                                     it!=this->localcolumns_.end(); ++it)
@@ -598,7 +598,7 @@ void tdm_termite::summarize_member(localcolumn lcc, std::string& summary, format
   }
 }
 
-void tdm_termite::summarize_member(block blk, std::string& summary, format& formatter)
+void tdm_termite::summarize_member(block &blk, std::string& summary, format& formatter)
 {
   for ( std::map<std::string,block>::iterator it=this->tdx_blocks_.begin();
                                               it!=this->tdx_blocks_.end(); ++it)
