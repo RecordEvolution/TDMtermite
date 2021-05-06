@@ -320,6 +320,7 @@ meta-data and provide these headers for usage in file output (see this
 
 ### Implementation
 
+- https://en.cppreference.com/w/
 - https://pugixml.org/
 - https://github.com/zeux/pugixml
 - https://cython.readthedocs.io/en/latest/src/userguide/wrapping_CPlusPlus.html
