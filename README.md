@@ -9,6 +9,35 @@
   </a>
 </p>
 
+<div style="width: 100%; display: block; margin-left: 28%; margin-right: 28%;">
+
+  <div style="width: 100%; overflow: hidden;">
+
+    <div style="margin: 5px; float: left;">
+      <a href="https://lgtm.com/projects/g/RecordEvolution/TDMtermite/alerts/">
+        <img alt="Total alerts" 
+             src="https://img.shields.io/lgtm/alerts/g/RecordEvolution/TDMtermite.svg?logo=lgtm&logoWidth=18"/>
+      </a>
+    </div>
+
+    <div style="margin: 5px; float: left;">
+      <a href="https://lgtm.com/projects/g/RecordEvolution/TDMtermite/context:cpp">
+        <img alt="Language grade: C/C++" 
+             src="https://img.shields.io/lgtm/grade/cpp/g/RecordEvolution/TDMtermite.svg?logo=lgtm&logoWidth=18"/>
+      </a>
+    </div>
+
+    <div style="margin: 5px; float: left;">
+      <a href="https://lgtm.com/projects/g/RecordEvolution/TDMtermite/context:python">
+        <img alt="Language grade: Python" 
+             src="https://img.shields.io/lgtm/grade/python/g/RecordEvolution/TDMtermite.svg?logo=lgtm&logoWidth=18"/>
+      </a>
+    </div>
+
+  </div>
+  
+</div>
+
 _TDMtermite_ is a C++ based library that decodes the proprietary
 file format _TDM/TDX_ for measurement data. First introduced by
 [National Instruments](https://www.ni.com), the TDM format relies on the
