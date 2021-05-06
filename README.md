@@ -1,17 +1,9 @@
 
-<p align="center">
-  <a href="https://github.com/RecordEvolution/TDMtermite.git">
-    <img
-      alt="tdmtermite.svg"
-      src="assets/tdmtermite.svg"
-      width="400"
-    />
-  </a>
-</p>
-
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/RecordEvolution/TDMtermite.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/RecordEvolution/TDMtermite/alerts/)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/RecordEvolution/TDMtermite.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/RecordEvolution/TDMtermite/context:cpp)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/RecordEvolution/TDMtermite.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/RecordEvolution/TDMtermite/context:python)
+[![LICENSE](https://img.shields.io/github/license/RecordEvolution/TDMtermite)](https://img.shields.io/github/license/RecordEvolution/TDMtermite)
+[![STARS](https://img.shields.io/github/stars/RecordEvolution/TDMtermite)](https://img.shields.io/github/stars/RecordEvolution/TDMtermite)
 
 # TDMtermite
 
