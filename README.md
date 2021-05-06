@@ -13,6 +13,8 @@
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/RecordEvolution/TDMtermite.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/RecordEvolution/TDMtermite/context:cpp)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/RecordEvolution/TDMtermite.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/RecordEvolution/TDMtermite/context:python)
 
+# TDMtermite
+
 _TDMtermite_ is a C++ based library that decodes the proprietary
 file format _TDM/TDX_ for measurement data. First introduced by
 [National Instruments](https://www.ni.com), the TDM format relies on the
