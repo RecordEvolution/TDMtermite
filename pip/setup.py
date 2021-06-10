@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="TDMtermite",
-    version="1.0.0", #version,
+    version="1.0.1", #version,
     author="Record Evolution GmbH",
     author_email="mario.fink@record-evolution.de",
     maintainer="Record Evolution GmbH",
@@ -30,7 +30,8 @@ setup(
                            # include_dirs=["3rdparty/pugixml/","lib/"],
                            # depends=["../lib/tdm_termite.hpp"]
                            language='c++',
-                           extra_compile_args=['-std=c++17','-Wno-unused-variable'],
+                           #extra_compile_args=['-std=c++17','-Wno-unused-variable'],
+                           extra_compile_args=['-std=c++17'],
                            extra_link_args=['-std=c++17'],
                            )],
 )

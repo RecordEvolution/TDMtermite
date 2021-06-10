@@ -21,7 +21,10 @@ LIB := $(foreach dir,$(shell ls $(LIBB)),-I $(LIBB)$(dir))
 
 # determine git version/commit tag
 GTAG := $(shell git tag | tail -n1)
+GTAGV := $(shell git tag | tail -n1 | tr -d 'v')
 GHSH := $(shell git rev-parse HEAD | head -c8)
+PIPYVS := $(shell grep "version" pip/setup.py | tr -d 'version=",# ')
+PICGVS := $(shell grep "version" pip/setup.cfg | tr -d 'version=",# ')
 
 # define install location
 INST := /usr/local/bin
@@ -29,6 +32,18 @@ INST := /usr/local/bin
 # platform and current working directory
 OST := $(shell uname)
 CWD := $(shell pwd)
+
+# --------------------------------------------------------------------------- #
+# version/tag check
+
+checkversion:
+	@echo "git tag:                "$(GTAG)
+	@echo "git head:               "$(GHSH)
+	@echo "pip setup.py version:   "$(PIPYVS)
+	@echo "pip setup.cfg version:  "$(PICGVS)
+
+$(GTAGV):
+	@echo "check consistent versions (git tag vs. setup.py): "$(GTAG)" <-> "$(PIPYVS)" "
 
 # --------------------------------------------------------------------------- #
 # CLI tool
@@ -116,7 +131,7 @@ docker-clean:
 # --------------------------------------------------------------------------- #
 # pip
 
-pip-publish: cython-build
+pip-publish: $(PIPYVS) cython-build
 	cd pip/ && make pip-publish
 
 pip-test:
