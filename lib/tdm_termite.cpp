@@ -917,7 +917,7 @@ void tdm_termite::check_filename_path(const char* filename)
 
   if ( !std::filesystem::is_directory(pt) )
   {
-    throw std::runtime_error(std::string("directory does not exist: ") + pt.c_str() );
+    throw std::runtime_error( std::string("directory does not exist: ") + pt.u8string() );
   }
 }
 

@@ -11,8 +11,8 @@ extensions = Extension(
     include_dirs=["lib","3rdparty/pugixml"],
     language='c++',
     #extra_compile_args=['-std=c++17','-Wno-unused-variable'],
-    extra_compile_args=['-std=c++17'],
-    extra_link_args=['-std=c++17'],
+    extra_compile_args=['-std=c++17','/EHsc','/std:c++17'],
+    extra_link_args=['-std=c++17','/EHsc','/std:c++17'],
 )
 
 os.system("git tag > gittags.log")
