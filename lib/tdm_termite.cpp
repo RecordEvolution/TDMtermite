@@ -852,7 +852,7 @@ void tdm_termite::print_group(std::string &id, const char* filename, bool includ
     for ( std::string chn: chngrp.channels_ )
     {
       std::vector<tdmdatatype> chndat = this->get_channel(chn);
-      if ( chndat.size() > maxrows ) maxrows = chndat.size();
+      if ( chndat.size() > maxrows ) maxrows = (unsigned int)chndat.size();
       allchns.push_back(chndat);
     }
 

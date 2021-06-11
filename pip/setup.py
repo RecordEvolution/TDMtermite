@@ -9,7 +9,7 @@ if sys.platform == "linux" or sys.platform == "darwin" :
 	lnkargs = ['-std=c++17','-Wno-unused-variable']
 elif sys.platform == "win32" :
 	cmpargs = ['/EHsc','/std:c++17']
-	lnkargs = ['/EHsc','/std:c++17']
+	lnkargs = []
 else :
 	raise RuntimeError("unknown platform")
 
