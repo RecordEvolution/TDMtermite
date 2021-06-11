@@ -1,12 +1,24 @@
 
 from setuptools import setup, Extension
+import sys
+
+print("building on platform: "+sys.platform)
+
+if sys.platform == "linux" or sys.platform == "darwin" :
+	cmpargs = ['-std=c++17','-Wno-unused-variable']
+	lnkargs = ['-std=c++17','-Wno-unused-variable']
+elif sys.platform == "win32" :
+	cmpargs = ['/EHsc','/std:c++17']
+	lnkargs = ['/EHsc','/std:c++17']
+else :
+	raise RuntimeError("unknown platform")
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
     name="TDMtermite",
-    version="1.0.1", #version,
+    version="1.0.1",
     author="Record Evolution GmbH",
     author_email="mario.fink@record-evolution.de",
     maintainer="Record Evolution GmbH",
@@ -26,12 +38,12 @@ setup(
     ],
     ext_modules=[Extension("tdm_termite",
                            ["py_tdm_termite.cpp"],
-                           # libraries_dirs=["cython/"],
-                           # include_dirs=["3rdparty/pugixml/","lib/"],
-                           # depends=["../lib/tdm_termite.hpp"]
-                           language='c++',
-                           #extra_compile_args=['-std=c++17','-Wno-unused-variable'],
-                           extra_compile_args=['-std=c++17'],
-                           extra_link_args=['-std=c++17'],
-                           )],
+                           # libraries_dirs = ["cython/"],
+                           # include_dirs = ["3rdparty/pugixml/","lib/"],
+                           # depends = ["../lib/tdm_termite.hpp"]
+                           language = 'c++',
+                           extra_compile_args = cmpargs,
+                           extra_link_args = lnkargs,
+                           )
+	],
 )
