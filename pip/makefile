@@ -7,7 +7,7 @@ pip-sdist: ../cython/py_tdm_termite.pyx ../cython/tdm_termite.pxd ../cython/py_t
 	cp -v ../cython/py_tdm_termite.cpp ./
 	cp -v ../lib/*.hpp ../lib/*.cpp ./
 	cp -v ../3rdparty/pugixml/* ./
-	cat ../README.md | head -n316 | tail -n306 > ./README.md
+	cat ../README.md | grep '^# TDMtermite' -A 50000 > ./README.md
 	cp -v ../LICENSE ./
 	# cython py_tdm_termite.pyx -o py_tdm_termite.cpp
 	python3 setup.py sdist

@@ -160,19 +160,21 @@ make cython-requirements
 make cython-install
 ```
 
-That makes the module available for import as a `import tdm_termite` .
+which makes the module available for import by `import tdm_termite` .
 
 #### Installation with pip
 
-The package is also available via the [Python Package Index](https://pypi.org) at 
+The package is also available via the [Python Package Index](https://pypi.org) at
 [TDMtermite](https://pypi.org/project/TDMtermite/). To install the latest version simply do
 
 ```Shell
 python3 -m pip install TDMtermite
 ```
 
-Note, that _python3_setuptools_ and _gcc version >= 10.2.0_ are required to 
-successfully install and use it. 
+##### Unix
+
+Note, that _python3_setuptools_ and _gcc version >= 10.2.0_ are required to
+successfully install and use it.
 
 ## Usage
 
