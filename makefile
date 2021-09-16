@@ -71,6 +71,7 @@ main.o : src/main.cpp lib/$(SRC).hpp $(HPP)
 	@if [ $(OST) = "Darwin" ]; then\
 		sed -i '' 's/TAGSTRING/$(GTAG)/g' $<.cpp; \
 		sed -i '' 's/HASHSTRING/$(GHSH)/g' $<.cpp; \
+		sed -i '' 's/TIMESTAMPSTRING/$(TMS)/g' $<.cpp; \
 	fi
 	$(CC) -c $(OPT) $(LIB) -I lib/ $<.cpp -o $@
 	@rm $<.cpp
