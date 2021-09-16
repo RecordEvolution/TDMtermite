@@ -26,6 +26,9 @@ GHSH := $(shell git rev-parse HEAD | head -c8)
 PIPYVS := $(shell grep "version" pip/setup.py | tr -d 'version=,\#\" ')
 PICGVS := $(shell grep "version" pip/setup.cfg | tr -d 'version=,\#\" ')
 
+# current timestamp
+TMS = $(shell date +%Y%m%dT%H%M%S)
+
 # define install location
 INST := /usr/local/bin
 
@@ -63,6 +66,7 @@ main.o : src/main.cpp lib/$(SRC).hpp $(HPP)
 	@if [ $(OST) = "Linux" ]; then\
 		sed -i 's/TAGSTRING/$(GTAG)/g' $<.cpp; \
 		sed -i 's/HASHSTRING/$(GHSH)/g' $<.cpp; \
+		sed -i 's/TIMESTAMPSTRING/$(TMS)/g' $<.cpp; \
 	fi
 	@if [ $(OST) = "Darwin" ]; then\
 		sed -i '' 's/TAGSTRING/$(GTAG)/g' $<.cpp; \

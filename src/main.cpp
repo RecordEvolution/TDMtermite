@@ -11,11 +11,12 @@
 
 const std::string gittag("TAGSTRING");
 const std::string githash("HASHSTRING");
+const std::string timestamp("TIMESTAMPSTRING");
 
 void show_usage()
 {
   std::cout<<"\n"
-           <<"tdmtermite ["<<gittag<<"-g"<<githash<<"] (github.com/RecordEvolution/TDMtermite.git)"
+           <<"tdmtermite ["<<gittag<<"-g"<<githash<<"-"<<timestamp<<"] (https://github.com/RecordEvolution/TDMtermite.git)"
            <<"\n\n"
            <<"Decode TDM/TDX files and dump data as *.csv"
            <<"\n\n"
@@ -78,7 +79,7 @@ optkeys parse_args(int argc, char* argv[], bool showargs = false)
     else if ( std::string(argv[1]) == std::string("--version")
            || std::string(argv[1]) == std::string("-v") )
     {
-      std::cout<<"tdmtermite "<<gittag<<"-g"<<githash<<"\n";
+      std::cout<<"tdmtermite "<<gittag<<"-g"<<githash<<"-"<<timestamp<<"\n";
     }
     else
     {
@@ -284,13 +285,13 @@ int main(int argc, char* argv[])
     if ( showroot ) std::cout<<"\n"<<jack.get_root().get_info()<<"\n";
 
     // get complete channel(-group) overview
-    format grpformatter(26,false,false,' ');
+    format grpformatter(16,false,false,' ');
     if (listgroups) std::cout<<"\n"<<jack.get_overview<tdm_channelgroup>(grpformatter)<<"\n";
-    format chformatter(14,false,false,' ');
+    format chformatter(16,false,false,' ');
     if (listchannels) std::cout<<"\n"<<jack.get_channel_overview(chformatter)<<"\n";
 
     // get complete submatrix/localcolumns overview
-    format formatter(18,false,false,' ');
+    format formatter(16,false,false,' ');
     if (listblocks) std::cout<<jack.get_overview<block>(formatter)<<"\n";
     if (listsubmatrices) std::cout<<jack.get_overview<submatrix>(formatter)<<"\n";
     if (listlocalcolumns) std::cout<<jack.get_overview<localcolumn>(formatter)<<"\n";
