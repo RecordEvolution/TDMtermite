@@ -452,7 +452,7 @@ void tdm_termite::process_localcolumns(bool showlog, pugi::xml_document& xml_doc
     }
     else
     {
-      throw std::logic_error("localcolumn with out/multiple values id(s)");
+      throw std::logic_error("localcolumn with multiple values id(s)");
     }
 
     // add external id referring to block in <usi:include>
