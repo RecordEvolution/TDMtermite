@@ -23,8 +23,8 @@ LIB := $(foreach dir,$(shell ls $(LIBB)),-I $(LIBB)$(dir))
 GTAG := $(shell git tag | tail -n1)
 GTAGV := $(shell git tag | tail -n1 | tr -d 'v')
 GHSH := $(shell git rev-parse HEAD | head -c8)
-PIPYVS := $(shell grep "version" pip/setup.py | tr -d 'version=",# ')
-PICGVS := $(shell grep "version" pip/setup.cfg | tr -d 'version=",# ')
+PIPYVS := $(shell grep "version" pip/setup.py | tr -d 'version=,\#\" ')
+PICGVS := $(shell grep "version" pip/setup.cfg | tr -d 'version=,\#\" ')
 
 # define install location
 INST := /usr/local/bin
