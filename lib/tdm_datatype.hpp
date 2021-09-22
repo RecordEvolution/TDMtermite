@@ -14,6 +14,7 @@ typedef unsigned short int eUInt16Usi;
 typedef unsigned int eUInt32Usi;
 typedef float eFloat32Usi;
 typedef double eFloat64Usi;
+typedef char eStringUsi;
 
 class tdmdatatype
 {
@@ -26,12 +27,13 @@ protected:
   eUInt32Usi uint32_;   // 4
   eFloat32Usi float32_; // 5
   eFloat64Usi float64_; // 6
-  short int dtidx_;     // \in \{0,...,6\}
+  eStringUsi string_;   // 7
+  short int dtidx_;     // \in \{0,...,7\}
 
 public:
   tdmdatatype(): sint16_(0), sint32_(0),
                  uint8_(0), uint16_(0), uint32_(0),
-                 float32_(0.0), float64_(0.0),
+                 float32_(0.0), float64_(0.0), string_(0),
                  dtidx_(0) { };
   // every supported datatype gets its own constructor
   tdmdatatype(eInt16Usi num): sint16_(num), dtidx_(0) {};
@@ -41,6 +43,7 @@ public:
   tdmdatatype(eUInt32Usi num): uint32_(num), dtidx_(4) {};
   tdmdatatype(eFloat32Usi num): float32_(num), dtidx_(5) {};
   tdmdatatype(eFloat64Usi num): float64_(num), dtidx_(6) {};
+  tdmdatatype(eStringUsi num): string_(num), dtidx_(7) {};
 
   // identify type
   short int& dtype() { return dtidx_; }
@@ -55,6 +58,7 @@ public:
     this->uint32_ = num.uint32_;
     this->float32_ = num.float32_;
     this->float64_ = num.float64_;
+    this->string_ = num.string_;
     this->dtidx_ = num.dtidx_;
   }
 
@@ -70,6 +74,7 @@ public:
       this->uint32_ = num.uint32_;
       this->float32_ = num.float32_;
       this->float64_ = num.float64_;
+      this->string_ = num.string_;
       this->dtidx_ = num.dtidx_;
     }
 
@@ -119,6 +124,12 @@ public:
     this->dtidx_ = 6;
     return *this;
   }
+  tdmdatatype& operator=(const eStringUsi &num)
+  {
+    this->string_ = num;
+    this->dtidx_ = 7;
+    return *this;
+  }
 
   // obtain number as double
   double as_double()
@@ -131,6 +142,7 @@ public:
     else if ( dtidx_ == 4 ) num = (double)uint32_;
     else if ( dtidx_ == 5 ) num = (double)float32_;
     else if ( dtidx_ == 6 ) num = (double)float64_;
+    else if ( dtidx_ == 7 ) num = (double)(int)string_;
     return num;
   }
 
@@ -144,6 +156,7 @@ public:
     else if ( num.dtidx_ == 4 ) out<<num.uint32_;
     else if ( num.dtidx_ == 5 ) out<<num.float32_;
     else if ( num.dtidx_ == 6 ) out<<num.float64_;
+    else if ( num.dtidx_ == 7 ) out<<num.string_;
     return out;
   }
 
@@ -332,7 +345,7 @@ const std::vector<tdm_datatype> tdm_datatypes = {
   {"eFloat32Usi","DT_FLOAT",3,"float_sequence",4,"32 bit float"},
   {"eFloat64Usi","DT_DOUBLE",7,"double_sequence",8,"64 bit double"},
 
-  // {"eStringUsi","DT_STRING",1,"string_sequence",0,"text"}
+  {"eStringUsi","DT_STRING",1,"string_sequence",1,"text"}
 
 };
 

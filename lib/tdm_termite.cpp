@@ -652,6 +652,20 @@ std::vector<tdmdatatype> tdm_termite::get_channel(std::string& id)
     }
     block blk = tdx_blocks_.at(loccol.external_id_);
 
+    // find corresponding submatrix
+    if ( submatrices_.count(loccol.submatrix_) != 1 )
+    {
+      throw std::runtime_error(std::string("no associated submatrix for localcolumn found: ") + loccol.id_);
+    }
+    submatrix subm = submatrices_.at(loccol.submatrix_);
+    if ( subm.number_of_rows_ != blk.length_ )
+    {
+      std::stringstream ss;
+      ss<<"number of rows in submatrix "<<subm.id_<<" ("<<subm.number_of_rows_<<") "
+        <<" does not agree with length of associated block "<<blk.id_<<" ("<<blk.length_<<")";
+      throw std::runtime_error(ss.str());
+    }
+
     // declare vector of appropriate length
     std::vector<tdmdatatype> datavec(blk.length_);
 
@@ -704,6 +718,10 @@ std::vector<tdmdatatype> tdm_termite::get_channel(std::string& id)
     else if ( blk.value_type_ == std::string("eFloat64Usi") )
     {
       this->convert_data_to_type<eFloat64Usi>(tdxblk,datavec);
+    }
+    else if ( blk.value_type_ == std::string("eStringUsi") )
+    {
+      this->convert_data_to_type<eStringUsi>(tdxblk,datavec);
     }
     else
     {
@@ -1000,6 +1018,10 @@ void tdm_termite::check_datatype_consistency()
     else if ( el.name_ == "eFloat64Usi" )
     {
       if ( el.size_ != sizeof(eFloat64Usi) ) throw std::logic_error("invalid representation of eFloat64Usi");
+    }
+    else if ( el.name_ == "eStringUsi" )
+    {
+      if ( el.size_ != sizeof(eStringUsi) ) throw std::logic_error("invalid representation of eStringUsi");
     }
     else
     {
