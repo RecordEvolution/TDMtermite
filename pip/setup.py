@@ -18,7 +18,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="TDMtermite",
-    version="1.0.4",
+    version="1.0.5",
     author="Record Evolution GmbH",
     author_email="mario.fink@record-evolution.de",
     maintainer="Record Evolution GmbH",
