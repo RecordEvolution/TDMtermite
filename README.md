@@ -225,21 +225,21 @@ To be able to use the Python module _tdm_termite_, it first has to be built loca
 or installed on the system. In the Python interpreter, simply do:
 
 ```Python
-import tdm_termite
+import TDMtermite
 ```
 
 This will import the module. The TDM files are provided by creating an instance of
-the _tdm_termite_ class:
+the _tdmtermite_ class:
 
 ```Python
-# create 'tdm_termite' instance object
+# create 'tdmtermite' instance object
 try :
-    jack = tdm_termite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
+    jack = TDMtermite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
 except RuntimeError as e:
     print("failed to load/decode TDM files: " + str(e))
 ```
 
-After initializing the _tdm_termite_ object, it can be used to extract any of the
+After initializing the _tdmtermite_ object, it can be used to extract any of the
 available data. For instance, to list the included channelgroups and channels:
 
 ```Python
@@ -255,12 +255,12 @@ As a use case, we have a look at listing the ids of all channelgroups and printi
 their data to separate files:
 
 ```Python
-import tdm_termite
+import TDMtermite
 import re
 
-# create 'tdm_termite' instance object
+# create 'tdmtermite' instance object
 try :
-    jack = tdm_termite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
+    jack = TDMtermite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
 except RuntimeError as e :
     print("failed to load/decode TDM files: " + str(e))
 
@@ -294,8 +294,8 @@ to simply extract all data of the TDM datatset and dump it to files in a given
 (existing!) directory, do
 
 ```Python
-import tdm_termite
-jack = tdm_termite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
+import TDMtermite
+jack = TDMtermite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
 jack.write_all(b"./my_tdm_data_directory/")
 ```
 
