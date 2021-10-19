@@ -1,9 +1,9 @@
 
-import tdm_termite
+import TDMtermite
 
 # create 'tdm_termite' instance object
 try :
-    jack = tdm_termite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
+    jack = TDMtermite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
     # list ids of channelgroups
     grpids = jack.get_channelgroup_ids()
     # iterate through groups

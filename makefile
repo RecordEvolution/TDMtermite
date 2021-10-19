@@ -13,18 +13,16 @@ HPP = $(wildcard lib/*.hpp)
 CC = g++ -std=c++17
 
 # compiler options and optimization flags
-OPT = -O3 -Wall -Werror -Wunused-variable -Wsign-compare
+OPT = -O3 -Wall -Wconversion -Wpedantic -Wunused-variable -Wsign-compare
 
 # include 3rd party libraries paths
 LIBB := 3rdparty/
 LIB := $(foreach dir,$(shell ls $(LIBB)),-I $(LIBB)$(dir))
 
 # determine git version/commit tag
-GTAG := $(shell git tag | tail -n1)
-GTAGV := $(shell git tag | tail -n1 | tr -d 'v')
+GTAG := $(shell git tag -l --sort=version:refname | tail -n1 | sed "s/$^v//g")
 GHSH := $(shell git rev-parse HEAD | head -c8)
-PIPYVS := $(shell grep "version" pip/setup.py | tr -d 'version=,\#\" ')
-PICGVS := $(shell grep "version" pip/setup.cfg | tr -d 'version=,\#\" ')
+GVSN := $(shell cat python/VERSION | tr -d ' \n')
 
 # current timestamp
 TMS = $(shell date +%Y%m%dT%H%M%S)
@@ -37,31 +35,20 @@ OST := $(shell uname)
 CWD := $(shell pwd)
 
 # --------------------------------------------------------------------------- #
-# version/tag check
+# C++ and CLI tool
 
-checkversion:
-	@echo "git tag:                "$(GTAG)
-	@echo "git head:               "$(GHSH)
-	@echo "pip setup.py version:   "$(PIPYVS)
-	@echo "pip setup.cfg version:  "$(PICGVS)
+# check tags and build executable
+exec: check-tags $(GVSN) $(EXE)
 
-$(GTAGV):
-	@echo "check consistent versions (git tag vs. setup.py): "$(GTAG)" <-> "$(PIPYVS)" "
-
-# --------------------------------------------------------------------------- #
-# CLI tool
-
-$(EXE) : main.o $(SRC).o
+# build executable
+$(EXE): $(SRC).o main.o
 	$(CC) $(OPT) $^ -o $@
 
-install : $(EXE)
-	cp $< $(INST)/
-
-uninstall : $(INST)/$(EXE)
-	rm $<
+$(SRC).o : lib/$(SRC).cpp lib/$(SRC).hpp $(HPP)
+	$(CC) -c $(OPT) $(LIB) $< -o $@
 
 # build main.cpp object file and include git version/commit tag
-main.o : src/main.cpp lib/$(SRC).hpp $(HPP)
+main.o: src/main.cpp lib/$(SRC).hpp $(HPP)
 	@cp $< $<.cpp
 	@if [ $(OST) = "Linux" ]; then\
 		sed -i 's/TAGSTRING/$(GTAG)/g' $<.cpp; \
@@ -76,8 +63,11 @@ main.o : src/main.cpp lib/$(SRC).hpp $(HPP)
 	$(CC) -c $(OPT) $(LIB) -I lib/ $<.cpp -o $@
 	@rm $<.cpp
 
-$(SRC).o : lib/$(SRC).cpp lib/$(SRC).hpp $(HPP)
-	$(CC) -c $(OPT) $(LIB) $< -o $@
+install: $(EXE)
+	cp $< $(INST)/
+
+uninstall : $(INST)/$(EXE)
+	rm $<
 
 tdmtest : tdmtest.o
 	$(CC) $(OPT) $^ -o $@
@@ -86,38 +76,19 @@ tdmtest.o : src/test.cpp lib/$(SRC).hpp $(HPP)
 	$(CC) -c $(OPT) $(LIB) -I lib/ $< -o $@
 
 cpp-clean :
-	rm -f $(EXE) *.o src/main.cpp.cpp tdmtest
+	rm -vf $(EXE)
+	rm -vf *.o src/main.cpp.cpp tdmtest
 
-# --------------------------------------------------------------------------- #
-# check process
+#-----------------------------------------------------------------------------#
+# versions
 
-checkps :
-	@ps aux | head -n1
-	@ps aux | grep $(EXE) | grep -v "grep"
+$(GTAG):
+	@echo "consistent versions check successful: building $(GTAG)"
 
-# --------------------------------------------------------------------------- #
-# python/cython module
-
-cython-requirements: cython/requirements.txt
-	python3 -m pip install -r $<
-
-cython-help : cython/setup.py
-	python3 $< --help
-
-cython-list : cython/setup.py
-	python3 $< --name --description --author --author-email --url
-
-cython-build : cython/setup.py cython/tdm_termite.pxd cython/py_tdm_termite.pyx $(HPP) lib/tdm_termite.cpp
-	python3 $< build_ext --inplace
-	cp -v tdm_termite.cpython-*.so python/
-
-cython-install : cython/setup.py cython/tdm_termite.pxd cython/py_tdm_termite.pyx $(HPP) lib/tdm_termite.cpp
-	python3 $< install
-
-cython-clean :
-	rm -vf cython/py_tdm_termite.c* cython/tdm_termite.c*
-	rm -vf tdm_termite.cpython-*.so python/tdm_termite.cpython-*.so
-	rm -rf build
+check-tags:
+	@echo "latest git tag:  $(GTAG)"
+	@echo "latest git hash: $(GHSH)"
+	@echo "python version:  $(GVSN)"
 
 # --------------------------------------------------------------------------- #
 # docker
@@ -134,17 +105,32 @@ docker-clean:
 	docker image remove tdmtermite
 
 # --------------------------------------------------------------------------- #
-# pip
+# check process
 
-pip-publish: $(PIPYVS) cython-build
-	cd pip/ && make pip-publish
-
-pip-test:
-	cd pip/ && make pip-test
+checkps :
+	@ps aux | head -n1
+	@ps aux | grep $(EXE) | grep -v "grep"
 
 # --------------------------------------------------------------------------- #
+# python
 
-clean : cpp-clean cython-clean
-	cd pip/ && make pip-clean
+python-build: check-tags $(GVSN)
+	make -C python/ build-inplace
+	cp python/TDMtermite*.so ./ -v
+
+python-install: check-tags $(GVSN)
+	make -C python/ install
+
+python-clean:
+	make -C python/ clean
+	rm -vf TDMtermite*.so
+
+python-test:
+	PYTHONPATH=./ python python/examples/usage.py
+
+# --------------------------------------------------------------------------- #
+# clean
+
+clean : cpp-clean python-clean
 
 # --------------------------------------------------------------------------- #
