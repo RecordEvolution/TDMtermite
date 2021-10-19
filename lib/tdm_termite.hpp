@@ -17,6 +17,7 @@
 #include <sstream>
 #include <filesystem>
 #include <regex>
+#include <bit>
 
 #include "pugixml.hpp"
 #include "tdm_datamodel.hpp"
@@ -63,6 +64,29 @@ class tdm_termite
   // binary data container/file stream
   std::vector<unsigned char> tdxbuffer_;
   std::ifstream *tdx_ifstream_;
+
+  // find machine's endianness at runtime
+  // detect machine endianness (C++20 !!)
+  // if ( std::endian::native == std::endian::little )
+  // {
+  //   machine_endianness_ = true;
+  // }
+  // else if ( std::endian::native == std::endian::big )
+  // {
+  //   machine_endianness_ = false;
+  // }
+  // else
+  // {
+  //   throw std::runtime_error("mixed endianness architecture is not supported");
+  // }
+  bool detect_endianness()
+  {
+    // int num = 1;
+    // machine_endianness_ = ( *(char*)&num == 1 );
+    std::uint32_t num = 0x11223344;
+    uint8_t* dfc = reinterpret_cast<uint8_t*>(&num);
+    return ( dfc[0] == 0x44 );
+  }
 
   // extract list of identifiers from e.g. "#xpointer(id("usi12") id("usi13"))"
   std::vector<std::string> extract_ids(std::string idstring)

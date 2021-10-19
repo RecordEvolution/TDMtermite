@@ -194,12 +194,31 @@ void tdm_termite::process_include(bool showlog, pugi::xml_document& xml_doc)
 
   // check endianness
   std::string endianness(tdmincl.child("file").attribute("byteOrder").value());
-  endianness_ = endianness.compare("littleEndian") == 0 ? true : false;
+  // endianness_ = endianness.compare("littleEndian") == 0 ? true : false;
+  if ( endianness.compare("littleEndian") == 0 )
+  {
+    endianness_ = true;
+  }
+  else if ( endianness.compare("bigEndian") == 0 )
+  {
+    endianness_ = false;
+  }
+  else
+  {
+    throw std::runtime_error(std::string("unsupported endianness: ") + endianness);
+  }
 
   // obtain machine's endianness
-  int num = 1;
-  machine_endianness_ = ( *(char*)&num == 1 );
-  if ( machine_endianness_ != endianness_ ) throw std::runtime_error("endianness mismatch");
+  machine_endianness_ = this->detect_endianness();
+  // if ( machine_endianness_ != endianness_ )
+  // {
+  //   std::stringstream ss;
+  //   ss<<"endianness mismatch: "<<"TDM = "<<(endianness_?"little":"big")
+  //                              <<" , "
+  //                              <<"Arch = "<<(machine_endianness_?"little":"big");
+  //   // std::cout<<ss.str()<<"\n";
+  //   // throw std::runtime_error(ss.str());
+  // }
 
   // list block of massdata
   for (pugi::xml_node anode: tdmincl.child("file").children())
@@ -1052,7 +1071,15 @@ void tdm_termite::convert_data_to_type(std::vector<unsigned char> &buffer,
 
     for ( unsigned long int j = 0; j < sizeof(datatype); j++ )
     {
-      dfcast[j] = (int)buffer[i*sizeof(datatype)+j];
+      // matching byte order between TDM/TDX and machine's architecture ?
+      if ( machine_endianness_ == endianness_ )
+      {
+        dfcast[j] = (int)buffer[i*sizeof(datatype)+j];
+      }
+      else
+      {
+        dfcast[j] = (int)buffer[(i+1)*sizeof(datatype)-(j+1)];
+      }
     }
 
     // save number in channel
