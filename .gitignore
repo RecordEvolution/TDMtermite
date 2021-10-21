@@ -23,3 +23,10 @@ pip/*.cpp
 pip/*.pyx
 pip/*.pxd
 pip/LICENSE
+
+python/3rdparty/
+python/LICENSE
+python/README.md
+python/TDMtermite.cpp
+python/lib/
+

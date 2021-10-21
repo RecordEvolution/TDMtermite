@@ -17,7 +17,6 @@
 #include <sstream>
 #include <filesystem>
 #include <regex>
-#include <bit>
 
 #include "pugixml.hpp"
 #include "tdm_datamodel.hpp"
