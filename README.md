@@ -4,6 +4,7 @@
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/RecordEvolution/TDMtermite.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/RecordEvolution/TDMtermite/context:python)
 [![LICENSE](https://img.shields.io/github/license/RecordEvolution/TDMtermite)](https://img.shields.io/github/license/RecordEvolution/TDMtermite)
 [![STARS](https://img.shields.io/github/stars/RecordEvolution/TDMtermite)](https://img.shields.io/github/stars/RecordEvolution/TDMtermite)
+![Build Python Wheels](https://github.com/RecordEvolution/TDMtermite/actions/workflows/pypi-deploy.yml/badge.svg)
 
 # TDMtermite
 
