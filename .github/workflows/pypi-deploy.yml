@@ -59,7 +59,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install cython
-        run: apt-get install cython3
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cython3
+        env:
+          DEBIAN_FRONTEND: noninteractive
       - name: Get wheel configuration files
         uses: actions/download-artifact@v4.1.7
         with:
