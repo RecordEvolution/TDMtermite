@@ -11,9 +11,9 @@ cmpArgs = {
 }
 
 extension = Extension(
-    "TDMtermite",
+    "tdmtermite",
     language='c++',
-    sources=["TDMtermite.pyx"],
+    sources=["tdmtermite.pyx"],
     include_dirs=["lib","3rdparty/pugixml"],
     extra_compile_args=cmpArgs[sys.platform]
 )

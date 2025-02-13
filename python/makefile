@@ -30,8 +30,8 @@ build-bdist: setup
 
 build-clean:
 	python setup.py clean --all
-	rm -vf TDMtermite*.so TDMtermite*.cpp
-	rm -rvf dist/ IMCtermite.egg-info/
+	rm -vf tdmtermite*.so tdmtermite*.cpp
+	rm -rvf dist/ tdmtermite.egg-info/
 
 cibuildwheel-build: setup
 	cibuildwheel --platform linux

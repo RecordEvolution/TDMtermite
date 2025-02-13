@@ -2,7 +2,7 @@
 [![LICENSE](https://img.shields.io/github/license/RecordEvolution/TDMtermite)](https://img.shields.io/github/license/RecordEvolution/TDMtermite)
 [![STARS](https://img.shields.io/github/stars/RecordEvolution/TDMtermite)](https://img.shields.io/github/stars/RecordEvolution/TDMtermite)
 ![CI Build Wheel](https://github.com/RecordEvolution/TDMtermite/actions/workflows/pypi-deploy.yml/badge.svg?branch=&event=push)
-[![PYPI](https://img.shields.io/pypi/v/TDMtermite.svg)](https://pypi.org/project/TDMtermite/)
+[![PYPI](https://img.shields.io/pypi/v/TDMtermite.svg)](https://pypi.org/project/tdmtermite/)
 
 # TDMtermite
 
@@ -164,10 +164,10 @@ which makes the module available for import by `import tdm_termite` .
 #### Installation with pip
 
 The package is also available via the [Python Package Index](https://pypi.org) at
-[TDMtermite](https://pypi.org/project/TDMtermite/). To install the latest version simply do
+[TDMtermite](https://pypi.org/project/tdmtermite/). To install the latest version simply do
 
 ```Shell
-python3 -m pip install TDMtermite
+python3 -m pip install tdmtermite
 ```
 
 ##### Unix
@@ -224,7 +224,7 @@ To be able to use the Python module _tdm_termite_, it first has to be built loca
 or installed on the system. In the Python interpreter, simply do:
 
 ```Python
-import TDMtermite
+import tdmtermite
 ```
 
 This will import the module. The TDM files are provided by creating an instance of
@@ -233,7 +233,7 @@ the _tdmtermite_ class:
 ```Python
 # create 'tdmtermite' instance object
 try :
-    jack = TDMtermite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
+    jack = tdmtermite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
 except RuntimeError as e:
     print("failed to load/decode TDM files: " + str(e))
 ```
@@ -254,12 +254,12 @@ As a use case, we have a look at listing the ids of all channelgroups and printi
 their data to separate files:
 
 ```Python
-import TDMtermite
+import tdmtermite
 import re
 
 # create 'tdmtermite' instance object
 try :
-    jack = TDMtermite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
+    jack = tdmtermite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
 except RuntimeError as e :
     print("failed to load/decode TDM files: " + str(e))
 
@@ -293,8 +293,8 @@ to simply extract all data of the TDM datatset and dump it to files in a given
 (existing!) directory, do
 
 ```Python
-import TDMtermite
-jack = TDMtermite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
+import tdmtermite
+jack = tdmtermite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
 jack.write_all(b"./my_tdm_data_directory/")
 ```
 

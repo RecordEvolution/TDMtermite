@@ -1,11 +1,11 @@
 
-import TDMtermite
+import tdmtermite
 import json
 import re
 
 # create 'tdm_termite' instance object
 try :
-    jack = TDMtermite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
+    jack = tdmtermite.tdmtermite(b'samples/SineData.tdm',b'samples/SineData.tdx')
 except RuntimeError as e :
     print("failed to load/decode TDM files: " + str(e))
 

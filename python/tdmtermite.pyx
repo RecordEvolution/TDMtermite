@@ -1,7 +1,7 @@
 # distutils: language = c++
 # cython: language_level = 3
 
-from TDMtermite cimport cpptdmtermite
+from tdmtermite cimport cpptdmtermite
 
 import json as jn
 
